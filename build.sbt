@@ -1,6 +1,7 @@
 import SPSettings._
 
 lazy val projectName = "sp-gui"
+lazy val projectVersion = "0.9.2-SNAPSHOT"
 
 lazy val spDep = Def.setting(Seq(
   PublishingSettings.orgNameFull %%% "sp-domain" % "0.9.1-SNAPSHOT",
@@ -10,10 +11,7 @@ lazy val spDep = Def.setting(Seq(
 lazy val buildSettings = Seq(
   name         := projectName,
   description  := "The core UI for sequence planner",
-  version      := "0.9.1-SNAPSHOT",
-  libraryDependencies ++= domainDependencies.value,
-  libraryDependencies ++= guiDependencies.value,
-  libraryDependencies ++= spDep.value,
+  version      := projectVersion,
   scmInfo := Some(ScmInfo(
     PublishingSettings.githubSP(projectName),
     PublishingSettings.githubscm(projectName)
@@ -27,9 +25,28 @@ val jsFiles = Seq(
   ProvidedJS / "bundle.min.js"
 )
 
-lazy val spgui = project.in(file("."))
+lazy val root = project.in(file("."))
+  .aggregate(spgui_jvm, spgui_js)
+  .settings(defaultBuildSettings)
+  .settings(buildSettings)
+  .settings(
+    publish              := {},
+    publishLocal         := {},
+    publishArtifact      := false,
+    Keys.`package`       := file("")
+  )
+
+lazy val spgui = crossProject.crossType(CrossType.Full).in(file("."))
   .settings(defaultBuildSettings: _*)
   .settings(buildSettings: _*)
-  .settings(jsSettings: _*)
-  .settings(jsDependencies ++= jsFiles)
-  .enablePlugins(ScalaJSPlugin)
+  .jvmSettings()
+  .jsSettings(
+    jsSettings,
+    jsDependencies ++= jsFiles,
+    libraryDependencies ++= domainDependencies.value,
+    libraryDependencies ++= guiDependencies.value,
+    libraryDependencies ++= spDep.value
+  )
+
+lazy val spgui_jvm = spgui.jvm
+lazy val spgui_js = spgui.js
