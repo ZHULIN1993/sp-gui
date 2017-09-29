@@ -21,8 +21,15 @@ lazy val buildSettings = Seq(
   )
 )
 
+val jsFiles = Seq(
+  ProvidedJS / "ganttApp.js",
+  ProvidedJS / "bundle.js",
+  ProvidedJS / "bundle.min.js"
+)
+
 lazy val spgui = project.in(file("."))
   .settings(defaultBuildSettings: _*)
   .settings(buildSettings: _*)
   .settings(jsSettings: _*)
+  .settings(jsDependencies ++= jsFiles)
   .enablePlugins(ScalaJSPlugin)

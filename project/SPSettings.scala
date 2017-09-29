@@ -114,7 +114,7 @@ object SPSettings {
     "org.julienrf" %%% "play-json-derived-codecs" % "4.0.0",
     "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M12"
   ))
-  // "org.joda" % "joda-convert" % "1.8.2" maybe add this to jvm-side
+  // "org.joda" % "joda-convert" % "1.8.2" add this to jvm-side
 
 
 
@@ -148,14 +148,8 @@ object SPSettings {
   ))
 
 
-  val jsFiles = Seq(
-    ProvidedJS / "ganttApp.js",
-    ProvidedJS / "bundle.js",
-    ProvidedJS / "bundle.min.js"
-  )
 
   lazy val jsSettings = Seq(
-    jsDependencies ++= jsFiles,
     testFrameworks += new TestFramework("utest.runner.Framework"),
     addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
   )
