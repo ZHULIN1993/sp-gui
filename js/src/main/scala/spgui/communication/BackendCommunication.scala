@@ -222,11 +222,12 @@ case class WebSocketHandler(uri: String) {
   val separateGeneralMessages = Rx {
     val a = convWebsocketStringToSPMessage()
     a.map{
-      case x @ SPMessage(h, b) if getAsSPE(b).nonEmpty =>
-        errors() = getAsSPE(b).get.message
       case x @ SPMessage(h, b) if getAsSPAPI(b).nonEmpty =>
         notification() = x
         receivedMessage() = x
+        // m-dahl 27 oct 2017: I want SPError in my communication, moving it to here
+        getAsSPE(b).foreach { err => errors() = err.message }
+
       case x =>
         println(s"$uri - $c"); c += 1
         receivedMessage() = x
@@ -251,5 +252,3 @@ case class WebSocketHandler(uri: String) {
   }
 
 }
-
-
