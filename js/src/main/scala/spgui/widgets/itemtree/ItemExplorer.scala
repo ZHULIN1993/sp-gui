@@ -42,7 +42,6 @@ object ItemExplorer {
   class ItemExplorerBackend($: BackendScope[SPWidgetBase, ItemExplorerState]) {
 
     def handleMess(mess: SPMessage): Unit = {
-      println("handlemess: " + mess)
       extractMResponse(mess).map{ case (h, b) =>
         val res = b match {
           case tm@mapi.SPItems(items) => $.modState(s => s.copy(items = items))
@@ -80,7 +79,7 @@ object ItemExplorer {
     def renderItems(items: List[IDAble]) =
       <.div(
         <.ul(
-          items.toTagMod(idAble => <.li(idAble.name, DataOnDrag(idAble.id.toString, Callback.log("picked sumthing up"))))
+          items.toTagMod(idAble => <.li(idAble.name, DataOnDrag(idAble.id.toString, Callback.empty)))
           //items.toTagMod(idAble => <.li(idAble.name))
         )
       )

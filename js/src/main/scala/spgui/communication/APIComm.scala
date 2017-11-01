@@ -99,10 +99,8 @@ class APIComm[RQT,RST](requestTopic: String, responseTopic: String, from: String
     val source = new ManualOuterSource
 
     setTimeout(ackTimeout) {
-      println("outer: closing ACK timeout")
       if(reqs.get(header.reqID).map(_._2.isEmpty).getOrElse(false)) {
         val errMsg = s"No reply to request ${header.reqID} from service in ${ackTimeout.toMillis}ms."
-        println("outer: " + errMsg)
         source.error(new java.util.concurrent.TimeoutException(errMsg))
       } else {
         source.done()

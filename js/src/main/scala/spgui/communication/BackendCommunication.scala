@@ -119,7 +119,7 @@ object BackendCommunication {
         val api =  SPAttributes.fromJsonGetAs[socketAPI.API](xhr.responseText)
         val message =  SPMessage.fromJsonTry(xhr.responseText)
         p.complete(message)
-        api.map{case x => println("post got: " + x)}
+        // api.map{case x => println("post got: " + x)}
       case Failure(e) =>
     }
     p.future
@@ -229,7 +229,7 @@ case class WebSocketHandler(uri: String) {
         getAsSPE(b).foreach { err => errors() = err.message }
 
       case x =>
-        println(s"$uri - $c"); c += 1
+        // println(s"$uri - $c"); c += 1
         receivedMessage() = x
     }
     a.failed.foreach(t =>
@@ -242,13 +242,13 @@ case class WebSocketHandler(uri: String) {
     //println(s"An error: ${errors.now}")
   }
   wsOpen.triggerLater {
-    println(s"Websocket is: ${wsOpen.now}")
+    // println(s"Websocket is: ${wsOpen.now}")
   }
 //   //some printlns for testing
 //  mess.trigger(println("GOT A MESSAGE ON WEBSOCKET: " + mess.now))
 //  socketAPI.trigger(println("Converted Message: " + socketAPI.toTry))
   notification.triggerLater {
-    println(s"A NOTIFICATION: ${notification.now}")
+    // println(s"A NOTIFICATION: ${notification.now}")
   }
 
 }
