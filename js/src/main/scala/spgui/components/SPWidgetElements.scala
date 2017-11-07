@@ -14,7 +14,7 @@ object SPWidgetElements{
       ^.className := SPWidgetElementsCSS.clickable.htmlClass,
       ^.className := SPWidgetElementsCSS.button.htmlClass
     )
-  
+
   def button(text:String, icon:VdomNode, onClick: Callback): VdomNode =
     <.span(
       <.span(text, ^.className:= SPWidgetElementsCSS.textIconClearance.htmlClass),
@@ -25,7 +25,7 @@ object SPWidgetElements{
       ^.className := SPWidgetElementsCSS.clickable.htmlClass,
       ^.className := SPWidgetElementsCSS.button.htmlClass
     )
-  
+
   def button(icon: VdomNode, onClick: Callback): VdomNode =
     <.span(icon,
       ^.onClick --> onClick,
@@ -45,6 +45,38 @@ object SPWidgetElements{
         <.span(
           <.span(text, ^.className:= SPWidgetElementsCSS.textIconClearance.htmlClass),
           Icon.caretDown,
+          VdomAttr("data-toggle") := "dropdown",
+          ^.id:="something",
+          ^.className := "nav-link dropdown-toggle",
+          aria.hasPopup := "true",
+          aria.expanded := "false",
+          ^.className := "btn",
+          ^.className := SPWidgetElementsCSS.button.htmlClass,
+          ^.className := SPWidgetElementsCSS.clickable.htmlClass
+        ),
+        <.ul(
+          contents.collect{
+            case e => <.div(
+              ^.className := SPWidgetElementsCSS.dropdownElement.htmlClass,
+              e
+            )
+          }.toTagMod,
+          ^.className := SPWidgetElementsCSS.dropDownList.htmlClass,
+          ^.className := "dropdown-menu",
+          aria.labelledBy := "something"
+        )
+      )
+    )
+
+  def dropdown(button: TagMod, contents: Seq[TagMod]): VdomElement =
+    <.span(
+      ^.className:= SPWidgetElementsCSS.dropdownRoot.htmlClass,
+      <.span(
+        ^.className:= SPWidgetElementsCSS.dropdownOuter.htmlClass,
+        ^.className := SPWidgetElementsCSS.defaultMargin.htmlClass,
+        ^.className:= "dropdown",
+        <.span(
+          button,
           VdomAttr("data-toggle") := "dropdown",
           ^.id:="something",
           ^.className := "nav-link dropdown-toggle",
