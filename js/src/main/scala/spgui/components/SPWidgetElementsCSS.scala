@@ -72,5 +72,30 @@ object SPWidgetElementsCSS extends SPStyleSheet {
     visibility.hidden
   )
 
+  val dropZoneContext = style(
+    position.absolute,
+    zIndex(100),
+    height(100.%%),
+    width(100.%%),
+    userSelect:="none"
+  )
+
+  val dropZone = style(
+    position.absolute,
+    zIndex(101),
+    opacity:= "0.5",
+    userSelect:="none"
+  )
+
+  val blue = style(
+    backgroundColor:= "blue"
+  )
+
+  val disableDropzones = style(
+    unsafeRoot( ".dropzonesDisabled ." + dropZone.htmlClass)(
+      visibility.hidden
+    )
+  )
+
   this.addToDocument()
 }

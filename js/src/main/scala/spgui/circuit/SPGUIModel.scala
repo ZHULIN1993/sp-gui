@@ -10,7 +10,8 @@ case class SPGUIModel(
   openWidgets: OpenWidgets = OpenWidgets(),
   globalState: GlobalState = GlobalState(),
   widgetData: WidgetData = WidgetData(Map()),
-  settings: Settings = Settings()
+  settings: Settings = Settings(),
+  draggingState: DraggingState = DraggingState()
 )
 case class OpenWidgets(xs: Map[UUID, OpenWidget] = Map())
 case class OpenWidget(id: UUID, layout: WidgetLayout, widgetType: String)
@@ -30,8 +31,14 @@ case class Settings(
   showHeaders: Boolean = true 
 )
 
-
-
+case class DropEventData(droppedId: UUID, targetId: UUID)
+case class DraggingState(
+  target: Option[UUID] = None,
+  dragging: Boolean = false,
+  renderStyle: String = "",
+  data: String = "",
+  latestDropEvent: Option[DropEventData] = None 
+)
 
 // actions
 case class AddWidget(widgetType: String, width: Int = 2, height: Int = 2, id: UUID = UUID.randomUUID()) extends Action
@@ -45,6 +52,13 @@ case class UpdateGlobalState(state: GlobalState) extends Action
 case class SetTheme(theme: Theme) extends Action
 case class UpdateGlobalAttributes(key: String, value: SPValue) extends Action
 case object ToggleHeaders extends Action
+
+case class SetDraggableRenderStyle(style:String) extends Action
+case class SetDraggableData(data: String) extends Action
+case class SetCurrentlyDragging(enabled: Boolean) extends Action 
+case class SetDraggingTarget(id: UUID) extends Action
+case object UnsetDraggingTarget extends Action
+case class DropEvent(dropped: UUID, target: UUID) extends Action
 
 // used when failing to retrieve a state from browser storage
 object InitialState {
