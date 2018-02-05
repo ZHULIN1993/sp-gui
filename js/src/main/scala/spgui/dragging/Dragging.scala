@@ -23,8 +23,14 @@ import spgui.circuit._
 import spgui.circuit.{SetDraggableData, SetDraggableRenderStyle}
 import scala.util.Try
 
-object Dragging {
-  
+class DropSubscriber(val onDrop: (DropEventData) => Unit) {
+  val id: UUID = UUID.randomUUID()
+  def init() = Dragging.subscribeToDropEvents(this.id, this)
+  def delete() = Dragging.unsubscribeToDropEvents(this.id)
+}
+
+
+object Dragging { 
   case class Props(proxy: ModelProxy[DraggingState])
 
   case class State(
@@ -53,6 +59,7 @@ object Dragging {
 
   def dropzoneUnsubscribe(id: UUID) = {
     setHoveringMap = setHoveringMap.filter(c => c._1 != id )
+    if (draggingTarget == id) draggingTarget = null
   }
 
   def dropzoneResubscribe(newId: UUID, previousId: UUID) = {
@@ -63,12 +70,21 @@ object Dragging {
     })
   }
 
-  def subscribeToDropEvents(cb: (DropEventData) => Unit) = {
-    SPGUICircuit.subscribe(SPGUICircuit.zoom(z => z.draggingState.latestDropEvent)){
-      e => {
-        if(!e.value.isEmpty) cb(e.value.get)
-      }
+
+
+  var dropSubscribers: Map[UUID, DropSubscriber] = Map()
+  SPGUICircuit.subscribe(SPGUICircuit.zoom(z => z.draggingState.latestDropEvent)) {
+    e => {
+      if(!e.value.isEmpty) dropSubscribers.foreach(sub => sub._2.onDrop(e.value.get))
     }
+  }
+
+  def subscribeToDropEvents(id:UUID, sub: DropSubscriber) = {
+    dropSubscribers += (id -> sub)
+  }
+
+  def unsubscribeToDropEvents(id: UUID) = {
+    dropSubscribers -= id
   }
 
   trait Rect extends js.Object {

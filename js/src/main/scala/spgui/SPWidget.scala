@@ -10,7 +10,7 @@ import java.util.UUID
 
 
 case class SPWidgetBase(id: UUID, frontEndState: GlobalState) {
-
+  
   def updateWidgetData(data: SPValue): Unit = {
     SPGUICircuit.dispatch(UpdateWidgetData(id, data))
   }
