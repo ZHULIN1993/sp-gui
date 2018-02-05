@@ -97,5 +97,6 @@ object SPWidgetElementsCSS extends SPStyleSheet {
     )
   )
 
+
   this.addToDocument()
 }

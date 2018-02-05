@@ -47,15 +47,28 @@ object Dragging {
   var draggingTarget: UUID = null
   var draggingObject: UUID = null
 
-  def dropzoneSubscribe(
-    id: UUID,
-    setHovering: (Boolean) => Unit
-  ) {
+  def dropzoneSubscribe( id: UUID, setHovering: (Boolean) => Unit) = {
     setHoveringMap += id -> setHovering
   }
 
-  def dropzoneUnsubscribe(id: UUID) = Callback{
+  def dropzoneUnsubscribe(id: UUID) = {
     setHoveringMap = setHoveringMap.filter(c => c._1 != id )
+  }
+
+  def dropzoneResubscribe(newId: UUID, previousId: UUID) = {
+    if(draggingTarget == previousId) draggingTarget = newId
+    setHoveringMap = setHoveringMap.map(e => {
+      if(e._1 == previousId) (newId, e._2)
+      else e
+    })
+  }
+
+  def subscribeToDropEvents(cb: (DropEventData) => Unit) = {
+    SPGUICircuit.subscribe(SPGUICircuit.zoom(z => z.draggingState.latestDropEvent)){
+      e => {
+        if(!e.value.isEmpty) cb(e.value.get)
+      }
+    }
   }
 
   trait Rect extends js.Object {

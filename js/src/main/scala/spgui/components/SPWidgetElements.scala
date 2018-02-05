@@ -4,7 +4,7 @@ import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 import japgolly.scalajs.react.vdom.all.aria
 
-object SPWidgetElements{
+object SPWidgetElements {
   def button(text: String, onClick: Callback): VdomNode =
     <.span(
       text,
@@ -151,7 +151,7 @@ object SPWidgetElements{
       component(Props(defaultText, onChange))
   }
 
-    import java.util.UUID
+  import java.util.UUID
   import spgui.circuit._
   import scala.scalajs.js
   import spgui.dragging._
@@ -173,7 +173,7 @@ object SPWidgetElements{
     case class Props(id: UUID, x: Float, y: Float, w: Float, h: Float)
 
     case class State(hovering: Boolean = false)
-
+    
     class Backend($: BackendScope[Props, State]) {
 
       def setHovering(hovering: Boolean) =
@@ -197,7 +197,9 @@ object SPWidgetElements{
             {if(s.hovering)
               ^.className := SPWidgetElementsCSS.blue.htmlClass
             else ""},
-            ^.onMouseOver --> Callback(Dragging.setDraggingTarget(p.id))
+            ^.onMouseOver --> Callback({
+              Dragging.setDraggingTarget(p.id)
+            })
           )
         )
       }
@@ -206,7 +208,13 @@ object SPWidgetElements{
     private val component = ScalaComponent.builder[Props]("SPDragZone")
       .initialState(State())
       .renderBackend[Backend]
-      .componentWillUnmount(c => Dragging.dropzoneUnsubscribe(c.props.id))
+      .componentDidUpdate(c =>
+        Callback( {
+          if(c.currentProps.id !=  c.prevProps.id) {
+            Dragging.dropzoneResubscribe(c.currentProps.id, c.prevProps.id)
+          }
+        }))
+      .componentWillUnmount(c => Callback(Dragging.dropzoneUnsubscribe(c.props.id)))
       .build
 
     def apply(id: UUID, x: Float, y: Float, w: Float, h: Float) =
