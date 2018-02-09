@@ -4,6 +4,7 @@ import diode._
 import java.util.UUID
 import sp.domain.SPValue
 import spgui.theming.Theming.Theme
+import sp.domain.StructNode
 
 // state
 case class SPGUIModel(
@@ -31,7 +32,8 @@ case class Settings(
   showHeaders: Boolean = true 
 )
 
-case class DropEventData(droppedId: UUID, targetId: UUID)
+case class DropEventData(struct: StructNode, targetId: UUID )
+
 case class DraggingState(
   target: Option[UUID] = None,
   dragging: Boolean = false,
@@ -58,7 +60,7 @@ case class SetDraggableData(data: String) extends Action
 case class SetCurrentlyDragging(enabled: Boolean) extends Action 
 case class SetDraggingTarget(id: UUID) extends Action
 case object UnsetDraggingTarget extends Action
-case class DropEvent(dropped: UUID, target: UUID) extends Action
+case class DropEvent(struct: StructNode, target: UUID) extends Action
 
 // used when failing to retrieve a state from browser storage
 object InitialState {
