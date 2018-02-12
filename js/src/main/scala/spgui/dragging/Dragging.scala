@@ -70,16 +70,6 @@ object Dragging {
       if(e._1 == previousId) (newId, e._2)
       else e
     })
-
-    // remap drop event callback
-    val oldcb = dropSubscribers.get(previousId)
-    oldcb match {
-      case cb:Some[DropData => Unit] => {
-        dropSubscribers -= previousId
-        dropSubscribers += (newId -> cb.get)
-      }
-      case None => {}
-    }
   }
 
   var dropSubscribers: Map[UUID, (DropData) => Unit] = Map()
@@ -88,7 +78,9 @@ object Dragging {
     val data = DropData(draggingData, draggingTarget)
     val target = dropSubscribers.get(draggingTarget)
     target match {
-      case cb:Some[(DropData) => Unit] => cb.get(data)
+      case cb:Some[(DropData) => Unit] => {
+        cb.get(data)
+      }
       case None => {}
     }
   }

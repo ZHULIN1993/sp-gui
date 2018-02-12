@@ -171,7 +171,7 @@ object SPWidgetElements {
       var height: Float = js.native
     }
 
-    case class Props(cb: (DropData) => Unit, x: Float, y: Float, w: Float, h: Float)
+    case class Props(id: UUID, cb: (DropData) => Unit, x: Float, y: Float, w: Float, h: Float)
     case class State(hovering: Boolean, id: UUID)
     
     class Backend($: BackendScope[Props, State]) {
@@ -182,7 +182,7 @@ object SPWidgetElements {
       def render(p:Props, s:State) = {
         <.span(
           <.span(
-            ^.id := s.id.toString,
+            ^.id := p.id.toString,
             ^.style := {
               var rect =  (js.Object()).asInstanceOf[Rectangle]
               rect.left = p.x
@@ -196,7 +196,7 @@ object SPWidgetElements {
               ^.className := SPWidgetElementsCSS.blue.htmlClass
             else ""},
             ^.onMouseOver --> Callback({
-              Dragging.setDraggingTarget(s.id)
+              Dragging.setDraggingTarget(p.id)
             })
           )
         )
@@ -205,26 +205,24 @@ object SPWidgetElements {
 
     private val component = ScalaComponent.builder[Props]("SPDragZone")
       .initialState(State(hovering = false, id = UUID.randomUUID()))
-    // .componentDidUpdate(c =>
-    //   Callback( {
-    //     if(c.currentProps.id !=  c.prevProps.id) {
-    //       Dragging.dropzoneResubscribe(c.currentProps.id, c.prevProps.id)
-    //     }
-    //   }))
       .renderBackend[Backend]
-
-    .componentDidMount(c => Callback{
-      Dragging.dropzoneSubscribe(c.state.id, c.backend.setHovering)
-      Dragging.subscribeToDropEvents(c.state.id, c.props.cb)
-    })
+      .componentDidUpdate(c => Callback{
+        Dragging.unsubscribeToDropEvents(c.prevProps.id)
+        Dragging.subscribeToDropEvents(c.currentProps.id, c.currentProps.cb)
+        Dragging.dropzoneResubscribe(c.currentProps.id, c.prevProps.id)
+      })
+      .componentDidMount(c => Callback{
+        Dragging.dropzoneSubscribe(c.props.id, c.backend.setHovering)
+        Dragging.subscribeToDropEvents(c.props.id, c.props.cb)
+      })
       .componentWillUnmount(c => Callback({
-        Dragging.dropzoneUnsubscribe(c.state.id)
-        Dragging.unsubscribeToDropEvents(c.state.id)
+        Dragging.dropzoneUnsubscribe(c.props.id)
+        Dragging.unsubscribeToDropEvents(c.props.id)
       }))
       .build
 
     def apply(cb: (DropData) => Unit, x: Float, y: Float, w: Float, h: Float) =
-      component(Props(cb, x, y, w, h))
+      component(Props(UUID.randomUUID(), cb, x, y, w, h))
   }
 
   def draggable(label:String, data: Any , typ: String): TagMod = {
