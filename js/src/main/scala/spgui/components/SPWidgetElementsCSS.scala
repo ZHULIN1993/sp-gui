@@ -87,6 +87,16 @@ object SPWidgetElementsCSS extends SPStyleSheet {
     userSelect:="none"
   )
 
+  val dropZoneUnzisedOuter = style(
+    display.tableCell,
+    position.relative
+  )
+
+  val fillParent = style(
+    width(100.%%),
+    height(100.%%)
+  )
+
   val blue = style(
     backgroundColor:= "blue"
   )
