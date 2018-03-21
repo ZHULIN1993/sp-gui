@@ -3,9 +3,8 @@ package spgui.menu
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 import org.scalajs.dom._
-
 import spgui.components.{Icon, SPNavbarElements}
-import spgui.circuit.{CloseAllWidgets, SPGUICircuit, ToggleHeaders, Settings, SetTheme}
+import spgui.circuit._
 import diode.react.ModelProxy
 import spgui.theming.Theming
 
@@ -74,8 +73,9 @@ object SPMenu {
                 ).toTagMod
               )
             ),
-            SPNavbarElements.button("Close all", Callback(SPGUICircuit.dispatch(CloseAllWidgets)))
-            
+            SPNavbarElements.button("Close all", Callback(SPGUICircuit.dispatch(CloseAllWidgets))),
+            SPNavbarElements.TextBox.apply("Filter team", s => Callback(SPGUICircuit.dispatch(UpdateGlobalAttributes("team", sp.domain.SPValue.apply(s))))),
+            SPNavbarElements.TextBox.apply("Filter room", s => Callback(SPGUICircuit.dispatch(UpdateGlobalAttributes("room", sp.domain.SPValue.apply(s)))))
           )
         )
       )
