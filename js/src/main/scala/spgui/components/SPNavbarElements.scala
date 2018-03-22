@@ -69,7 +69,7 @@ object SPNavbarElements{
     )
 
   object TextBox {
-    case class Props( defaultText: String, onChange: String => Callback )
+    case class Props(contentText: String, placeholderText: String, onChange: String => Callback )
     case class State( text: String )
 
     class Backend($: BackendScope[Props, State]) {
@@ -78,7 +78,8 @@ object SPNavbarElements{
           ^.className := "input-group",
           <.input(
             ^.className := "form-control",
-            ^.placeholder := p.defaultText,
+            ^.placeholder := p.placeholderText,
+            ^.value := p.contentText,
             ^.aria.describedBy := "basic-addon1",
             ^.onChange ==> onFilterTextChange(p)
           )
@@ -92,8 +93,11 @@ object SPNavbarElements{
       .renderBackend[Backend]
       .build
 
-    def apply(defaultText: String, onChange: String => Callback) =
-      component(Props(defaultText, onChange))
+    def apply(placeholderText: String, onChange: String => Callback): VdomElement =
+      component(Props("", placeholderText, onChange))
+
+    def apply(contentText: String, placeholderText: String, onChange: String => Callback): VdomElement =
+      component(Props(contentText, placeholderText, onChange))
   }
 }
 
