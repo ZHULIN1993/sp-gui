@@ -89,6 +89,10 @@ object SPMenu {
 
   private var extraNavbarElements: Seq[SPMenuItem] = Seq()
 
+  /**
+    * Used to add new navigataion elements in the menu bar.
+    * @param xs
+    */
   def addNavElem(xs: Seq[SPMenuItem]): Unit = extraNavbarElements ++= xs
 
   def addNavElem(x: SPMenuItem): Unit = addNavElem(Seq(x))
