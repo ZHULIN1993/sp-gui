@@ -62,5 +62,11 @@ object SPNavbarElementsCSS extends Theming.SPStyleSheet {
     )
   )
 
+  val dropdownDelimiter = style(
+    marginTop(10.px),
+    marginBottom(10.px),
+    cursor.default
+  )
+
   this.addToDocument()
 }
