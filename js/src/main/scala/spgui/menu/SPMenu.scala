@@ -9,7 +9,7 @@ import diode.react.ModelProxy
 import spgui.theming.Theming
 
 object SPMenu {
-  case class Props(proxy: ModelProxy[Settings], extraNavElem: Seq[SPMenuItem])
+  case class Props(proxy: ModelProxy[Settings], extraNavElem: Seq[VdomElement])
 
   class SPMenuBackend($: BackendScope[Props, Unit]){
     def render(p: Props) = {
@@ -73,7 +73,7 @@ object SPMenu {
                 ).toTagMod
               )
             ),
-            p.extraNavElem.toTagMod(spmi => spmi.apply()), // Insert any additional menu items added by someone else
+            p.extraNavElem.toTagMod(x => x.apply()), // Insert any additional menu items added by someone else
             SPNavbarElements.button("Close all", Callback(SPGUICircuit.dispatch(CloseAllWidgets)))
           )
         )
@@ -87,14 +87,14 @@ object SPMenu {
 
   def apply(proxy: ModelProxy[Settings]) = component(Props(proxy, extraNavbarElements))
 
-  private var extraNavbarElements: Seq[SPMenuItem] = Seq()
+  private var extraNavbarElements: Seq[VdomElement] = Seq()
 
   /**
     * Used to add new navigataion elements in the menu bar.
     * @param xs
     */
-  def addNavElem(xs: Seq[SPMenuItem]): Unit = extraNavbarElements ++= xs
+  def addNavElem(xs: Seq[VdomElement]): Unit = extraNavbarElements ++= xs
 
-  def addNavElem(x: SPMenuItem): Unit = addNavElem(Seq(x))
+  def addNavElem(x: VdomElement): Unit = addNavElem(Seq(x))
 
 }
