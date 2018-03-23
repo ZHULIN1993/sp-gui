@@ -68,6 +68,19 @@ object SPNavbarElements{
       ^.onClick --> onClick
     )
 
+  def dropdownElement(content: TagMod, onClick: Callback): VdomNode =
+    <.li(
+      ^.className := SPNavbarElementsCSS.dropdownElement.htmlClass,
+      content,
+      ^.onClick --> onClick
+    )
+
+  def dropdownElement(content: TagMod): VdomNode =
+    <.li(
+      ^.className := SPNavbarElementsCSS.dropdownElement.htmlClass,
+      content
+    )
+
   object TextBox {
     case class Props(contentText: String, placeholderText: String, onChange: String => Callback )
     case class State( text: String )
