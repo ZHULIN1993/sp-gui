@@ -12,6 +12,7 @@ object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] 
   def initialModel = BrowserStorage.load.getOrElse(InitialState())
   val actionHandler = composeHandlers(
     new DashboardHandler(zoomRW(_.openWidgets)((m,v) => m.copy(openWidgets = v))),
+    new DashboardPresetsHandler(zoomRW(_.dashboardPresets)((m,v) => m.copy(dashboardPresets = v))),
     new GlobalStateHandler(zoomRW(_.globalState)((m, v) => m.copy(globalState = v))),
     new SettingsHandler(zoomRW(_.settings)((m, v) => m.copy(settings = v))),
     new WidgetDataHandler(zoomRW(_.widgetData)((m,v) => m.copy(widgetData = v))),
@@ -98,6 +99,7 @@ class DashboardHandler[M](modelRW: ModelRW[M, OpenWidgets]) extends ActionHandle
       updated(updW)
     }
     case RecallDashboardPreset(preset) => {
+      updated(OpenWidgets()) //First remove all widgets to let them unmount
       updated(preset.widgets)
     }
   }
@@ -179,8 +181,21 @@ object JsonifyUIState {
   implicit val fOpenWidget: JSFormat[OpenWidget] = Json.format[OpenWidget]
   implicit val fDropEvent: JSFormat[DropEventData] = Json.format[DropEventData]
   implicit val fDraggingState: JSFormat[DraggingState] = Json.format[DraggingState]
-  implicit val fDashboardPresets: JSFormat[DashboardPresets] = Json.format[DashboardPresets]
-  implicit val fDashboardPreset: JSFormat[DashboardPreset] = Json.format[DashboardPreset]
+
+  implicit lazy val dashboardPresetsMapReads: JSReads[Map[String, DashboardPreset]] = new JSReads[Map[String, DashboardPreset]] {
+    override def reads(json: JsValue): JsResult[Map[String, DashboardPreset]] = {
+      json.validate[Map[String, SPValue]].map{xs =>
+        def isCorrect(k: String, v: SPValue) = v.to[DashboardPreset].isSuccess
+        xs.collect{case (k, v) if isCorrect(k, v) => k -> v.to[DashboardPreset].get}
+      }
+    }
+  }
+  implicit lazy val dashboardPresetsMapWrites: JSWrites[Map[String, DashboardPreset]] = new OWrites[Map[String, DashboardPreset]] {
+    override def writes(xs: Map[String, DashboardPreset]): JsObject = {
+      val toFixedMap = xs.map{case (k, v) => k -> SPValue(v)}
+      JsObject(toFixedMap)
+    }
+  }
 
   implicit lazy val openWidgetMapReads: JSReads[Map[ID, OpenWidget]] = new JSReads[Map[ID, OpenWidget]] {
     override def reads(json: JsValue): JsResult[Map[ID, OpenWidget]] = {
@@ -196,6 +211,8 @@ object JsonifyUIState {
     }
   }
   implicit val fOpenWidgets: JSFormat[OpenWidgets] = Json.format[OpenWidgets]
+  implicit val fDashboardPresets: JSFormat[DashboardPresets] = Json.format[DashboardPresets]
+  implicit val fDashboardPreset: JSFormat[DashboardPreset] = Json.format[DashboardPreset]
   implicit val fGlobalState: JSFormat[GlobalState] = Json.format[GlobalState]
   implicit val fSPGUIModel: JSFormat[SPGUIModel] = Json.format[SPGUIModel]
 }

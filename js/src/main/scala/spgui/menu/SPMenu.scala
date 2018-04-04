@@ -74,7 +74,7 @@ object SPMenu {
                 ).toTagMod
               )
             ),
-            DashboardPresetsMenu(),
+            dashPresetsMenuConnected(p => DashboardPresetsMenu(p)),
             p.extraNavElem.toTagMod(x => x.apply()), // Insert any additional menu items added by someone else
             SPNavbarElements.button("Close all", Callback(SPGUICircuit.dispatch(CloseAllWidgets)))
           )
@@ -82,6 +82,8 @@ object SPMenu {
       )
     } 
   }
+
+  private val dashPresetsMenuConnected = SPGUICircuit.connect(_.dashboardPresets)
 
   private val component = ScalaComponent.builder[Props]("SPMenu")
     .renderBackend[SPMenuBackend]
