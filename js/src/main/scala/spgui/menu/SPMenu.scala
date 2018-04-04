@@ -6,6 +6,7 @@ import org.scalajs.dom._
 import spgui.components.{Icon, SPNavbarElements}
 import spgui.circuit._
 import diode.react.ModelProxy
+import spgui.dashboard.DashboardPresetsMenu
 import spgui.theming.Theming
 
 object SPMenu {
@@ -73,6 +74,7 @@ object SPMenu {
                 ).toTagMod
               )
             ),
+            DashboardPresetsMenu(),
             p.extraNavElem.toTagMod(x => x.apply()), // Insert any additional menu items added by someone else
             SPNavbarElements.button("Close all", Callback(SPGUICircuit.dispatch(CloseAllWidgets)))
           )

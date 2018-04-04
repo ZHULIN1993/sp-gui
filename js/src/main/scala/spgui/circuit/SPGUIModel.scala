@@ -7,15 +7,19 @@ import spgui.theming.Theming.Theme
 
 // state
 case class SPGUIModel(
-  openWidgets: OpenWidgets = OpenWidgets(),
-  globalState: GlobalState = GlobalState(),
-  widgetData: WidgetData = WidgetData(Map()),
-  settings: Settings = Settings(),
-  draggingState: DraggingState = DraggingState()
+                       openWidgets: OpenWidgets = OpenWidgets(),
+                       dashboardPresets: DashboardPresets = DashboardPresets(),
+                       globalState: GlobalState = GlobalState(),
+                       widgetData: WidgetData = WidgetData(Map()),
+                       settings: Settings = Settings(),
+                       draggingState: DraggingState = DraggingState()
 )
 case class OpenWidgets(xs: Map[UUID, OpenWidget] = Map())
 case class OpenWidget(id: UUID, layout: WidgetLayout, widgetType: String)
 case class WidgetLayout(x: Int, y: Int, w: Int, h: Int, collapsedHeight: Int = 1)
+
+case class DashboardPresets(presets: Map[String, DashboardPreset] = Map())
+case class DashboardPreset(widgets: OpenWidgets = OpenWidgets())
 
 case class GlobalState(
   currentModel: Option[UUID] = None,
@@ -45,12 +49,18 @@ case class AddWidget(widgetType: String, width: Int = 2, height: Int = 2, id: UU
 case class CloseWidget(id: UUID) extends Action
 case class CollapseWidgetToggle(id: UUID) extends Action
 case object CloseAllWidgets extends Action
-case class UpdateWidgetData(id: UUID, data: SPValue) extends Action
+case class RecallDashboardPreset(preset: DashboardPreset) extends Action
 case class UpdateLayout(id: UUID, newLayout: WidgetLayout) extends Action
 case class SetLayout(layout: Map[UUID, WidgetLayout]) extends Action
-case class UpdateGlobalState(state: GlobalState) extends Action
-case class SetTheme(theme: Theme) extends Action
+
+case class AddDashboardPreset(name: String, dashboardPreset: DashboardPreset) extends Action
+
+case class UpdateWidgetData(id: UUID, data: SPValue) extends Action
+
 case class UpdateGlobalAttributes(key: String, value: SPValue) extends Action
+case class UpdateGlobalState(state: GlobalState) extends Action
+
+case class SetTheme(theme: Theme) extends Action
 case object ToggleHeaders extends Action
 
 case class SetDraggableRenderStyle(style:String) extends Action

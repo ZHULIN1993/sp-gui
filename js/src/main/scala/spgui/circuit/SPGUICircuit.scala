@@ -6,7 +6,7 @@ import org.scalajs.dom.ext.LocalStorage
 
 import scala.util.{Success, Try}
 import spgui.theming.Theming.Theme
-import spgui.dashboard.Dashboard
+import spgui.dashboard.{Dashboard, DashboardPresetsMenu}
 
 object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] {
   def initialModel = BrowserStorage.load.getOrElse(InitialState())
@@ -97,6 +97,17 @@ class DashboardHandler[M](modelRW: ModelRW[M, OpenWidgets]) extends ActionHandle
       ))
       updated(updW)
     }
+    case RecallDashboardPreset(preset) => {
+      updated(preset.widgets)
+    }
+  }
+}
+
+class DashboardPresetsHandler[M](modelRW: ModelRW[M, DashboardPresets]) extends ActionHandler(modelRW) {
+  override def handle = {
+    case AddDashboardPreset(name, preset) => {
+      updated(value.copy(presets = value.presets + (name -> preset)))
+    }
   }
 }
 
@@ -168,6 +179,8 @@ object JsonifyUIState {
   implicit val fOpenWidget: JSFormat[OpenWidget] = Json.format[OpenWidget]
   implicit val fDropEvent: JSFormat[DropEventData] = Json.format[DropEventData]
   implicit val fDraggingState: JSFormat[DraggingState] = Json.format[DraggingState]
+  implicit val fDashboardPresets: JSFormat[DashboardPresets] = Json.format[DashboardPresets]
+  implicit val fDashboardPreset: JSFormat[DashboardPreset] = Json.format[DashboardPreset]
 
   implicit lazy val openWidgetMapReads: JSReads[Map[ID, OpenWidget]] = new JSReads[Map[ID, OpenWidget]] {
     override def reads(json: JsValue): JsResult[Map[ID, OpenWidget]] = {
