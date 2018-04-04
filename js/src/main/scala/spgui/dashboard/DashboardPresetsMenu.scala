@@ -21,27 +21,26 @@ object DashboardPresetsMenu {
                   )
 
   case class Props(
-                  proxy: ModelProxy[DashboardPresets]
+                  proxy: ModelProxy[DashboardState]
                   )
 
 
-  class Backend($: BackendScope[ModelProxy[DashboardPresets], State]) {
+  class Backend($: BackendScope[ModelProxy[DashboardState], State]) {
 
     private def saveCurrentLayout(name: String, dispatch: Action => Callback) = {
-      val newPreset = DashboardPreset(SPGUICircuit.zoom(_.openWidgets).value)
-      dispatch(AddDashboardPreset(name, newPreset)) >> $.setState(State(""))
+      dispatch(AddDashboardPreset(name)) >> $.setState(State(""))
     }
 
     private def recallLayout(p: DashboardPreset) = {
-        Callback(SPGUICircuit.dispatch(RecallDashboardPreset(p))) //TODO: make component re-render after this
+        Callback(SPGUICircuit.dispatch(RecallDashboardPreset(p)))
     }
 
     private def presetIsSelected(preset: DashboardPreset) = {
-      val currentState = SPGUICircuit.zoom(_.openWidgets).value
+      val currentState = SPGUICircuit.zoom(_.dashboard.openWidgets).value
       preset.widgets.equals(currentState)
     }
 
-    def render(s: State, proxy: ModelProxy[DashboardPresets]) = {
+    def render(s: State, proxy: ModelProxy[DashboardState]) = {
       SPNavbarElements.dropdown(
         "Layout",
         Seq(
@@ -69,7 +68,7 @@ object DashboardPresetsMenu {
 
   }
 
-  private val component = ScalaComponent.builder[ModelProxy[DashboardPresets]]("DashboardPresetsMenu")
+  private val component = ScalaComponent.builder[ModelProxy[DashboardState]]("DashboardPresetsMenu")
     .initialState(State(""))
     .renderBackend[Backend]
 /*    .componentDidMount(_.backend.didMount)
@@ -77,5 +76,5 @@ object DashboardPresetsMenu {
     .build
 
 
-  def apply(proxy: ModelProxy[DashboardPresets]) = component(proxy)
+  def apply(proxy: ModelProxy[DashboardState]) = component(proxy)
 }

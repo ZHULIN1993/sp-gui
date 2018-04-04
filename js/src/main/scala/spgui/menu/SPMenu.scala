@@ -83,7 +83,7 @@ object SPMenu {
     } 
   }
 
-  private val dashPresetsMenuConnected = SPGUICircuit.connect(_.dashboardPresets)
+  private val dashPresetsMenuConnected = SPGUICircuit.connect(_.dashboard)
 
   private val component = ScalaComponent.builder[Props]("SPMenu")
     .renderBackend[SPMenuBackend]
