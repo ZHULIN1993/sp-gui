@@ -53,6 +53,7 @@ case class UpdateLayout(id: UUID, newLayout: WidgetLayout) extends Action
 case class SetLayout(layout: Map[UUID, WidgetLayout]) extends Action
 
 case class AddDashboardPreset(name: String) extends Action
+case class SetDashboardPresets(presets: Map[String, DashboardPreset]) extends Action
 
 case class UpdateWidgetData(id: UUID, data: SPValue) extends Action
 

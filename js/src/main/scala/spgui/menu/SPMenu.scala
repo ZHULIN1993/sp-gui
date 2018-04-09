@@ -6,7 +6,7 @@ import org.scalajs.dom._
 import spgui.components.{Icon, SPNavbarElements}
 import spgui.circuit._
 import diode.react.ModelProxy
-import spgui.dashboard.DashboardPresetsMenu
+import spgui.dashboard.{AbstractDashboardPresetsHandler, DashboardPresetsMenu}
 import spgui.theming.Theming
 
 object SPMenu {
@@ -74,7 +74,6 @@ object SPMenu {
                 ).toTagMod
               )
             ),
-            dashPresetsMenuConnected(p => DashboardPresetsMenu(p)),
             p.extraNavElem.toTagMod(x => x.apply()), // Insert any additional menu items added by someone else
             SPNavbarElements.button("Close all", Callback(SPGUICircuit.dispatch(CloseAllWidgets)))
           )
@@ -82,8 +81,6 @@ object SPMenu {
       )
     } 
   }
-
-  private val dashPresetsMenuConnected = SPGUICircuit.connect(_.dashboard)
 
   private val component = ScalaComponent.builder[Props]("SPMenu")
     .renderBackend[SPMenuBackend]

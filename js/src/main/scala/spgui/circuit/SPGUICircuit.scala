@@ -3,10 +3,12 @@ package spgui.circuit
 import diode._
 import diode.react.ReactConnector
 import org.scalajs.dom.ext.LocalStorage
+import sp.domain.{SPHeader, SPMessage}
+import spgui.communication.BackendCommunication
 
 import scala.util.{Success, Try}
 import spgui.theming.Theming.Theme
-import spgui.dashboard.{Dashboard, DashboardPresetsMenu}
+import spgui.dashboard.{AbstractDashboardPresetsHandler, Dashboard, DashboardPresetsMenu}
 
 object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] {
   def initialModel = BrowserStorage.load.getOrElse(InitialState())
@@ -32,12 +34,23 @@ object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] 
   )
   // store state upon any model change
   subscribe(zoomRW(myM => myM)((m,v) => v))(m => BrowserStorage.store(m.value))
+
+  var dashboardPresetHandler: Option[AbstractDashboardPresetsHandler] = None
 }
 
 class DashboardHandler[M](modelRW: ModelRW[M, DashboardState]) extends ActionHandler(modelRW) {
   override def handle = {
     case AddDashboardPreset(name) => { // Takes current state of dashboard and saves in list of presets
-      updated(value.copy(presets = value.presets + (name -> DashboardPreset(value.openWidgets))))
+      val newPresets = value.presets + (name -> DashboardPreset(value.openWidgets))
+
+      // Send current state of presets to persistent storage
+      SPGUICircuit.dashboardPresetHandler.flatMap(h => {h.storePresets(newPresets);None})
+
+      updated(value.copy(presets = newPresets))
+    }
+
+    case SetDashboardPresets(presets: Map[String, DashboardPreset]) => {
+      updated(value.copy(presets = presets))
     }
   }
 }
@@ -168,6 +181,16 @@ class DraggingHandler[M](modelRW: ModelRW[M, DraggingState]) extends ActionHandl
     case DropEvent(dropped, target) =>
       //println("dragged " + dropped + " onto " + target)
       updated((value.copy(latestDropEvent = Some(DropEventData(dropped, target)))))
+  }
+}
+
+object PersistentStorage {
+  import JsonifyUIState._
+  def storeDashboardPresets(presets: Map[String, DashboardPreset]) = {
+    BackendCommunication.publish(
+      SPMessage.make(SPHeader(from = "SPGUICurcuit", to = "PersistentStorage"), presets),
+      "dashboard-presets"
+    )
   }
 }
 

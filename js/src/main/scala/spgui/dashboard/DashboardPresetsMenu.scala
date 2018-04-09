@@ -4,8 +4,8 @@ import java.util.UUID
 
 import diode.Action
 import diode.react.ModelProxy
-import japgolly.scalajs.react.{BackendScope, Callback, CallbackTo, ScalaComponent}
-import japgolly.scalajs.react.vdom.html_<^.{<, VdomElement, ^}
+import japgolly.scalajs.react._
+import japgolly.scalajs.react.vdom.html_<^._
 import spgui.circuit._
 import spgui.components.{Icon, SPNavbarElements, SPNavbarElementsCSS}
 
@@ -25,7 +25,7 @@ object DashboardPresetsMenu {
                   )
 
 
-  class Backend($: BackendScope[ModelProxy[DashboardState], State]) {
+  class Backend($: BackendScope[Props, State]) {
 
     private def saveCurrentLayout(name: String, dispatch: Action => Callback) = {
       dispatch(AddDashboardPreset(name)) >> $.setState(State(""))
@@ -40,7 +40,7 @@ object DashboardPresetsMenu {
       preset.widgets.equals(currentState)
     }
 
-    def render(s: State, proxy: ModelProxy[DashboardState]) = {
+    def render(s: State, p: Props) = {
       SPNavbarElements.dropdown(
         "Layout",
         Seq(
@@ -51,10 +51,10 @@ object DashboardPresetsMenu {
           ),
           SPNavbarElements.dropdownElement(
             "Save layout",
-            saveCurrentLayout(s.textBoxValue, proxy.dispatchCB)
+            saveCurrentLayout(s.textBoxValue, p.proxy.dispatchCB)
           )
         ) ++
-        proxy.modelReader.value.presets.map {
+        p.proxy.modelReader.value.presets.map {
           case (name, preset) =>
             SPNavbarElements.dropdownElement(
               name, {
@@ -68,13 +68,12 @@ object DashboardPresetsMenu {
 
   }
 
-  private val component = ScalaComponent.builder[ModelProxy[DashboardState]]("DashboardPresetsMenu")
+  private val component = ScalaComponent.builder[Props]("DashboardPresetsMenu")
     .initialState(State(""))
     .renderBackend[Backend]
 /*    .componentDidMount(_.backend.didMount)
     .componentWillUnmount(_.backend.willUnmount)*/
     .build
 
-
-  def apply(proxy: ModelProxy[DashboardState]) = component(proxy)
+  def apply(proxy: ModelProxy[DashboardState]): VdomElement = component(Props(proxy))
 }
