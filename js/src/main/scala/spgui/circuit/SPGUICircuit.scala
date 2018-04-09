@@ -41,12 +41,20 @@ object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] 
 class DashboardHandler[M](modelRW: ModelRW[M, DashboardState]) extends ActionHandler(modelRW) {
   override def handle = {
     case AddDashboardPreset(name) => { // Takes current state of dashboard and saves in list of presets
-      val newPresets = value.presets + (name -> DashboardPreset(value.openWidgets))
+      val newPreset = DashboardPreset(value.openWidgets)
 
-      // Send current state of presets to persistent storage
-      SPGUICircuit.dashboardPresetHandler.flatMap(h => {h.storePresets(newPresets);None})
+      // Tell persistent storage to add preset
+      SPGUICircuit.dashboardPresetHandler.flatMap(h => {h.storePresetToPersistentStorage(name, newPreset);None})
 
-      updated(value.copy(presets = newPresets))
+      updated(value.copy(presets = value.presets + (name -> newPreset)))
+    }
+
+    case RemoveDashboardPreset(name) => { // Removes the preset corresponding to the given name
+
+      // Tell persistent storage to remove preset
+      SPGUICircuit.dashboardPresetHandler.flatMap(h => {h.removePresetFromPersistentStorage(name);None})
+
+      updated(value.copy(presets = value.presets - name))
     }
 
     case SetDashboardPresets(presets: Map[String, DashboardPreset]) => {

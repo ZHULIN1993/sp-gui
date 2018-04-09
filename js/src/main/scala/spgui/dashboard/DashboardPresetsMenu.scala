@@ -21,7 +21,8 @@ object DashboardPresetsMenu {
                   )
 
   case class Props(
-                  proxy: ModelProxy[DashboardState]
+                  proxy: ModelProxy[DashboardState],
+                  onDidMount: () => Unit = () => Unit
                   )
 
 
@@ -38,6 +39,10 @@ object DashboardPresetsMenu {
     private def presetIsSelected(preset: DashboardPreset) = {
       val currentState = SPGUICircuit.zoom(_.dashboard.openWidgets).value
       preset.widgets.equals(currentState)
+    }
+
+    def didMount(p: Props) = {
+      p.onDidMount()
     }
 
     def render(s: State, p: Props) = {
@@ -71,9 +76,10 @@ object DashboardPresetsMenu {
   private val component = ScalaComponent.builder[Props]("DashboardPresetsMenu")
     .initialState(State(""))
     .renderBackend[Backend]
-/*    .componentDidMount(_.backend.didMount)
-    .componentWillUnmount(_.backend.willUnmount)*/
+    .componentDidMount(ctx => Callback(ctx.backend.didMount(ctx.props)))
+    //.componentWillUnmount(_.backend.willUnmount())
     .build
 
-  def apply(proxy: ModelProxy[DashboardState]): VdomElement = component(Props(proxy))
+  def apply(proxy: ModelProxy[DashboardState], onDidMount: () => Unit = () => Unit): VdomElement =
+    component(Props(proxy, onDidMount))
 }

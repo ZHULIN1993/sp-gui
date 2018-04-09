@@ -16,13 +16,13 @@ import scala.util.Try
 abstract class AbstractDashboardPresetsHandler {
 
   // Add the menu component to the menu and start subscribing preset messages
-  SPMenu.addNavElem(connectedMenuComponent(p => DashboardPresetsMenu(p)).vdomElement)
+  SPMenu.addNavElem(connectedMenuComponent(p => DashboardPresetsMenu(p, AbstractDashboardPresetsHandler.this.requestPresets)).vdomElement)
   private val obs = BackendCommunication.getMessageObserver(handleMsg, dashboardPresetsTopic)
 
   // Let SPGUICircuit know that we exist
   SPGUICircuit.dashboardPresetHandler = Some(AbstractDashboardPresetsHandler.this)
 
-  requestPresets() // Get initial state for presets
+  //requestPresets() // Get initial state for presets
 
   private def connectedMenuComponent = {
     SPGUICircuit.connect(_.dashboard)
@@ -30,16 +30,17 @@ abstract class AbstractDashboardPresetsHandler {
 
   protected final def updateGUIState(presets: Map[String, DashboardPreset]): Unit = {
     SPGUICircuit.dispatch(SetDashboardPresets(presets))
+    println("GUI state updated to: " + presets)
   }
 
-  protected final def fromJson(json: String): Map[String, DashboardPreset] = {
+  protected final def fromJson(json: String): DashboardPreset = {
     import spgui.circuit.JsonifyUIState._
-    domain.fromJsonAs[Map[String, DashboardPreset]](json).getOrElse(Map())
+    domain.fromJsonAs[DashboardPreset](json).getOrElse(DashboardPreset())
   }
 
-  protected final def toJson(presets: Map[String, DashboardPreset]): String = {
+  protected final def toJson(preset: DashboardPreset): String = {
     import spgui.circuit.JsonifyUIState._
-    domain.toJson(presets)
+    domain.toJson(preset)
   }
 
   protected final def sendMsg[S](from: String, to: String, payload: S)(implicit fjs: domain.JSWrites[S]) =
@@ -65,9 +66,15 @@ abstract class AbstractDashboardPresetsHandler {
   def requestPresets(): Unit
 
   /**
-    * Should take the given presets and send them to the backend for persistent storage
+    * Should take the given preset and send it to the backend for persistent storage
     * @param presets
     */
-  def storePresets(presets: Map[String, DashboardPreset]): Unit
+  def storePresetToPersistentStorage(name: String, preset: DashboardPreset): Unit
+
+  /**
+    * Should tell persistent storage to remove the preset corresponding to the given name
+    * @param name
+    */
+  def removePresetFromPersistentStorage(name: String): Unit
 
 }
