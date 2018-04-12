@@ -3,12 +3,8 @@ package spgui.circuit
 import diode._
 import diode.react.ReactConnector
 import org.scalajs.dom.ext.LocalStorage
-import sp.domain.{SPHeader, SPMessage}
-import spgui.communication.BackendCommunication
-
-import scala.util.{Success, Try}
 import spgui.theming.Theming.Theme
-import spgui.dashboard.{AbstractDashboardPresetsHandler, Dashboard, DashboardPresetsMenu}
+import spgui.dashboard.{AbstractDashboardPresetsHandler, Dashboard}
 
 object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] {
   def initialModel = BrowserStorage.load.getOrElse(InitialState())
@@ -30,6 +26,9 @@ object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] 
     ),
     new DraggingHandler(
       zoomRW(_.draggingState)((m,v) => m.copy(draggingState = v))
+    ),
+    new ModalHandler(
+      zoomRW(_.modalState)((m,v) => m.copy(modalState = v))
     )
   )
   // store state upon any model change
@@ -192,13 +191,20 @@ class DraggingHandler[M](modelRW: ModelRW[M, DraggingState]) extends ActionHandl
   }
 }
 
-object PersistentStorage {
-  import JsonifyUIState._
-  def storeDashboardPresets(presets: Map[String, DashboardPreset]) = {
-    BackendCommunication.publish(
-      SPMessage.make(SPHeader(from = "SPGUICurcuit", to = "PersistentStorage"), presets),
-      "dashboard-presets"
-    )
+class ModalHandler[M](modelRW: ModelRW[M, ModalState]) extends ActionHandler(modelRW) {
+  override def handle = {
+    case OpenModal(title, component, onComplete) => {
+      updated(value.copy(
+        modalVisible = true,
+        title = title,
+        component = Some(component),
+        onComplete = Some(onComplete)
+      ))
+    }
+
+    case CloseModal => {
+      updated(value.copy(modalVisible = false, component = None, onComplete = None))
+    }
   }
 }
 
@@ -207,6 +213,7 @@ object BrowserStorage {
   import sp.domain.Logic._
   import JsonifyUIState._
   val namespace = "SPGUIState"
+
   def store(spGUIState: SPGUIModel) = LocalStorage(namespace) = SPValue(spGUIState).toJson
   def load: Option[SPGUIModel] =
     LocalStorage(namespace).flatMap(x => SPAttributes.fromJsonGetAs[SPGUIModel](x))
@@ -224,6 +231,19 @@ object JsonifyUIState {
   implicit val fOpenWidget: JSFormat[OpenWidget] = Json.format[OpenWidget]
   implicit val fDropEvent: JSFormat[DropEventData] = Json.format[DropEventData]
   implicit val fDraggingState: JSFormat[DraggingState] = Json.format[DraggingState]
+
+  implicit lazy val modalStateWrites: JSWrites[ModalState] =
+    new OWrites[ModalState] {
+      override def writes(o: ModalState): SPAttributes =
+        JsObject(Map("nothing" -> SPValue.empty)) // we don't care
+    }
+
+  implicit lazy val modalStateReads: JSReads[ModalState] =
+    new JSReads[ModalState] {
+      override def reads(json: SPValue): JsResult[ModalState] = {
+        JsSuccess(ModalState()) // we actually don't care about parsing modalState so we just instantiate a new one
+      }
+    }
 
   implicit lazy val dashboardPresetsMapReads: JSReads[Map[String, DashboardPreset]] =
     new JSReads[Map[String, DashboardPreset]] {

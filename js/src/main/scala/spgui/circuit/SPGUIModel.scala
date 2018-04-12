@@ -2,7 +2,11 @@ package spgui.circuit
 
 import diode._
 import java.util.UUID
+
+import japgolly.scalajs.react.Callback
+import japgolly.scalajs.react.vdom.VdomElement
 import sp.domain.SPValue
+import spgui.modal.{ModalResult}
 import spgui.theming.Theming.Theme
 
 // state
@@ -11,7 +15,8 @@ case class SPGUIModel(
                        globalState: GlobalState = GlobalState(),
                        widgetData: WidgetData = WidgetData(Map()),
                        settings: Settings = Settings(),
-                       draggingState: DraggingState = DraggingState()
+                       draggingState: DraggingState = DraggingState(),
+                       modalState: ModalState = ModalState()
 )
 case class DashboardState(openWidgets: OpenWidgets = OpenWidgets(), presets: Map[String, DashboardPreset] = Map())
 case class OpenWidgets(xs: Map[UUID, OpenWidget] = Map())
@@ -43,6 +48,13 @@ case class DraggingState(
   latestDropEvent: Option[DropEventData] = None 
 )
 
+case class ModalState(
+                       modalVisible: Boolean = false,
+                       title: String = "",
+                       component: Option[(ModalResult => Callback) => VdomElement] = None,
+                       onComplete: Option[ModalResult => Callback] = None
+                     )
+
 // actions
 case class AddWidget(widgetType: String, width: Int = 2, height: Int = 2, id: UUID = UUID.randomUUID()) extends Action
 case class CloseWidget(id: UUID) extends Action
@@ -70,6 +82,9 @@ case class SetCurrentlyDragging(enabled: Boolean) extends Action
 case class SetDraggingTarget(id: UUID) extends Action
 case object UnsetDraggingTarget extends Action
 case class DropEvent(dropped: UUID, target: UUID) extends Action
+
+case class OpenModal(title: String = "", component: (ModalResult => Callback) => VdomElement, onComplete: ModalResult => Callback) extends Action
+case object CloseModal extends Action
 
 // used when failing to retrieve a state from browser storage
 object InitialState {

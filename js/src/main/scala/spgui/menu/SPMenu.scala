@@ -7,13 +7,15 @@ import spgui.components.{Icon, SPNavbarElements}
 import spgui.circuit._
 import diode.react.ModelProxy
 import spgui.dashboard.{AbstractDashboardPresetsHandler, DashboardPresetsMenu}
+import spgui.modal.DummyModal
+import spgui.modal.DummyModal.Return
 import spgui.theming.Theming
 
 object SPMenu {
   case class Props(proxy: ModelProxy[Settings], extraNavElem: Seq[VdomElement])
 
   class SPMenuBackend($: BackendScope[Props, Unit]){
-    def render(p: Props) = {
+    def render(p: Props): VdomElement = {
       <.nav(
         ^.className:= SPMenuCSS.topNav.htmlClass,
         ^.className := "navbar navbar-default",

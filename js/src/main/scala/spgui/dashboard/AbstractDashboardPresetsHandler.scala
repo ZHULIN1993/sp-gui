@@ -25,7 +25,7 @@ abstract class AbstractDashboardPresetsHandler {
   //requestPresets() // Get initial state for presets
 
   private def connectedMenuComponent = {
-    SPGUICircuit.connect(_.dashboard)
+    SPGUICircuit.connect(m => (m.dashboard, m.modalState))
   }
 
   protected final def updateGUIState(presets: Map[String, DashboardPreset]): Unit = {
