@@ -1,20 +1,47 @@
 package spgui.dashboard
 
-import java.util.UUID
-
 import diode.Action
 import diode.react.ModelProxy
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 import spgui.circuit._
 import spgui.components.{Icon, SPNavbarElements, SPNavbarElementsCSS}
-import spgui.modal.ModalResult
+import spgui.dashboard
+import spgui.modal.{ModalResult, SimpleModal}
+import spgui.theming.Theming.SPStyleSheet
 
-import scala.util.Random
+import scalacss.DevDefaults._
 
 /**
   * Created by alfredbjork on 2018-03-26.
   */
+
+object DashboardPresetsCSS extends SPStyleSheet {
+  import dsl._
+  import spgui.theming.Theming
+
+  val closeIcon = style(
+    marginLeft(6.px),
+    opacity(0),
+    float.right,
+    color(_rgb(theme.value.navbarBackgroundColor)),
+    &.hover(
+      color(_rgb(theme.value.navbarButtonTextColor))
+    )
+  )
+
+  val menuItem = style(
+  )
+
+  val menuUl = style(
+    unsafeChild("." + menuItem.htmlClass + ":hover ." + closeIcon.htmlClass)(
+      opacity(1)
+    )
+  )
+
+  this.addToDocument()
+}
+
 object DashboardPresetsMenu {
 
   type ProxyType = ModelProxy[(DashboardState, ModalState)]
@@ -41,6 +68,10 @@ object DashboardPresetsMenu {
       dispatch(AddDashboardPreset(name))
     }
 
+    private def deleteLayout(name: String, dispatch: Action => Callback) = {
+      dispatch(RemoveDashboardPreset(name))
+    }
+
     private def recallLayout(p: DashboardPreset, dispatch: Action => Callback) = {
       dispatch(RecallDashboardPreset(p))
     }
@@ -57,28 +88,48 @@ object DashboardPresetsMenu {
         {case (name, preset) => if (openWidgets.equals(preset.widgets)) Some(name) else None}
       ).headOption
 
+    private def clickIsOnDeleteButton(e: ReactEventFromHtml): Boolean = {
+      val deleteClassName = DashboardPresetsCSS.closeIcon.htmlClass
+      e.target.classList.contains(deleteClassName) || e.target.parentElement.classList.contains(deleteClassName)
+    }
 
     def didMount(p: Props) = {
       p.onDidMount()
     }
 
     def render(p: Props) = {
+
       SPNavbarElements.dropdown(
         "Layout",
         Seq(
+          TagMod(^.className := DashboardPresetsCSS.menuUl.htmlClass),
           SPNavbarElements.dropdownElement(
             "Save layout",
             openSaveModal(p)
           )
         ) ++
         dashboardState(p).presets.map {
-          case (name, preset) =>
+          case (name, preset) => {
+
+            val icon = if (presetIsSelected(preset, dashboardState(p).openWidgets)) Icon.dotCircleO else Icon.circle
+
             SPNavbarElements.dropdownElement(
-              name, {
-                if (presetIsSelected(preset, dashboardState(p).openWidgets)) Icon.dotCircleO else Icon.circle
-              },
-              recallLayout(preset, p.proxy.dispatchCB)
+                Seq(
+                  TagMod(^.className := DashboardPresetsCSS.menuItem.htmlClass),
+                  TagMod(^.onClick ==> (
+                    e => {
+                      if (clickIsOnDeleteButton(e))
+                        Callback(SimpleModal.open("Delete " + "\"" + name + "\"?", deleteLayout(name, p.proxy.dispatchCB)))
+                      else
+                        recallLayout(preset, p.proxy.dispatchCB)
+                    }
+                  )),
+                  <.span(icon, ^.className := SPNavbarElementsCSS.textIconClearance.htmlClass),
+                  <.span(name),
+                  <.span(Icon.times, ^.className := DashboardPresetsCSS.closeIcon.htmlClass)
+                ).toTagMod
             )
+          }
         }
       )
     }

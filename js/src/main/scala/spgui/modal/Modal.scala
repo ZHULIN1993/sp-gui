@@ -6,7 +6,7 @@ import extra._
 import diode.react.ModelProxy
 import japgolly.scalajs.react.{BackendScope, ScalaComponent}
 import japgolly.scalajs.react.vdom.html_<^.{<, EmptyVdom, ^}
-import spgui.circuit.{CloseModal, ModalState}
+import spgui.circuit.{CloseModal, ModalState, OpenModal, SPGUICircuit}
 import spgui.components.Icon
 
 import scala.scalajs.js
@@ -106,4 +106,40 @@ object DummyModal {
     .build
 
   def apply(close: ModalResult => Callback): VdomElement = component(Props(close))
+}
+
+object SimpleModal {
+
+  def open(title: String, onTrue: Callback): Unit = {
+    SPGUICircuit.dispatch(OpenModal(title, apply, {case Return(result) => if(result) onTrue else Callback(Unit)}))
+  }
+
+  case class Props(
+                    close: Return => Callback
+                  )
+
+  case class Return(result: Boolean) extends ModalResult
+
+  class Backend($: BackendScope[Props, Unit]) {
+
+    def render(props: Props) = {
+
+      div(
+        button(
+          onClick --> props.close(Return(false)),
+          "Cancel"
+        ),
+        button(
+          onClick --> props.close(Return(true)),
+          "OK"
+        )
+      )
+    }
+  }
+
+  private val component = ScalaComponent.builder[Props]("SimpleModal")
+    .renderBackend[Backend]
+    .build
+
+  def apply(close: Return => Callback): VdomElement = component(Props(close))
 }
