@@ -44,7 +44,7 @@ object Modal {
 
       val modalStyle =
         if (state.modalVisible) TagMod(display.block)
-        else TagMod(display.none)
+        else TagMod(display.none, pointerEvents.none)
 
       val heading: Option[VdomElement] = if (state.title.nonEmpty) Some(<.h1(state.title)) else None
 

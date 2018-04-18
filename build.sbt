@@ -1,7 +1,7 @@
 import SPSettings._
 
 lazy val projectName = "sp-gui"
-lazy val projectVersion = "0.9.7"
+lazy val projectVersion = "0.9.8"
 
 lazy val spDep = Def.setting(Seq(
   PublishingSettings.orgNameFull %%% "sp-domain" % "0.9.6-SNAPSHOT",
