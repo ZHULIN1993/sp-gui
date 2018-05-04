@@ -9,11 +9,12 @@ import spgui.dashboard.{AbstractDashboardPresetsHandler, Dashboard}
 object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] {
   def initialModel = BrowserStorage.load.getOrElse(InitialState())
   val actionHandler = composeHandlers(
-    new DashboardHandler(
-      zoomRW(_.dashboard)((m, v) => m.copy(dashboard = v))
+    new PresetsHandler(
+      zoomRW(m => PresetsHandlerScope(m.presets, m.openWidgets, m.widgetData))
+      ((m, phs) => m.copy(presets = phs.presets, openWidgets = phs.openWidgets, widgetData = phs.widgetData))
     ),
     new OpenWidgetsHandler(
-      zoomRW(_.dashboard.openWidgets)((m, v) => m.copy(dashboard = m.dashboard.copy(openWidgets = v)))
+      zoomRW(_.openWidgets)((m, v) => m.copy(openWidgets = v))
     ),
     new GlobalStateHandler(
       zoomRW(_.globalState)((m, v) => m.copy(globalState = v))
@@ -37,15 +38,21 @@ object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] 
   var dashboardPresetHandler: Option[AbstractDashboardPresetsHandler] = None
 }
 
-class DashboardHandler[M](modelRW: ModelRW[M, DashboardState]) extends ActionHandler(modelRW) {
+case class PresetsHandlerScope(presets: DashboardPresets, openWidgets: OpenWidgets, widgetData: WidgetData)
+
+class PresetsHandler[M](modelRW: ModelRW[M, PresetsHandlerScope]) extends ActionHandler(modelRW) {
+
   override def handle = {
     case AddDashboardPreset(name) => { // Takes current state of dashboard and saves in list of presets
-      val newPreset = DashboardPreset(value.openWidgets)
+      val newPreset = DashboardPreset(
+        value.openWidgets,
+        WidgetData(value.widgetData.xs.filterKeys(value.openWidgets.xs.keySet.contains(_)))
+      )
 
       // Tell persistent storage to add preset
       SPGUICircuit.dashboardPresetHandler.flatMap(h => {h.storePresetToPersistentStorage(name, newPreset);None})
 
-      updated(value.copy(presets = value.presets + (name -> newPreset)))
+      updated(value.copy(presets = DashboardPresets(value.presets.xs + (name -> newPreset))))
     }
 
     case RemoveDashboardPreset(name) => { // Removes the preset corresponding to the given name
@@ -53,11 +60,16 @@ class DashboardHandler[M](modelRW: ModelRW[M, DashboardState]) extends ActionHan
       // Tell persistent storage to remove preset
       SPGUICircuit.dashboardPresetHandler.flatMap(h => {h.removePresetFromPersistentStorage(name);None})
 
-      updated(value.copy(presets = value.presets - name))
+      updated(value.copy(presets = DashboardPresets(value.presets.xs - name)))
     }
 
     case SetDashboardPresets(presets: Map[String, DashboardPreset]) => {
-      updated(value.copy(presets = presets))
+      updated(value.copy(presets = DashboardPresets(presets)))
+    }
+
+    case RecallDashboardPreset(preset) => {
+      updated(value.copy(openWidgets = OpenWidgets())) //First remove all widgets to let them unmount
+      updated(value.copy(openWidgets = preset.widgets, widgetData = preset.widgetData))
     }
   }
 }
@@ -137,10 +149,6 @@ class OpenWidgetsHandler[M](modelRW: ModelRW[M, OpenWidgets]) extends ActionHand
         )
       ))
       updated(updW)
-    }
-    case RecallDashboardPreset(preset) => {
-      updated(OpenWidgets()) //First remove all widgets to let them unmount
-      updated(preset.widgets)
     }
   }
 }
@@ -277,7 +285,7 @@ object JsonifyUIState {
   }
   implicit val fOpenWidgets: JSFormat[OpenWidgets] = Json.format[OpenWidgets]
   implicit val fDashboardPreset: JSFormat[DashboardPreset] = Json.format[DashboardPreset]
-  implicit val fDashboardState: JSFormat[DashboardState] = Json.format[DashboardState]
+  implicit val fDashboardPresets: JSFormat[DashboardPresets] = Json.format[DashboardPresets]
   implicit val fGlobalState: JSFormat[GlobalState] = Json.format[GlobalState]
   implicit val fSPGUIModel: JSFormat[SPGUIModel] = Json.format[SPGUIModel]
 }

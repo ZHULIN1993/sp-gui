@@ -44,7 +44,9 @@ object DashboardPresetsCSS extends SPStyleSheet {
 
 object DashboardPresetsMenu {
 
-  type ProxyType = ModelProxy[(DashboardState, ModalState)]
+  case class ProxyContents(presets: DashboardPresets, widgets: OpenWidgets, widgetData: WidgetData)
+
+  type ProxyType = ModelProxy[ProxyContents]
 
   case class Props(
                   proxy: ProxyType,
@@ -58,7 +60,7 @@ object DashboardPresetsMenu {
       p.proxy.dispatchCB(
         OpenModal(
           "Save preset",
-          close => PresetNameModal(getSelectedPreset(dashboardState(p)).getOrElse(""), close),
+          close => PresetNameModal(getSelectedPreset(dashboardPresets(p), openWidgets(p)).getOrElse(""), close),
           { case PresetNameModal.Return(name: String) => saveCurrentLayout(name, p.proxy.dispatchCB) }
         )
       )
@@ -76,12 +78,14 @@ object DashboardPresetsMenu {
       dispatch(RecallDashboardPreset(p))
     }
 
-    private def dashboardState(p: Props): DashboardState = p.proxy.modelReader.value._1
+    private def dashboardPresets(p: Props): Map[String, DashboardPreset] = p.proxy.modelReader.value.presets.xs
+
+    private def openWidgets(p: Props): OpenWidgets = p.proxy.modelReader.value.widgets
 
     private def presetIsSelected(preset: DashboardPreset, openWidgets: OpenWidgets) = preset.widgets.equals(openWidgets)
 
-    private def getSelectedPreset(dashboardState: DashboardState): Option[String] =
-      getSelectedPreset(dashboardState.presets, dashboardState.openWidgets)
+    private def getSelectedPreset(presets: DashboardPresets, openWidgets: OpenWidgets): Option[String] =
+      getSelectedPreset(presets.xs, openWidgets)
 
     private def getSelectedPreset(presets: Map[String, DashboardPreset], openWidgets: OpenWidgets): Option[String] =
       presets.flatMap(
@@ -108,10 +112,10 @@ object DashboardPresetsMenu {
             openSaveModal(p)
           )
         ) ++
-        dashboardState(p).presets.map {
+        dashboardPresets(p).map {
           case (name, preset) => {
 
-            val icon = if (presetIsSelected(preset, dashboardState(p).openWidgets)) Icon.dotCircleO else Icon.circle
+            val icon = if (presetIsSelected(preset, openWidgets(p))) Icon.dotCircleO else Icon.circle
 
             SPNavbarElements.dropdownElement(
                 Seq(

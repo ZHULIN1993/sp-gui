@@ -11,19 +11,20 @@ import spgui.theming.Theming.Theme
 
 // state
 case class SPGUIModel(
-                       dashboard: DashboardState = DashboardState(),
+                       presets: DashboardPresets = DashboardPresets(),
+                       openWidgets: OpenWidgets = OpenWidgets(),
                        globalState: GlobalState = GlobalState(),
                        widgetData: WidgetData = WidgetData(Map()),
                        settings: Settings = Settings(),
                        draggingState: DraggingState = DraggingState(),
                        modalState: ModalState = ModalState()
 )
-case class DashboardState(openWidgets: OpenWidgets = OpenWidgets(), presets: Map[String, DashboardPreset] = Map())
 case class OpenWidgets(xs: Map[UUID, OpenWidget] = Map())
 case class OpenWidget(id: UUID, layout: WidgetLayout, widgetType: String)
 case class WidgetLayout(x: Int, y: Int, w: Int, h: Int, collapsedHeight: Int = 1)
 
-case class DashboardPreset(widgets: OpenWidgets = OpenWidgets())
+case class DashboardPresets(xs: Map[String, DashboardPreset] = Map())
+case class DashboardPreset(widgets: OpenWidgets = OpenWidgets(), widgetData: WidgetData = WidgetData(Map()))
 
 case class GlobalState(
   currentModel: Option[UUID] = None,

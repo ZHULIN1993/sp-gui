@@ -9,7 +9,7 @@ import spgui.dragging.Dragging
 import spgui.modal.Modal
 
 object Layout {
-  val widgetsConnection = SPGUICircuit.connect(x => (x.dashboard.openWidgets.xs, x.globalState))
+  val widgetsConnection = SPGUICircuit.connect(x => (x.openWidgets.xs, x.globalState))
   val menuConnection = SPGUICircuit.connect(x => (x.settings))
   val draggingConnection = SPGUICircuit.connect(x => (x.draggingState))
   val modalConnection = SPGUICircuit.connect(x => (x.modalState))
