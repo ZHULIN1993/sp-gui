@@ -5,9 +5,12 @@ import java.util.UUID
 
 import japgolly.scalajs.react.Callback
 import japgolly.scalajs.react.vdom.VdomElement
-import sp.domain.SPValue
-import spgui.modal.{ModalResult}
+import play.api.libs.json._
+import sp.domain.{Action => _, _}
+import spgui.modal.ModalResult
 import spgui.theming.Theming.Theme
+
+import scala.collection.immutable.HashSet
 
 // state
 case class SPGUIModel(
@@ -23,8 +26,92 @@ case class OpenWidgets(xs: Map[UUID, OpenWidget] = Map())
 case class OpenWidget(id: UUID, layout: WidgetLayout, widgetType: String)
 case class WidgetLayout(x: Int, y: Int, w: Int, h: Int, collapsedHeight: Int = 1)
 
-case class DashboardPresets(xs: Map[String, DashboardPreset] = Map())
-case class DashboardPreset(widgets: OpenWidgets = OpenWidgets(), widgetData: WidgetData = WidgetData(Map()))
+case class DashboardPresets(presets: Set[DashboardPreset] = HashSet()) {
+  def find(predicate: DashboardPreset => Boolean) = presets.find(predicate)
+  def +(preset: DashboardPreset) = copy(presets = presets + preset)
+  def -(preset: DashboardPreset) = copy(presets = presets - preset)
+  def removeFirst(predicate: DashboardPreset => Boolean) = {
+    presets.find(predicate).map(preset => copy(presets = presets - preset))
+  }
+  def filter(predicate: DashboardPreset => Boolean) = copy(presets = presets.filter(predicate))
+  def findByName(name: String) = find(_.name == name)
+}
+
+object DashboardPresets {
+  import Event._
+  import sp.domain.Logic._
+
+  sealed trait Event
+  case object MenuMounted extends Event
+  case class LoadPreset(preset: DashboardPreset) extends Event
+  case class SavePreset(preset: DashboardPreset) extends Event
+  case class DeletePreset(preset: DashboardPreset) extends Event
+
+  object Formats {
+    def mapWrites[K, V](f: K => String)(implicit writes: JSWrites[V]): JSWrites[Map[K, V]] = xs => {
+      JsObject(xs.map { case (k, v) => f(k) -> SPValue(v) })
+    }
+
+    def mapReads[K, V](keyParser: String => Option[K])(implicit reads: JSReads[V]): JSReads[Map[K, V]] = _.validate[Map[String, SPValue]].map(
+      _.collect { case (k, v) =>
+        for (key <- keyParser(k); value <- v.to[V].toOption) yield key -> value
+      }.flatten.toMap
+    )
+
+    implicit lazy val openWidgetMapReads: JSReads[Map[ID, OpenWidget]] = (json: JsValue) => {
+      json.validate[Map[String, SPValue]].map { xs =>
+        def isCorrect(k: String, v: SPValue) = ID.isID(k) && v.to[OpenWidget].isSuccess
+
+        xs.collect { case (k, v) if isCorrect(k, v) => ID.makeID(k).get -> v.to[OpenWidget].get }
+      }
+    }
+
+    def mapFormat[K, V](deserializeKey: String => Option[K], serializeKey: K => String)(implicit f: JSFormat[V]) = {
+      Format(mapReads[K, V](deserializeKey), mapWrites[K, V](serializeKey))
+    }
+
+    implicit lazy val fOpenWidgetMap = mapFormat[ID, OpenWidget](k => ID.makeID(k), k => k.toString)
+    implicit lazy val fDashboardPresetMap = mapFormat[String, DashboardPreset](k => Some(k), k => k)
+
+    implicit val fTheme: JSFormat[Theme] = Json.format[Theme]
+    implicit val fSettings: JSFormat[Settings] = Json.format[Settings]
+    implicit val fWidgetData: JSFormat[WidgetData] = Json.format[WidgetData]
+    implicit val fWidgetLayout: JSFormat[WidgetLayout] = Json.format[WidgetLayout]
+    implicit val fOpenWidget: JSFormat[OpenWidget] = Json.format[OpenWidget]
+    implicit val fDropEvent: JSFormat[DropEventData] = Json.format[DropEventData]
+    implicit val fDraggingState: JSFormat[DraggingState] = Json.format[DraggingState]
+
+    implicit val fOpenWidgets: JSFormat[OpenWidgets] = Json.format[OpenWidgets]
+    implicit val fDashboardPreset: JSFormat[DashboardPreset] = Json.format[DashboardPreset]
+    implicit val fDashboardPresets: JSFormat[DashboardPresets] = Json.format[DashboardPresets]
+    implicit val fGlobalState: JSFormat[GlobalState] = Json.format[GlobalState]
+    implicit val fSPGUIModel: JSFormat[SPGUIModel] = Json.format[SPGUIModel]
+
+    implicit lazy val modalStateWrites: JSWrites[ModalState] = _ => JsObject(Seq.empty)
+    // we actually don't care about parsing modalState so we just instantiate a new one
+    implicit lazy val modalStateReads: JSReads[ModalState] = _ => JsSuccess(ModalState())
+
+    implicit lazy val fMenuMounted: JSFormat[MenuMounted.type] = deriveCaseObject[MenuMounted.type]
+    implicit lazy val fLoadPreset: JSFormat[LoadPreset] = Json.format[LoadPreset]
+    implicit lazy val fSavePreset: JSFormat[SavePreset] = Json.format[SavePreset]
+    implicit lazy val fDeletePreset: JSFormat[DeletePreset] = Json.format[DeletePreset]
+
+    def fEvent: JSFormat[Event] = Json.format[Event]
+  }
+
+  object Event {
+    implicit lazy val fEvent: JSFormat[Event] = Formats.fEvent
+  }
+}
+
+// case class DashboardPreset(name: String, widgets: OpenWidgets = OpenWidgets(), widgetData: WidgetData = WidgetData(Map()))
+case class DashboardPreset(name: String, widgets: OpenWidgets, widgetData: WidgetData) {
+  override def hashCode = name.hashCode
+}
+
+object DashboardPreset {
+  def empty(name: String) = DashboardPreset(name, OpenWidgets(), WidgetData(Map()))
+}
 
 case class GlobalState(
   currentModel: Option[UUID] = None,
@@ -65,9 +152,9 @@ case class RecallDashboardPreset(preset: DashboardPreset) extends Action
 case class UpdateLayout(id: UUID, newLayout: WidgetLayout) extends Action
 case class SetLayout(layout: Map[UUID, WidgetLayout]) extends Action
 
-case class AddDashboardPreset(name: String) extends Action
-case class RemoveDashboardPreset(name: String) extends Action
-case class SetDashboardPresets(presets: Map[String, DashboardPreset]) extends Action
+case class AddDashboardPreset(preset: DashboardPreset) extends Action
+case class RemoveDashboardPreset(preset: DashboardPreset) extends Action
+case class SetDashboardPresets(presets: Set[DashboardPreset]) extends Action
 
 case class UpdateWidgetData(id: UUID, data: SPValue) extends Action
 
