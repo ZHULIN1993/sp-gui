@@ -1,15 +1,12 @@
 package spgui.dashboard
 
-import diode.Action
 import diode.react.ModelProxy
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 import spgui.circuit._
 import spgui.components.{Icon, SPNavbarElements, SPNavbarElementsCSS}
-import spgui.dashboard
 import spgui.modal.{ModalResult, SimpleModal}
 import spgui.theming.Theming.SPStyleSheet
-
 import scalacss.DevDefaults._
 
 /**
@@ -18,7 +15,6 @@ import scalacss.DevDefaults._
 
 object DashboardPresetsCSS extends SPStyleSheet {
   import dsl._
-  import spgui.theming.Theming
 
   val closeIcon = style(
     marginLeft(6.px),
@@ -43,124 +39,148 @@ object DashboardPresetsCSS extends SPStyleSheet {
 }
 
 object DashboardPresetsMenu {
+  case class ProxyContents(presets: Set[DashboardPreset], widgets: OpenWidgets, widgetData: WidgetData)
 
-  case class ProxyContents(presets: DashboardPresets, widgets: OpenWidgets, widgetData: WidgetData)
-
-  type ProxyType = ModelProxy[ProxyContents]
-
-  case class Props(
-                  proxy: ProxyType,
-                  onDidMount: () => Unit = () => Unit
-                  )
+  case class Props(proxy: ModelProxy[ProxyContents], config: Config = Config())
 
 
   class Backend($: BackendScope[Props, Unit]) {
 
-    private def openSaveModal(p: Props) = {
-      p.proxy.dispatchCB(
+    private def onSaveClicked(name: String)(implicit props: Props): Callback = {
+      println("onSaveClicked()")
+      val value = proxyValue(props)
+      val newPreset = DashboardPreset(
+        name,
+        value.widgets,
+        WidgetData(value.widgetData.xs.filterKeys(value.widgets.xs.keySet.contains))
+      )
+
+      props.config.onSave(newPreset)
+      props.proxy.dispatchCB(savePreset(newPreset))
+    }
+
+    private def openSaveModal(implicit props: Props) = {
+      props.proxy.dispatchCB(
         OpenModal(
           "Save preset",
-          close => PresetNameModal(getSelectedPreset(dashboardPresets(p), openWidgets(p)).getOrElse(""), close),
-          { case PresetNameModal.Return(name: String) => saveCurrentLayout(name, p.proxy.dispatchCB) }
+          close => PresetNameModal(selectedPreset.map(_.name).getOrElse(""), close),
+          onComplete = {
+            case PresetNameModal.Return(name: String) => onSaveClicked(name)
+            case x => Callback { println(x) }
+          }
         )
       )
     }
 
-    private def saveCurrentLayout(name: String, dispatch: Action => Callback) = {
-      dispatch(AddDashboardPreset(name))
+    private def savePreset(preset: DashboardPreset) = {
+      println("savePreset: returning AddDashboardPreset")
+      AddDashboardPreset(preset)
+    }
+    private def deletePreset(preset: DashboardPreset) = RemoveDashboardPreset(preset)
+    private def recallPreset(preset: DashboardPreset) = RecallDashboardPreset(preset)
+
+
+    private def dashboardPresets(implicit props: Props): Set[DashboardPreset] = proxyValue(props).presets
+    private def proxyValue(props: Props) = props.proxy.modelReader.value
+    private def selectedPreset(implicit props: Props) = {
+      val value = proxyValue(props)
+      value.presets.find(_.widgets == value.widgets)
     }
 
-    private def deleteLayout(name: String, dispatch: Action => Callback) = {
-      dispatch(RemoveDashboardPreset(name))
-    }
-
-    private def recallLayout(p: DashboardPreset, dispatch: Action => Callback) = {
-      dispatch(RecallDashboardPreset(p))
-    }
-
-    private def dashboardPresets(p: Props): Map[String, DashboardPreset] = p.proxy.modelReader.value.presets.xs
-
-    private def openWidgets(p: Props): OpenWidgets = p.proxy.modelReader.value.widgets
-
-    private def presetIsSelected(preset: DashboardPreset, openWidgets: OpenWidgets) = preset.widgets.equals(openWidgets)
-
-    private def getSelectedPreset(presets: DashboardPresets, openWidgets: OpenWidgets): Option[String] =
-      getSelectedPreset(presets.xs, openWidgets)
-
-    private def getSelectedPreset(presets: Map[String, DashboardPreset], openWidgets: OpenWidgets): Option[String] =
-      presets.flatMap(
-        {case (name, preset) => if (openWidgets.equals(preset.widgets)) Some(name) else None}
-      ).headOption
-
-    private def clickIsOnDeleteButton(e: ReactEventFromHtml): Boolean = {
+    private def deleteClicked(e: ReactEventFromHtml): Boolean = {
       val deleteClassName = DashboardPresetsCSS.closeIcon.htmlClass
       e.target.classList.contains(deleteClassName) || e.target.parentElement.classList.contains(deleteClassName)
     }
 
-    def didMount(p: Props) = {
-      p.onDidMount()
-    }
+    def dropDown(title: String)(contents: TagMod*) = SPNavbarElements.dropdown(title, contents)
 
-    def render(p: Props) = {
-
-      SPNavbarElements.dropdown(
-        "Layout",
-        Seq(
-          TagMod(^.className := DashboardPresetsCSS.menuUl.htmlClass),
-          SPNavbarElements.dropdownElement(
-            "Save layout",
-            openSaveModal(p)
-          )
-        ) ++
-        dashboardPresets(p).map {
-          case (name, preset) => {
-
-            val icon = if (presetIsSelected(preset, openWidgets(p))) Icon.dotCircleO else Icon.circle
-
-            SPNavbarElements.dropdownElement(
-                Seq(
-                  TagMod(^.className := DashboardPresetsCSS.menuItem.htmlClass),
-                  TagMod(^.onClick ==> (
-                    e => {
-                      if (clickIsOnDeleteButton(e))
-                        Callback(SimpleModal.open("Delete " + "\"" + name + "\"?", deleteLayout(name, p.proxy.dispatchCB)))
-                      else
-                        recallLayout(preset, p.proxy.dispatchCB)
-                    }
-                  )),
-                  <.span(icon, ^.className := SPNavbarElementsCSS.textIconClearance.htmlClass),
-                  <.span(name),
-                  <.span(Icon.times, ^.className := DashboardPresetsCSS.closeIcon.htmlClass)
-                ).toTagMod
+    def renderPresets(implicit props: Props) = {
+      def onPresetClick(e: ^.onClick.Event, preset: DashboardPreset): Callback = {
+        if (deleteClicked(e))
+          Callback {
+            SimpleModal.open(
+              title = s"Delete ${preset.name}?",
+              onTrue = props.proxy.dispatchCB(deletePreset(preset))
             )
           }
-        }
+        else
+          props.proxy.dispatchCB(recallPreset(preset))
+      }
+
+      dashboardPresets(props).map { preset =>
+        val icon = if (preset.isActive()) Icon.dotCircleO else Icon.circle
+
+        SPNavbarElements.dropdownElement(Seq(
+          ^.className := DashboardPresetsCSS.menuItem.htmlClass,
+          ^.onClick ==> (e => onPresetClick(e, preset)),
+          <.span(icon, ^.className := SPNavbarElementsCSS.textIconClearance.htmlClass),
+          <.span(preset.name),
+          <.span(Icon.times, ^.className := DashboardPresetsCSS.closeIcon.htmlClass)
+        ).toTagMod
+        )
+      }.toTagMod
+    }
+
+    def render(props: Props) = {
+      implicit val p: Props = props
+      dropDown("Presets")(
+        ^.className := DashboardPresetsCSS.menuUl.htmlClass,
+        SPNavbarElements.dropdownElement(
+          text = "Save preset",
+          onClick = openSaveModal
+        ),
+        renderPresets
       )
     }
 
+    implicit class PresetUtility(preset: DashboardPreset) {
+      def isActive()(implicit props: Props) = {
+        val value = proxyValue(props)
+        selectedPreset.exists(_.widgets == value.widgets)
+      }
+    }
+  }
+
+  object Config {
+    type Event = DashboardPreset => Unit
+    val NoEvent: Event = _ => Unit
+    case class State(onMount: () => Unit = () => Unit, onSave: Event = NoEvent, onLoad: Event = NoEvent, onDelete: Event = NoEvent)
+
+    def onMount(onMount: () => Unit): Config = Config(onMount = onMount)
+    def onSave(onSave: Event): Config = Config(onSave = onSave)
+    def onLoad(onLoad: Event): Config = Config(onLoad = onLoad)
+    def onDelete(onDelete: Event): Config = Config(onDelete = onDelete)
+  }
+
+  case class Config(
+                     onMount: () => Unit = () => Unit,
+                     onSave: Config.Event = Config.NoEvent,
+                     onLoad: Config.Event = Config.NoEvent,
+                     onDelete: Config.Event = Config.NoEvent,
+                   ) {
+    import Config._
+
+    def onMount(onMount: () => Unit): Config = copy(onMount = onMount)
+    def onSave(onSave: Event): Config = copy(onSave = onSave)
+    def onLoad(onLoad: Event): Config = copy(onLoad = onLoad)
+    def onDelete(onDelete: Event): Config = copy(onDelete = onDelete)
   }
 
   private val component = ScalaComponent.builder[Props]("DashboardPresetsMenu")
-    //.initialState(State(""))
     .renderBackend[Backend]
-    .componentDidMount(ctx => Callback(ctx.backend.didMount(ctx.props)))
-    //.componentWillUnmount(_.backend.willUnmount())
+    .componentDidMount(ctx => Callback(ctx.props.config.onMount))
     .build
 
-  def apply(proxy: ProxyType, onDidMount: () => Unit = () => Unit): VdomElement =
-    component(Props(proxy, onDidMount))
+  def apply(proxy: ModelProxy[ProxyContents], config: Config): VdomElement = {
+    component(Props(proxy, config))
+  }
+
 }
 
 object PresetNameModal {
-  case class Props(
-                    close: Return => Callback,
-                    placeholderText: String = ""
-                  )
 
-  case class State(
-                  textBoxContent: String = ""
-                  )
-
+  case class Props(close: Return => Callback, placeholderText: String = "")
+  case class State(textBoxContent: String = "")
   case class Return(name: String) extends ModalResult
 
   class Backend($: BackendScope[Props, State]) {

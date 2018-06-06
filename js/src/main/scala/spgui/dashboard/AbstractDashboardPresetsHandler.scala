@@ -1,41 +1,39 @@
 package spgui.dashboard
 
-import sp.domain.Logic._
-import play.api.libs.json._
 import sp.domain
 import sp.domain._
-import spgui.circuit.{AddDashboardPreset, DashboardPreset, SPGUICircuit, SetDashboardPresets}
+import spgui.circuit.{DashboardPreset, SPGUICircuit, SetDashboardPresets}
 import spgui.communication.BackendCommunication
 import spgui.menu.SPMenu
 
-import scala.util.Try
+import scala.concurrent.Future
 
 /**
   * Created by alfredbjork on 2018-04-05.
   */
 abstract class AbstractDashboardPresetsHandler {
 
-  // Add the menu component to the menu and start subscribing preset messages
-  SPMenu.addNavElem(connectedMenuComponent(p => DashboardPresetsMenu(p, AbstractDashboardPresetsHandler.this.requestPresets)).vdomElement)
-  private val obs = BackendCommunication.getMessageObserver(handleMsg, dashboardPresetsTopic)
+  val presetConfig = DashboardPresetsMenu.Config
+    .onMount(() => AbstractDashboardPresetsHandler.this.requestPresets())
 
-  // Let SPGUICircuit know that we exist
-  SPGUICircuit.dashboardPresetHandler = Some(AbstractDashboardPresetsHandler.this)
+  // Add the menu component to the menu and start subscribing preset messages
+  SPMenu.addNavElem(connectedMenuComponent(p => DashboardPresetsMenu(p, presetConfig)).vdomElement)
+  private val obs = BackendCommunication.getMessageObserver(handleMsg, dashboardPresetsTopic)
 
   //requestPresets() // Get initial state for presets
 
   private def connectedMenuComponent = {
-    SPGUICircuit.connect(m => DashboardPresetsMenu.ProxyContents(m.presets, m.openWidgets, m.widgetData))
+    SPGUICircuit.connect(m => DashboardPresetsMenu.ProxyContents(m.presets.presets, m.openWidgets, m.widgetData))
   }
 
-  protected final def updateGUIState(presets: Map[String, DashboardPreset]): Unit = {
+  protected final def updateGUIState(presets: Set[DashboardPreset]): Unit = {
     SPGUICircuit.dispatch(SetDashboardPresets(presets))
     println("GUI state updated to: " + presets)
   }
 
-  protected final def fromJson(json: String): DashboardPreset = {
+  protected final def fromJson(json: String): Option[DashboardPreset] = {
     import spgui.circuit.JsonifyUIState._
-    domain.fromJsonAs[DashboardPreset](json).getOrElse(DashboardPreset())
+    domain.fromJsonAs[DashboardPreset](json).toOption
   }
 
   protected final def toJson(preset: DashboardPreset): String = {
@@ -43,7 +41,7 @@ abstract class AbstractDashboardPresetsHandler {
     domain.toJson(preset)
   }
 
-  protected final def sendMsg[S](from: String, to: String, payload: S)(implicit fjs: domain.JSWrites[S]) =
+  protected final def sendMsg[S](from: String, to: String, payload: S)(implicit fjs: domain.JSWrites[S]): Future[String] =
     BackendCommunication.publish(SPMessage.make[SPHeader, S](SPHeader(from = from, to = to), payload), dashboardPresetsTopic)
 
   /**
@@ -67,7 +65,6 @@ abstract class AbstractDashboardPresetsHandler {
 
   /**
     * Should take the given preset and send it to the backend for persistent storage
-    * @param presets
     */
   def storePresetToPersistentStorage(name: String, preset: DashboardPreset): Unit
 
