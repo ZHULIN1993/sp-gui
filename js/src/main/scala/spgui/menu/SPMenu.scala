@@ -2,13 +2,9 @@ package spgui.menu
 
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
-import org.scalajs.dom._
 import spgui.components.{Icon, SPNavbarElements}
 import spgui.circuit._
 import diode.react.ModelProxy
-import spgui.dashboard.{AbstractDashboardPresetsHandler, DashboardPresetsMenu}
-import spgui.modal.DummyModal
-import spgui.modal.DummyModal.Return
 import spgui.theming.Theming
 
 object SPMenu {
