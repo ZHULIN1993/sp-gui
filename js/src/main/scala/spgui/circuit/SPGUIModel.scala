@@ -13,6 +13,8 @@ import sp.domain.StructNode
 
 import scala.collection.immutable.HashSet
 
+import scala.collection.immutable.HashSet
+
 // state
 case class SPGUIModel(
                        presets: DashboardPresets = DashboardPresets(),
