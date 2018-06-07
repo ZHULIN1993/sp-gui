@@ -9,7 +9,7 @@ workbenchDefaultRootObject := Some((
 */
 
 lazy val projectName = "sp-gui"
-lazy val projectVersion = "0.9.10"
+lazy val projectVersion = "0.9.11"
 
 lazy val spDep = Def.setting(Seq(
   PublishingSettings.orgNameFull %%% "sp-domain" % "0.9.10",
