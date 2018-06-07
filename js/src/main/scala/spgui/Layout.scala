@@ -4,7 +4,7 @@ import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 import spgui.circuit.SPGUICircuit
 import spgui.menu.SPMenu
-import spgui.dashboard.{Dashboard, DashboardPresetsConnector}
+import spgui.dashboard.Dashboard
 import spgui.dragging.Dragging
 import spgui.modal.Modal
 
