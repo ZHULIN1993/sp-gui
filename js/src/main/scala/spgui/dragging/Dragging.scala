@@ -8,10 +8,7 @@ import japgolly.scalajs.react.vdom.all.svg
 
 import spgui.communication._
 import sp.domain._
-// import sp.messages._
-// import sp.messages.Pickles._
 import scalacss.ScalaCssReact._
-//import spgui.components.ReactDraggable
 import scala.scalajs.js
 
 import org.scalajs.dom.window
@@ -21,16 +18,15 @@ import org.scalajs.dom.document
 import diode.react.ModelProxy
 import spgui.circuit._
 import spgui.circuit.{SetDraggableData, SetDraggableRenderStyle}
-import scala.util.Try
+import scala.util.Try 
 
-class DropSubscriber(val onDrop: (DropEventData) => Unit) {
-  val id: UUID = UUID.randomUUID()
-  def init() = Dragging.subscribeToDropEvents(this.id, this)
-  def delete() = Dragging.unsubscribeToDropEvents(this.id)
-}
+trait DragData
+trait DropData
+case class DragDropData(dragData: DragData, dropData: DropData)
 
 
 object Dragging { 
+
   case class Props(proxy: ModelProxy[DraggingState])
 
   case class State(
@@ -51,7 +47,8 @@ object Dragging {
   var setHoveringMap = Map[UUID, (Boolean) => Unit]()
 
   var draggingTarget: UUID = null
-  var draggingObject: UUID = null
+  var draggingData: DragData = null
+  var onDrop: (DragDropData) => Unit = (d:DragDropData) => {}
 
   def dropzoneSubscribe( id: UUID, setHovering: (Boolean) => Unit) = {
     setHoveringMap += id -> setHovering
@@ -64,23 +61,33 @@ object Dragging {
 
   def dropzoneResubscribe(newId: UUID, previousId: UUID) = {
     if(draggingTarget == previousId) draggingTarget = newId
+
     setHoveringMap = setHoveringMap.map(e => {
       if(e._1 == previousId) (newId, e._2)
       else e
     })
   }
 
+  var dropSubscribers: Map[UUID, ((DragDropData) => Unit, DropData)] = Map()
 
-
-  var dropSubscribers: Map[UUID, DropSubscriber] = Map()
-  SPGUICircuit.subscribe(SPGUICircuit.zoom(z => z.draggingState.latestDropEvent)) {
-    e => {
-      if(!e.value.isEmpty) dropSubscribers.foreach(sub => sub._2.onDrop(e.value.get))
+  def emitDropEvent(draggingData: DragData) = {
+    //val data = DropData(draggingData, draggingTarget)
+    val target = dropSubscribers.get(draggingTarget)
+    target match {
+      case subscriber:Some[((DragDropData) => Unit, DropData)] => {
+        subscriber.map(s => {
+          val dragDropData = DragDropData(draggingData, s._2)
+          s._1(dragDropData) // callback to dragged element
+          onDrop(dragDropData) // callback to dropzone
+        })
+      }
+      case _ => {}
     }
   }
 
-  def subscribeToDropEvents(id:UUID, sub: DropSubscriber) = {
-    dropSubscribers += (id -> sub)
+  def subscribeToDropEvents(id:UUID, cb: (DragDropData) => Unit, dropData: DropData) = {
+    val data = (cb, dropData)
+    dropSubscribers += (id -> data)
   }
 
   def unsubscribeToDropEvents(id: UUID) = {
@@ -161,8 +168,13 @@ object Dragging {
 
   def apply(proxy: ModelProxy[DraggingState]) = component(Props(proxy))
 
-  def onDragStart(label: String, id: UUID, typ: String, x:Float, y:Float) = {
-    setDraggingObject(id)
+  def setDraggingCallback(callback: (DragDropData) => Unit) {
+    onDrop = callback
+  }
+
+  def onDragStart(label: String, typ: String, data: DragData, x:Float, y:Float, onDrop: (DragDropData => Unit)) {
+    setDraggingData(data)
+    setDraggingCallback(onDrop)
     SPGUICircuit.dispatch(SetDraggableData(label))
     SPGUICircuit.dispatch(SetCurrentlyDragging(true))
     updateMouse(x,y)
@@ -175,11 +187,11 @@ object Dragging {
   }
 
   def onDragStop() = {
-    if(draggingObject != null && draggingTarget != null) {
-      SPGUICircuit.dispatch(DropEvent(draggingObject, draggingTarget))   
-    }
+    if(draggingTarget!= null) emitDropEvent(draggingData)
+
     SPGUICircuit.dispatch(SetCurrentlyDragging(false))
-    setDraggingObject(null)
+   
+    setDraggingData(null)
     setDraggingTarget(null)
   }
 
@@ -187,8 +199,8 @@ object Dragging {
     SPGUICircuit.dispatch(SetDraggableRenderStyle(style))
   }
 
-  def setDraggingObject(id: UUID) = {
-    draggingObject = id
+  def setDraggingData(data: DragData) = {
+    draggingData = data
   }
 
   def setDraggingTarget(id: UUID) = {

@@ -193,9 +193,8 @@ class DraggingHandler[M](modelRW: ModelRW[M, DraggingState]) extends ActionHandl
     case SetCurrentlyDragging(dragging) => updated((value.copy(dragging = dragging)))
     case SetDraggingTarget(id) => updated((value.copy(target = Some(id))))
     case UnsetDraggingTarget => updated((value.copy(target = None)))
-    case DropEvent(dropped, target) =>
-      //println("dragged " + dropped + " onto " + target)
-      updated((value.copy(latestDropEvent = Some(DropEventData(dropped, target)))))
+    case DropEvent(struct, target) =>
+      updated((value.copy(latestDropEvent = Some(DropEventData(struct, target)))))
   }
 }
 
