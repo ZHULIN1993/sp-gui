@@ -58,14 +58,6 @@ object DashboardPresets {
       }.flatten.toMap
     )
 
-    implicit lazy val openWidgetMapReads: JSReads[Map[ID, OpenWidget]] = (json: JsValue) => {
-      json.validate[Map[String, SPValue]].map { xs =>
-        def isCorrect(k: String, v: SPValue) = ID.isID(k) && v.to[OpenWidget].isSuccess
-
-        xs.collect { case (k, v) if isCorrect(k, v) => ID.makeID(k).get -> v.to[OpenWidget].get }
-      }
-    }
-
     def mapFormat[K, V](deserializeKey: String => Option[K], serializeKey: K => String)(implicit f: JSFormat[V]) = {
       Format(mapReads[K, V](deserializeKey), mapWrites[K, V](serializeKey))
     }
