@@ -3,16 +3,12 @@ You will need an sbt installation  (`scala-sbt.org/0.13/docs/`)
 You will also need an installation of node (`nodejs.org`) 
 
 ## Compiling the SP frontend ##
+To install javascript dependencies, cd to `npmdependencies/` and run `npm install`.
 
-To install dependencies, cd to `SP/gui/npmdependencies` and run `npm install`.
+To compile the scalaJS code, run `sbt fastOptJS`. To compile the optimized version run `sbt fullOptJS` (slow process, not recommended in development).
 
-To compile your code, cd to `SP/gui` and run `sbt fastOptJS`.
-To see it, start the spcore (in SP root folder, run sbt spcore/run), and goto localhost:8080
-
-To compile the optimized version run `fullOptJS` (slow process, not recommended in development)
-To see it, open `index-prod.html` in a browser.
-
-To get automatic compilation on file change, run `~fastOptJS`.
+## Running SP frontend only ##
+For development purposes, the frontend can be run without backend and with live reloading using lihaoyi's workbench. To do this, run `sbt ~fastOptJS` and open `http://localhost:12345/js/target/scala-2.12/classes/index.html` in a browser.
 
 ## Making a widget ##
 The simplest possible widget is created with `SPWidget(spwb => <.h1("Hello, World!"))`. So to get started making a widget, create a file in `widgets/` containing the following.
