@@ -1,5 +1,13 @@
 import SPSettings._
 
+enablePlugins(WorkbenchPlugin)
+/* leads to problems with one resource or the other
+workbenchDefaultRootObject := Some((
+  "js/target/scala-2.12/classes/index.html",
+  "js/target/scala-2.12/"
+))
+*/
+
 lazy val projectName = "sp-gui"
 lazy val projectVersion = "0.9.8"
 
