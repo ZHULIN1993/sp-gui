@@ -29,6 +29,7 @@ case class WidgetLayout(x: Int, y: Int, w: Int, h: Int, collapsedHeight: Int = 1
 case class DashboardPresets(presets: Set[DashboardPreset] = HashSet()) {
   def find(predicate: DashboardPreset => Boolean) = presets.find(predicate)
   def +(preset: DashboardPreset) = copy(presets = presets + preset)
+  def ++(presets: DashboardPresets) = copy(presets = this.presets ++ presets.presets)
   def -(preset: DashboardPreset) = copy(presets = presets - preset)
   def removeFirst(predicate: DashboardPreset => Boolean) = {
     presets.find(predicate).map(preset => copy(presets = presets - preset))
@@ -146,7 +147,7 @@ case class SetLayout(layout: Map[UUID, WidgetLayout]) extends Action
 
 case class AddDashboardPreset(preset: DashboardPreset) extends Action
 case class RemoveDashboardPreset(preset: DashboardPreset) extends Action
-case class SetDashboardPresets(presets: Set[DashboardPreset]) extends Action
+case class SetDashboardPresets(presets: DashboardPresets) extends Action
 
 case class UpdateWidgetData(id: UUID, data: SPValue) extends Action
 

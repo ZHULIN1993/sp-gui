@@ -43,15 +43,14 @@ class PresetsHandler[M](modelRW: ModelRW[M, PresetsHandlerScope]) extends Action
 
   override def handle: PartialFunction[Any, ActionResult[M]] = {
     case AddDashboardPreset(preset) =>  // Takes current state of dashboard and saves in list of presets
-      println("AddDashboardPreset")
       updated(value.copy(presets = value.presets + preset))
 
     case RemoveDashboardPreset(preset) => // Removes the preset corresponding to the given name
       val newPresets = value.presets.removeFirst(_.name == preset.name).getOrElse(value.presets)
       updated(value.copy(presets = newPresets))
 
-    case SetDashboardPresets(presets: Set[DashboardPreset]) =>
-      updated(value.copy(presets = DashboardPresets(presets)))
+    case SetDashboardPresets(presets: DashboardPresets) =>
+      updated(value.copy(presets = value.presets ++ presets))
 
     case RecallDashboardPreset(preset) =>
       updated(value.copy(openWidgets = OpenWidgets())) //First remove all widgets to let them unmount

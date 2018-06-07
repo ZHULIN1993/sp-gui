@@ -150,10 +150,12 @@ object DashboardPresetsMenu {
     def onSave(onSave: Event): Config = Config(onSave = onSave)
     def onLoad(onLoad: Event): Config = Config(onLoad = onLoad)
     def onDelete(onDelete: Event): Config = Config(onDelete = onDelete)
+    def onUpdate(onUpdate: Props => Unit): Config = Config(onUpdate = onUpdate)
   }
 
   case class Config(
                      onMount: () => Unit = () => Unit,
+                     onUpdate: Props => Unit = _ => Unit,
                      onSave: Config.Event = Config.NoEvent,
                      onLoad: Config.Event = Config.NoEvent,
                      onDelete: Config.Event = Config.NoEvent,
@@ -164,11 +166,13 @@ object DashboardPresetsMenu {
     def onSave(onSave: Event): Config = copy(onSave = onSave)
     def onLoad(onLoad: Event): Config = copy(onLoad = onLoad)
     def onDelete(onDelete: Event): Config = copy(onDelete = onDelete)
+    def onUpdate(onUpdate: Props => Unit): Config = copy(onUpdate = onUpdate)
   }
 
   private val component = ScalaComponent.builder[Props]("DashboardPresetsMenu")
     .renderBackend[Backend]
     .componentDidMount(ctx => Callback(ctx.props.config.onMount))
+    .componentDidUpdate(ctx => Callback(ctx.currentProps.config.onUpdate(ctx.currentProps)))
     .build
 
   def apply(proxy: ModelProxy[ProxyContents], config: Config): VdomElement = {
