@@ -10,7 +10,7 @@ import spgui.WidgetList
 import spgui.components.{ Icon, SPNavbarElements }
 
 object WidgetMenu {
-  case class State(filterText: String)
+  case class State(filterText: String = "")
 
   class Backend($: BackendScope[Unit, State]) {
     def addW(name: String, w: Int, h: Int): Callback =
@@ -20,6 +20,7 @@ object WidgetMenu {
       SPNavbarElements.dropdown(
         "New widget",
         SPNavbarElements.TextBox(
+          s.filterText,
           "Find widget...",
           (t: String) => { $.setState(State(filterText = t)) }
         ) :: WidgetList.list.collect{
@@ -33,7 +34,7 @@ object WidgetMenu {
   }
 
   private val component = ScalaComponent.builder[Unit]("WidgetMenu")
-    .initialState(State(""))
+    .initialState(State())
     .renderBackend[Backend]
     .build
 
