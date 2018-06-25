@@ -9,6 +9,7 @@ trait SPGantt extends js.Object { // facades "facadedObject" in gui/src/main/res
   def setData(rows: js.Array[Row]): Unit = js.native
   def addSomeRow(): Unit = js.native
   def addRow(row: Row): Unit = js.native
+  def scroll(dx: Double): Unit = js.native
 }
 @js.native
 @JSGlobal("SPGantt")

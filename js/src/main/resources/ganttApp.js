@@ -1,3 +1,4 @@
+// 1.3.3 docs: https://github.com/angular-gantt/angular-gantt/blob/1.3.x/docs/index.html
 function SPGantt(element, options) {
 
   'use strict';
@@ -37,12 +38,34 @@ function SPGantt(element, options) {
       };
       */
 
+      /*
+      var ctrl = this;
+      var testPrint = function() {
+        console.log("this is a way to test added functions");
+      };
+      ctrl.testPrint = testPrint;
+      facadedObject.testPrint = testPrint;
+      */
+
+      $scope.registerApi = function(api) {
+        api.core.on.ready($scope, function() {
+          facadedObject.scroll = function(dx) {
+            if(dx >= 0) {
+              api.scroll.right(dx);
+            } else {
+              api.scroll.left(-dx);
+            }
+          }
+        });
+      };
+
       $scope.viewScale = options.viewScale;
   }
 
   app.component("ganttComponent", {
     template: `
-          <div gantt data="data" headers="headers" headers-formats="headersFormats" headers-scales="headersScales" view-scale="viewScale" column-width="50">
+          <!-- <button ng-click="$ctrl.testPrint()">call testPrint</button> -->
+          <div gantt data="data" api="registerApi" headers="headers" headers-formats="headersFormats" headers-scales="headersScales" view-scale="viewScale" column-width="50">
             <!-- TODO need to fix some dependency stuff if we want this
             <gantt-tree></gantt-tree>
             -->
