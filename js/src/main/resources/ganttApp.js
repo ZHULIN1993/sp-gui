@@ -49,16 +49,26 @@ function SPGantt(element, options) {
 
       // without this, we get an error if react calls scroll before $scope.on.ready has fired
       facadedObject.scroll = function(dx) { };
+      var onUserScrollCB = function() { };
+      facadedObject.onUserScroll = function(callback) {
+        onUserScrollCB = callback;
+      };
 
       $scope.registerApi = function(api) {
         api.core.on.ready($scope, function() {
+
           facadedObject.scroll = function(dx) {
             if(dx >= 0) {
               api.scroll.right(dx);
             } else {
               api.scroll.left(-dx);
             }
-          }
+          };
+
+          api.scroll.on.scroll($scope, function(left, date, direction) {
+            onUserScrollCB();
+          });
+
         });
       };
 

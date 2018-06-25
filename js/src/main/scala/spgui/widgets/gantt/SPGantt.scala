@@ -10,6 +10,8 @@ trait SPGantt extends js.Object { // facades "facadedObject" in gui/src/main/res
   def addSomeRow(): Unit = js.native
   def addRow(row: Row): Unit = js.native
   def scroll(dx: Double): Unit = js.native
+  // could implement so that callback takes scrolling data, see ganttApp.js and angular-gantt facade
+  def onUserScroll(callback: js.Function0[Unit]): Unit = js.native
 }
 @js.native
 @JSGlobal("SPGantt")

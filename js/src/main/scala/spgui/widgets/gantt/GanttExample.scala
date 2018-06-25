@@ -15,7 +15,10 @@ object GanttExamples {
     var spGantt: SPGantt = _
 
     def setGantt(options: SPGanttOptions) = $.getDOMNode.map(n => spGantt = SPGantt(n, options))
-    def setData(rows: js.Array[Row]) = Callback(spGantt.setData(rows))
+    def setData(rows: js.Array[Row]) = Callback {
+      spGantt.setData(rows)
+      spGantt.onUserScroll(() => println("onUserScroll callback called"))
+    }
 
     def render() =
       <.div(
