@@ -47,6 +47,9 @@ function SPGantt(element, options) {
       facadedObject.testPrint = testPrint;
       */
 
+      // without this, we get an error if react calls scroll before $scope.on.ready has fired
+      facadedObject.scroll = function(dx) { };
+
       $scope.registerApi = function(api) {
         api.core.on.ready($scope, function() {
           facadedObject.scroll = function(dx) {
