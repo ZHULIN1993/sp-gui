@@ -1,3 +1,21 @@
+# Sequence Planner 2
+Sequence Planner (SP) is a micro service architecture for modelling and analyzing automation systems. Initially, the focus was on supporting engineers in developing control code for programmable logical controllers (PLCs). 
+
+During the first years, algorithms to handle product and automation system interaction, and to visualize complex operation sequences using multiple projections, was developed. 
+
+Over the years, other use cases have been integrated, like formal verification and synthesis using Supremica, restart support, cycle time optimization, energy optimization and hybrid systems, online monitoring and control (the tweeting factory), as well as emergency department online planning.
+
+## SP-GUI
+This is a sub-project of SP with origin at https://github.com/kristoferB/SP
+
+Now we have split up the SP source code and published each sub-project to Sonatype. To each new SP-project, let the project add our libraries needed as dependencies. GUI is using sp-domain and sp-comm.
+
+Here we have widgets that can be widely used.
+
+## Wiki
+Watch our wiki for information about Sequence Planner and how to use.
+
+
 ## Prerequisites ##
 You will need an sbt installation  (`scala-sbt.org/0.13/docs/`) 
 You will also need an installation of node (`nodejs.org`) 
