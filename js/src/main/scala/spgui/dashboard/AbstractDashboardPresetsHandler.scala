@@ -16,7 +16,7 @@ import scala.util.Try
 abstract class AbstractDashboardPresetsHandler {
 
   // Add the menu component to the menu and start subscribing preset messages
-  SPMenu.addNavElem(connectedMenuComponent(p => DashboardPresetsMenu(p, AbstractDashboardPresetsHandler.this.requestPresets)).vdomElement)
+  SPMenu.addNavElem(connectedMenuComponent(p => DashboardPresetsMenu(p, () => AbstractDashboardPresetsHandler.this.requestPresets())).vdomElement)
   private val obs = BackendCommunication.getMessageObserver(handleMsg, dashboardPresetsTopic)
 
   // Let SPGUICircuit know that we exist

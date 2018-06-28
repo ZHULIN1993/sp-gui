@@ -1,4 +1,6 @@
-// 1.3.3 docs: https://github.com/angular-gantt/angular-gantt/blob/1.3.x/docs/index.html
+/** 1.3.3 docs: https://github.com/angular-gantt/angular-gantt/blob/1.3.x/docs/index.html
+  * Facade for Using Angular Gantt
+  */
 function SPGantt(element, options) {
 
   'use strict';

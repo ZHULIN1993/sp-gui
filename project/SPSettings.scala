@@ -6,6 +6,10 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import com.typesafe.sbt.SbtPgp.autoImport._
 import xerial.sbt.Sonatype.autoImport._
 
+/**
+  * Scala-sbt project settings.
+  * Declares dependencies and versions, scala compiler options and default sbt-setting
+  */
 object SPSettings {
 
   val defaultBuildSettings = Seq(

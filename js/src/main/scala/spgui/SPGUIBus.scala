@@ -4,6 +4,7 @@ import scala.collection.mutable.{Map => MMap}
 import scala.collection.mutable.ListBuffer
 
 // just a dummy thing for testing so far...
+/** Tag: Remove or update to an example how to make a bus? */
 object SPGUIBus {
   val callbacks = MMap[String, ListBuffer[(Int, String => Unit)]]()
 

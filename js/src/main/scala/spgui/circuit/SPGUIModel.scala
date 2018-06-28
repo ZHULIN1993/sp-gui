@@ -9,6 +9,7 @@ import sp.domain.SPValue
 import spgui.modal.{ModalResult}
 import spgui.theming.Theming.Theme
 import sp.domain.StructNode
+import sp.domain.ID
 
 // state
 case class SPGUIModel(
@@ -19,37 +20,38 @@ case class SPGUIModel(
                        settings: Settings = Settings(),
                        draggingState: DraggingState = DraggingState(),
                        modalState: ModalState = ModalState()
-)
-case class OpenWidgets(xs: Map[UUID, OpenWidget] = Map())
-case class OpenWidget(id: UUID, layout: WidgetLayout, widgetType: String)
+                     )
+case class OpenWidgets(widgetMap: Map[ID, OpenWidget] = Map())
+case class OpenWidget(id: ID, layout: WidgetLayout, widgetType: String)
 case class WidgetLayout(x: Int, y: Int, w: Int, h: Int, collapsedHeight: Int = 1)
 
-case class DashboardPresets(xs: Map[String, DashboardPreset] = Map())
+case class DashboardPresets(presetsMap: Map[String, DashboardPreset] = Map())
 case class DashboardPreset(widgets: OpenWidgets = OpenWidgets(), widgetData: WidgetData = WidgetData(Map()))
 
 case class GlobalState(
-  currentModel: Option[UUID] = None,
-  selectedItems: List[UUID] = List(),
-  userID: Option[UUID] = None,
-  clientID: UUID = UUID.randomUUID(),
-  attributes: Map[String, SPValue] = Map()
-)
-case class WidgetData(xs: Map[UUID, SPValue])
+                        currentModel: Option[ID] = None,
+                        selectedItems: List[ID] = List(),
+                        userID: Option[ID] = None,
+                        clientID: ID = ID.newID,
+                        attributes: Map[String, SPValue] = Map()
+                      )
+
+case class WidgetData(dataMap: Map[ID, SPValue])
 
 case class Settings(
-  theme: Theme = Theme(),
-  showHeaders: Boolean = true 
-)
+                     theme: Theme = Theme(),
+                     showHeaders: Boolean = true
+                   )
 
-case class DropEventData(struct: StructNode, targetId: UUID )
+case class DropEventData(structNode: StructNode, targetId: ID)
 
 case class DraggingState(
-  target: Option[UUID] = None,
-  dragging: Boolean = false,
-  renderStyle: String = "",
-  data: String = "",
-  latestDropEvent: Option[DropEventData] = None 
-)
+                          target: Option[ID] = None,
+                          dragging: Boolean = false,
+                          renderStyle: String = "",
+                          data: String = "",
+                          latestDropEvent: Option[DropEventData] = None
+                        )
 
 case class ModalState(
                        modalVisible: Boolean = false,
@@ -59,19 +61,19 @@ case class ModalState(
                      )
 
 // actions
-case class AddWidget(widgetType: String, width: Int = 2, height: Int = 2, id: UUID = UUID.randomUUID()) extends Action
-case class CloseWidget(id: UUID) extends Action
-case class CollapseWidgetToggle(id: UUID) extends Action
+case class AddWidget(widgetType: String, width: Int = 2, height: Int = 2, id: ID = ID.newID) extends Action
+case class CloseWidget(id: ID) extends Action
+case class CollapseWidgetToggle(id: ID) extends Action
 case object CloseAllWidgets extends Action
 case class RecallDashboardPreset(preset: DashboardPreset) extends Action
-case class UpdateLayout(id: UUID, newLayout: WidgetLayout) extends Action
-case class SetLayout(layout: Map[UUID, WidgetLayout]) extends Action
+case class UpdateLayout(id: ID, newLayout: WidgetLayout) extends Action
+case class SetLayout(layout: Map[ID, WidgetLayout]) extends Action
 
 case class AddDashboardPreset(name: String) extends Action
 case class RemoveDashboardPreset(name: String) extends Action
 case class SetDashboardPresets(presets: Map[String, DashboardPreset]) extends Action
 
-case class UpdateWidgetData(id: UUID, data: SPValue) extends Action
+case class UpdateWidgetData(id: ID, data: SPValue) extends Action
 
 case class UpdateGlobalAttributes(key: String, value: SPValue) extends Action
 case class UpdateGlobalState(state: GlobalState) extends Action
@@ -81,10 +83,10 @@ case object ToggleHeaders extends Action
 
 case class SetDraggableRenderStyle(style:String) extends Action
 case class SetDraggableData(data: String) extends Action
-case class SetCurrentlyDragging(enabled: Boolean) extends Action 
-case class SetDraggingTarget(id: UUID) extends Action
+case class SetCurrentlyDragging(enabled: Boolean) extends Action
+case class SetDraggingTarget(id: ID) extends Action
 case object UnsetDraggingTarget extends Action
-case class DropEvent(struct: StructNode, target: UUID) extends Action
+case class DropEvent(structNode: StructNode, target: ID) extends Action
 
 case class OpenModal(title: String = "", component: (ModalResult => Callback) => VdomElement, onComplete: ModalResult => Callback) extends Action
 case object CloseModal extends Action

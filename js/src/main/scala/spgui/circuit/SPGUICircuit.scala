@@ -6,6 +6,9 @@ import org.scalajs.dom.ext.LocalStorage
 import spgui.theming.Theming.Theme
 import spgui.dashboard.{AbstractDashboardPresetsHandler, Dashboard}
 
+/**
+  *
+  */
 object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] {
   def initialModel = BrowserStorage.load.getOrElse(InitialState())
   val actionHandler = composeHandlers(
@@ -14,26 +17,26 @@ object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] 
       ((m, phs) => m.copy(presets = phs.presets, openWidgets = phs.openWidgets, widgetData = phs.widgetData))
     ),
     new OpenWidgetsHandler(
-      zoomRW(_.openWidgets)((m, v) => m.copy(openWidgets = v))
+      zoomRW(_.openWidgets)((m, openWidget) => m.copy(openWidgets = openWidget))
     ),
     new GlobalStateHandler(
-      zoomRW(_.globalState)((m, v) => m.copy(globalState = v))
+      zoomRW(_.globalState)((m, state) => m.copy(globalState = state))
     ),
     new SettingsHandler(
-      zoomRW(_.settings)((m, v) => m.copy(settings = v))
+      zoomRW(_.settings)((m, settings) => m.copy(settings = settings))
     ),
     new WidgetDataHandler(
-      zoomRW(_.widgetData)((m,v) => m.copy(widgetData = v))
+      zoomRW(_.widgetData)((m, data) => m.copy(widgetData = data))
     ),
     new DraggingHandler(
-      zoomRW(_.draggingState)((m,v) => m.copy(draggingState = v))
+      zoomRW(_.draggingState)((m, draggingState) => m.copy(draggingState = draggingState))
     ),
     new ModalHandler(
-      zoomRW(_.modalState)((m,v) => m.copy(modalState = v))
+      zoomRW(_.modalState)((m, modalState) => m.copy(modalState = modalState))
     )
   )
   // store state upon any model change
-  subscribe(zoomRW(myM => myM)((m,v) => v))(m => BrowserStorage.store(m.value))
+  subscribe(zoomRW(myM => myM)((m, model) => model))(m => BrowserStorage.store(m.value))
 
   var dashboardPresetHandler: Option[AbstractDashboardPresetsHandler] = None
 }
@@ -46,13 +49,13 @@ class PresetsHandler[M](modelRW: ModelRW[M, PresetsHandlerScope]) extends Action
     case AddDashboardPreset(name) => { // Takes current state of dashboard and saves in list of presets
       val newPreset = DashboardPreset(
         value.openWidgets,
-        WidgetData(value.widgetData.xs.filterKeys(value.openWidgets.xs.keySet.contains(_)))
+        WidgetData(value.widgetData.dataMap.filterKeys(value.openWidgets.widgetMap.keySet.contains(_)))
       )
 
       // Tell persistent storage to add preset
       SPGUICircuit.dashboardPresetHandler.flatMap(h => {h.storePresetToPersistentStorage(name, newPreset);None})
 
-      updated(value.copy(presets = DashboardPresets(value.presets.xs + (name -> newPreset))))
+      updated(value.copy(presets = DashboardPresets(value.presets.presetsMap + (name -> newPreset))))
     }
 
     case RemoveDashboardPreset(name) => { // Removes the preset corresponding to the given name
@@ -60,11 +63,11 @@ class PresetsHandler[M](modelRW: ModelRW[M, PresetsHandlerScope]) extends Action
       // Tell persistent storage to remove preset
       SPGUICircuit.dashboardPresetHandler.flatMap(h => {h.removePresetFromPersistentStorage(name);None})
 
-      updated(value.copy(presets = DashboardPresets(value.presets.xs - name)))
+      updated(value.copy(presets = DashboardPresets(value.presets.presetsMap - name)))
     }
 
-    case SetDashboardPresets(presets: Map[String, DashboardPreset]) => {
-      updated(value.copy(presets = DashboardPresets(presets)))
+    case SetDashboardPresets(presetsMap: Map[String, DashboardPreset]) => {
+      updated(value.copy(presets = DashboardPresets(presetsMap)))
     }
 
     case RecallDashboardPreset(preset) => {
@@ -77,9 +80,9 @@ class PresetsHandler[M](modelRW: ModelRW[M, PresetsHandlerScope]) extends Action
 class OpenWidgetsHandler[M](modelRW: ModelRW[M, OpenWidgets]) extends ActionHandler(modelRW) {
   override def handle = {
     case AddWidget(widgetType, width, height, id) =>
-      val occupiedGrids = value.xs.values.map(w =>
-        for{x <- w.layout.x to w.layout.x + w.layout.w-1} yield {
-          for{y <- w.layout.y to w.layout.y + w.layout.h-1} yield {
+      val occupiedGrids = value.widgetMap.values.map(w =>
+        for{x <- w.layout.x until w.layout.x + w.layout.w} yield {
+          for{y <- w.layout.y until w.layout.y + w.layout.h} yield {
             (x, y)
           }
         }
@@ -88,8 +91,8 @@ class OpenWidgetsHandler[M](modelRW: ModelRW[M, OpenWidgets]) extends ActionHand
         val x = i % Dashboard.cols
         val y = i / Dashboard.cols
 
-        val requiredGrids = (for{reqX <- x to x + width -1} yield {
-          for{reqY <- y to y + height-1} yield {
+        val requiredGrids = (for{reqX <- x until x + width} yield {
+          for{reqY <- y until y + height} yield {
             (reqX, reqY)
           }
         }).toSeq.flatten
@@ -106,11 +109,11 @@ class OpenWidgetsHandler[M](modelRW: ModelRW[M, OpenWidgets]) extends ActionHand
         WidgetLayout(x, y, width, height),
         widgetType
       )
-      updated(OpenWidgets(value.xs + (id -> newWidget)))
+      updated(OpenWidgets(value.widgetMap + (id -> newWidget)))
     case CloseWidget(id) =>
-      updated(OpenWidgets(value.xs - id))
+      updated(OpenWidgets(value.widgetMap - id))
     case CollapseWidgetToggle(id) =>
-      val targetWidget = value.xs.get(id).get
+      val targetWidget = value.widgetMap.get(id).get
       val modifiedWidget = targetWidget.layout.h match {
         case 1 => targetWidget.copy(
           layout = targetWidget.layout.copy(
@@ -130,21 +133,21 @@ class OpenWidgetsHandler[M](modelRW: ModelRW[M, OpenWidgets]) extends ActionHand
           )
         )
       }
-      updated(OpenWidgets((value.xs - id ) + (id -> modifiedWidget)))
+      updated(OpenWidgets((value.widgetMap - id ) + (id -> modifiedWidget)))
     case CloseAllWidgets => updated(OpenWidgets())
     case UpdateLayout(id, newLayout) => {
-      val updW = value.xs.get(id)
+      val updW = value.widgetMap.get(id)
         .map(_.copy(layout = newLayout))
-        .map(x => value.xs + (x.id -> x))
-        .getOrElse(value.xs)
+        .map(x => value.widgetMap + (x.id -> x))
+        .getOrElse(value.widgetMap)
       updated(OpenWidgets(updW))
     }
     case SetLayout(newLayout) => {
-      val updW = OpenWidgets(value.xs.map(x =>
+      val updW = OpenWidgets(value.widgetMap.map(pair =>
         (
-          x._1,
-          x._2.copy(
-            layout = newLayout(x._1)
+          pair._1,
+          pair._2.copy(
+            layout = newLayout(pair._1)
           )
         )
       ))
@@ -166,7 +169,7 @@ class GlobalStateHandler[M](modelRW: ModelRW[M, GlobalState]) extends ActionHand
 class WidgetDataHandler[M](modelRW: ModelRW[M, WidgetData]) extends ActionHandler(modelRW) {
   override def handle = {
     case UpdateWidgetData(id, d) =>
-      val updW = value.xs + (id -> d)
+      val updW = value.dataMap + (id -> d)
       updated(WidgetData(updW))
   }
 }

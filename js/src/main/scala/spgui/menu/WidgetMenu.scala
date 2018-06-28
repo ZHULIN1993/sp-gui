@@ -3,12 +3,15 @@ package spgui.menu
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 import japgolly.scalajs.react.vdom.all.aria
-import scalacss.ScalaCssReact._
 
-import spgui.circuit.{SPGUICircuit, AddWidget}
+import spgui.circuit.{AddWidget, SPGUICircuit}
 import spgui.WidgetList
+import spgui.WidgetList.Widget
 import spgui.components.{ Icon, SPNavbarElements }
 
+/**
+  *
+  */
 object WidgetMenu {
   case class State(filterText: String = "")
 
@@ -24,10 +27,10 @@ object WidgetMenu {
           "Find widget...",
           (t: String) => { $.setState(State(filterText = t)) }
         ) :: WidgetList.list.collect{
-          case e if (e._1.toLowerCase.contains(s.filterText.toLowerCase))=>
+          case w: Widget if w.name.toLowerCase.contains(s.filterText.toLowerCase)=>
             SPNavbarElements.dropdownElement(
-              e._1,
-              addW(e._1, e._3, e._4)
+              w.name,
+              addW(w.name, w.height, w.width)
             )
         }
       )
