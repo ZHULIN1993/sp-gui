@@ -14,9 +14,8 @@ import scala.util.Try
   * Created by alfredbjork on 2018-04-05.
   */
 abstract class AbstractDashboardPresetsHandler {
-
   // Add the menu component to the menu and start subscribing preset messages
-  SPMenu.addNavElem(connectedMenuComponent(p => DashboardPresetsMenu(p, () => AbstractDashboardPresetsHandler.this.requestPresets())).vdomElement)
+  SPMenu.addNavbarElemement(connectedMenuComponent(p => DashboardPresetsMenu(p, () => AbstractDashboardPresetsHandler.this.requestPresets())).vdomElement)
   private val obs = BackendCommunication.getMessageObserver(handleMsg, dashboardPresetsTopic)
 
   // Let SPGUICircuit know that we exist
@@ -65,9 +64,9 @@ abstract class AbstractDashboardPresetsHandler {
     */
   def requestPresets(): Unit
 
-  /**
-    * Should take the given preset and send it to the backend for persistent storage
-    * @param presets
+  /*** Should take the given preset and send it to the backend for persistent storage
+    * @param name String
+    * @param preset DashboardPreset
     */
   def storePresetToPersistentStorage(name: String, preset: DashboardPreset): Unit
 

@@ -11,7 +11,19 @@ import spgui.modal.DummyModal
 import spgui.modal.DummyModal.Return
 import spgui.theming.Theming
 
+/** Component for the navbar */
 object SPMenu {
+  private var extraNavbarElements: Seq[VdomElement] = Seq()
+  /** Add new Navbar elements in the menu
+    * @param elements sequence of VdomElements
+    */
+  def addNavbarElements(elements: Seq[VdomElement]): Unit = extraNavbarElements ++= elements
+
+  /** Add new Navbar element in the menu
+    * @param element a VdomElement
+    */
+  def addNavbarElemement(element: VdomElement): Unit = addNavbarElements(Seq(element))
+
   case class Props(proxy: ModelProxy[Settings], extraNavElem: Seq[VdomElement])
 
   class SPMenuBackend($: BackendScope[Props, Unit]){
@@ -19,7 +31,6 @@ object SPMenu {
       <.nav(
         ^.className:= SPMenuCSS.topNav.htmlClass,
         ^.className := "navbar navbar-default",
-
         // navbar header: logo+toggle button
         <.div(
           ^.className := "navbar-header",
@@ -42,7 +53,6 @@ object SPMenu {
             )
           )
         ),
-
         // navbar contents
         <.div(
           ^.className := SPMenuCSS.navbarContents.htmlClass,
@@ -50,7 +60,6 @@ object SPMenu {
           ^.id := "navbar-contents",
           <.ul(
             ^.className := "nav navbar-nav",
-
             WidgetMenu(),
             SPNavbarElements.dropdown(
               "Options",
@@ -65,18 +74,14 @@ object SPMenu {
                     theme.name,
                     {if(p.proxy().theme.name == theme.name) Icon.checkSquare else Icon.square},
                     Callback({
-                      SPGUICircuit.dispatch(
-                        SetTheme(
-                          Theming.themeList.find(e => e.name == theme.name).get
-                        )
-                      )
+                      SPGUICircuit.dispatch(SetTheme(Theming.themeList.find(_.name == theme.name).get))
                       org.scalajs.dom.window.location.reload() // reload the page
                     })
                   )
                 ).toTagMod
               )
             ),
-            p.extraNavElem.toTagMod(x => x.apply()), // Insert any additional menu items added by someone else
+            p.extraNavElem.toTagMod(_.apply()), // Insert any additional menu items added by someone else
             SPNavbarElements.button("Close all", Callback(SPGUICircuit.dispatch(CloseAllWidgets)))
           )
         )
@@ -89,15 +94,4 @@ object SPMenu {
     .build
 
   def apply(proxy: ModelProxy[Settings]) = component(Props(proxy, extraNavbarElements))
-
-  private var extraNavbarElements: Seq[VdomElement] = Seq()
-
-  /**
-    * Used to add new navigataion elements in the menu bar.
-    * @param xs
-    */
-  def addNavElem(xs: Seq[VdomElement]): Unit = extraNavbarElements ++= xs
-
-  def addNavElem(x: VdomElement): Unit = addNavElem(Seq(x))
-
 }

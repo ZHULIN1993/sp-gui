@@ -16,7 +16,7 @@ import spgui.modal.Modal
   * Layout is the "lowest" part of the frontend
   */
 object Layout {
-  val widgetsConnection = SPGUICircuit.connect(model => (model.openWidgets.xs, model.globalState))
+  val widgetsConnection = SPGUICircuit.connect(model => (model.openWidgets.widgetMap, model.globalState))
   val menuConnection = SPGUICircuit.connect(_.settings)
   val draggingConnection = SPGUICircuit.connect(_.draggingState)
   val modalConnection = SPGUICircuit.connect(_.modalState)

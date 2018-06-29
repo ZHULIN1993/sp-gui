@@ -5,10 +5,9 @@ import diode.react.ReactConnector
 import org.scalajs.dom.ext.LocalStorage
 import spgui.theming.Theming.Theme
 import spgui.dashboard.{AbstractDashboardPresetsHandler, Dashboard}
+import spgui.circuit.handlers._
 
-/**
-  *
-  */
+/** SP-GUI CIRCUIT with information about the current frontend states Tag: DocHelp*/
 object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] {
   def initialModel = BrowserStorage.load.getOrElse(InitialState())
   val actionHandler = composeHandlers(
@@ -36,187 +35,14 @@ object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] 
     )
   )
   // store state upon any model change
-  subscribe(zoomRW(myM => myM)((m, model) => model))(m => BrowserStorage.store(m.value))
+  subscribe(zoomRW(myM => myM)((_, model) => model))(m => BrowserStorage.store(m.value))
+  //subscribe(zoomRW(myM => myM)((m, model) => model))(m => BrowserStorage.store(m.value)) // If line above do not work
 
+  /** Tag: DocHelp. Motivation of var? */
   var dashboardPresetHandler: Option[AbstractDashboardPresetsHandler] = None
 }
 
 case class PresetsHandlerScope(presets: DashboardPresets, openWidgets: OpenWidgets, widgetData: WidgetData)
-
-class PresetsHandler[M](modelRW: ModelRW[M, PresetsHandlerScope]) extends ActionHandler(modelRW) {
-
-  override def handle = {
-    case AddDashboardPreset(name) => { // Takes current state of dashboard and saves in list of presets
-      val newPreset = DashboardPreset(
-        value.openWidgets,
-        WidgetData(value.widgetData.dataMap.filterKeys(value.openWidgets.widgetMap.keySet.contains(_)))
-      )
-
-      // Tell persistent storage to add preset
-      SPGUICircuit.dashboardPresetHandler.flatMap(h => {h.storePresetToPersistentStorage(name, newPreset);None})
-
-      updated(value.copy(presets = DashboardPresets(value.presets.presetsMap + (name -> newPreset))))
-    }
-
-    case RemoveDashboardPreset(name) => { // Removes the preset corresponding to the given name
-
-      // Tell persistent storage to remove preset
-      SPGUICircuit.dashboardPresetHandler.flatMap(h => {h.removePresetFromPersistentStorage(name);None})
-
-      updated(value.copy(presets = DashboardPresets(value.presets.presetsMap - name)))
-    }
-
-    case SetDashboardPresets(presetsMap: Map[String, DashboardPreset]) => {
-      updated(value.copy(presets = DashboardPresets(presetsMap)))
-    }
-
-    case RecallDashboardPreset(preset) => {
-      updated(value.copy(openWidgets = OpenWidgets())) //First remove all widgets to let them unmount
-      updated(value.copy(openWidgets = preset.widgets, widgetData = preset.widgetData))
-    }
-  }
-}
-
-class OpenWidgetsHandler[M](modelRW: ModelRW[M, OpenWidgets]) extends ActionHandler(modelRW) {
-  override def handle = {
-    case AddWidget(widgetType, width, height, id) =>
-      val occupiedGrids = value.widgetMap.values.map(w =>
-        for{x <- w.layout.x until w.layout.x + w.layout.w} yield {
-          for{y <- w.layout.y until w.layout.y + w.layout.h} yield {
-            (x, y)
-          }
-        }
-      ).flatten.flatten
-      val bestPosition:Int = Stream.from(0).find(i => {
-        val x = i % Dashboard.cols
-        val y = i / Dashboard.cols
-
-        val requiredGrids = (for{reqX <- x until x + width} yield {
-          for{reqY <- y until y + height} yield {
-            (reqX, reqY)
-          }
-        }).toSeq.flatten
-        requiredGrids.forall(req =>
-          occupiedGrids.forall(occ =>
-            !(occ._1 == req._1 && occ._2 == req._2 || req._1 >= Dashboard.cols)
-          )
-        )
-      }).get
-      val x:Int = bestPosition % Dashboard.cols
-      val y:Int = bestPosition / Dashboard.cols
-      val newWidget = OpenWidget(
-        id,
-        WidgetLayout(x, y, width, height),
-        widgetType
-      )
-      updated(OpenWidgets(value.widgetMap + (id -> newWidget)))
-    case CloseWidget(id) =>
-      updated(OpenWidgets(value.widgetMap - id))
-    case CollapseWidgetToggle(id) =>
-      val targetWidget = value.widgetMap.get(id).get
-      val modifiedWidget = targetWidget.layout.h match {
-        case 1 => targetWidget.copy(
-          layout = targetWidget.layout.copy(
-            collapsedHeight = 1,
-            h = targetWidget.layout.collapsedHeight match {
-              // this deals with the fact that panels can already have a height of 1
-              // it would be strange to "restore" the height to the current height
-              case 1 => 4
-              case _ => targetWidget.layout.collapsedHeight
-            }
-          )
-        )
-        case _ => targetWidget.copy(
-          layout = targetWidget.layout.copy(
-            collapsedHeight = targetWidget.layout.h ,
-            h = 1
-          )
-        )
-      }
-      updated(OpenWidgets((value.widgetMap - id ) + (id -> modifiedWidget)))
-    case CloseAllWidgets => updated(OpenWidgets())
-    case UpdateLayout(id, newLayout) => {
-      val updW = value.widgetMap.get(id)
-        .map(_.copy(layout = newLayout))
-        .map(x => value.widgetMap + (x.id -> x))
-        .getOrElse(value.widgetMap)
-      updated(OpenWidgets(updW))
-    }
-    case SetLayout(newLayout) => {
-      val updW = OpenWidgets(value.widgetMap.map(pair =>
-        (
-          pair._1,
-          pair._2.copy(
-            layout = newLayout(pair._1)
-          )
-        )
-      ))
-      updated(updW)
-    }
-  }
-}
-
-class GlobalStateHandler[M](modelRW: ModelRW[M, GlobalState]) extends ActionHandler(modelRW) {
-  override def handle = {
-    case UpdateGlobalState(state) =>
-      updated(state)
-    case UpdateGlobalAttributes(key, v) =>
-      val attr = value.attributes + (key->v)
-      updated(value.copy(attributes = attr))
-  }
-}
-
-class WidgetDataHandler[M](modelRW: ModelRW[M, WidgetData]) extends ActionHandler(modelRW) {
-  override def handle = {
-    case UpdateWidgetData(id, d) =>
-      val updW = value.dataMap + (id -> d)
-      updated(WidgetData(updW))
-  }
-}
-
-class SettingsHandler[M](modelRW: ModelRW[M, Settings]) extends ActionHandler(modelRW) {
-  override def handle = {
-    case SetTheme(newTheme) => {
-      updated(value.copy(
-        theme = newTheme
-      ))
-    }
-    case ToggleHeaders => {
-      updated(value.copy(
-        showHeaders = !value.showHeaders
-      ))
-    }
-  }
-}
-
-class DraggingHandler[M](modelRW: ModelRW[M, DraggingState]) extends ActionHandler(modelRW) {
-  override def handle = {
-    case SetDraggableRenderStyle(renderStyle) => updated(value.copy(renderStyle = renderStyle))
-    case SetDraggableData(data) => updated(value.copy(data = data))
-    case SetCurrentlyDragging(dragging) => updated((value.copy(dragging = dragging)))
-    case SetDraggingTarget(id) => updated((value.copy(target = Some(id))))
-    case UnsetDraggingTarget => updated((value.copy(target = None)))
-    case DropEvent(struct, target) =>
-      updated((value.copy(latestDropEvent = Some(DropEventData(struct, target)))))
-  }
-}
-
-class ModalHandler[M](modelRW: ModelRW[M, ModalState]) extends ActionHandler(modelRW) {
-  override def handle = {
-    case OpenModal(title, component, onComplete) => {
-      updated(value.copy(
-        modalVisible = true,
-        title = title,
-        component = Some(component),
-        onComplete = Some(onComplete)
-      ))
-    }
-
-    case CloseModal => {
-      updated(value.copy(modalVisible = false, component = None, onComplete = None))
-    }
-  }
-}
 
 object BrowserStorage {
   import sp.domain._

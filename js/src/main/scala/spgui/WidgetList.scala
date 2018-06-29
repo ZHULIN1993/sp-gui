@@ -17,6 +17,7 @@ object WidgetList {
     */
   case class Widget(name :String, spwb2Vdom: SPWidgetBase => VdomElement, width: Int, height: Int)
 
+  /** Tag: DocHelp. Why private var? */
   private var widgetList: List[Widget] = List()
 
   /** Add list of widgets to the widget-list
@@ -28,7 +29,8 @@ object WidgetList {
   }
 
   def list: List[Widget] = widgetList
-  def map = list.map(t => t.name -> (t.spwb2Vdom, t.height, t.width)).toMap
+  def map: Map[String, ((SPWidgetBase) => VdomElement, Int, Int)] =
+    list.map(t => t.name -> (t.spwb2Vdom, t.height, t.width)).toMap
 }
 
 /** Simple Placeholder react-component with a empty header */

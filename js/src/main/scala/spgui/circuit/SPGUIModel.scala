@@ -6,12 +6,22 @@ import java.util.UUID
 import japgolly.scalajs.react.Callback
 import japgolly.scalajs.react.vdom.VdomElement
 import sp.domain.SPValue
-import spgui.modal.{ModalResult}
+import spgui.modal.ModalResult
 import spgui.theming.Theming.Theme
 import sp.domain.StructNode
 import sp.domain.ID
 
-// state
+/** Data in circuit
+  * Tag: DocHelp
+  *
+  * @param presets DashboardPresets
+  * @param openWidgets OpenWidgets
+  * @param globalState GlobalState
+  * @param widgetData WidgetData
+  * @param settings Settings
+  * @param draggingState DraggingState
+  * @param modalState ModalState
+  */
 case class SPGUIModel(
                        presets: DashboardPresets = DashboardPresets(),
                        openWidgets: OpenWidgets = OpenWidgets(),

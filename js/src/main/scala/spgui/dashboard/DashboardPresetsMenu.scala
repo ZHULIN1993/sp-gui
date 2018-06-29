@@ -49,8 +49,8 @@ object DashboardPresetsMenu {
   type ProxyType = ModelProxy[ProxyContents]
 
   case class Props(
-                  proxy: ProxyType,
-                  onDidMount: () => Unit = () => Unit
+                    proxy: ProxyType,
+                    onDidMount: () => Unit = () => Unit
                   )
 
 
@@ -78,14 +78,15 @@ object DashboardPresetsMenu {
       dispatch(RecallDashboardPreset(p))
     }
 
-    private def dashboardPresets(p: Props): Map[String, DashboardPreset] = p.proxy.modelReader.value.presets.xs
+    private def dashboardPresets(p: Props): Map[String, DashboardPreset] =
+      p.proxy.modelReader.value.presets.presetsMap
 
     private def openWidgets(p: Props): OpenWidgets = p.proxy.modelReader.value.widgets
 
     private def presetIsSelected(preset: DashboardPreset, openWidgets: OpenWidgets) = preset.widgets.equals(openWidgets)
 
     private def getSelectedPreset(presets: DashboardPresets, openWidgets: OpenWidgets): Option[String] =
-      getSelectedPreset(presets.xs, openWidgets)
+      getSelectedPreset(presets.presetsMap, openWidgets)
 
     private def getSelectedPreset(presets: Map[String, DashboardPreset], openWidgets: OpenWidgets): Option[String] =
       presets.flatMap(
@@ -102,40 +103,34 @@ object DashboardPresetsMenu {
     }
 
     def render(p: Props) = {
-
-      SPNavbarElements.dropdown(
-        "Layout",
-        Seq(
-          TagMod(^.className := DashboardPresetsCSS.menuUl.htmlClass),
-          SPNavbarElements.dropdownElement(
-            "Save layout",
-            openSaveModal(p)
-          )
-        ) ++
-        dashboardPresets(p).map {
-          case (name, preset) => {
-
-            val icon = if (presetIsSelected(preset, openWidgets(p))) Icon.dotCircleO else Icon.circle
-
-            SPNavbarElements.dropdownElement(
-                Seq(
-                  TagMod(^.className := DashboardPresetsCSS.menuItem.htmlClass),
-                  TagMod(^.onClick ==> (
-                    e => {
-                      if (clickIsOnDeleteButton(e))
-                        Callback(SimpleModal.open("Delete " + "\"" + name + "\"?", deleteLayout(name, p.proxy.dispatchCB)))
-                      else
-                        recallLayout(preset, p.proxy.dispatchCB)
-                    }
-                  )),
-                  <.span(icon, ^.className := SPNavbarElementsCSS.textIconClearance.htmlClass),
-                  <.span(name),
-                  <.span(Icon.times, ^.className := DashboardPresetsCSS.closeIcon.htmlClass)
-                ).toTagMod
-            )
-          }
-        }
+      val savingsDropdowns: Seq[TagMod] = Seq(
+        TagMod(^.className := DashboardPresetsCSS.menuUl.htmlClass),
+        SPNavbarElements.dropdownElement("Save layout", openSaveModal(p))
       )
+
+      val presetsDropdowns: Seq[TagMod] = dashboardPresets(p).map {
+        case (name, preset) => {
+          val icon = if (presetIsSelected(preset, openWidgets(p))) Icon.dotCircleO else Icon.circle
+          val dropDownContent =
+            <.div(
+              ^.className := DashboardPresetsCSS.menuItem.htmlClass,
+              ^.onClick ==> (
+                e => {
+                  if (clickIsOnDeleteButton(e))
+                    Callback(SimpleModal.open("Delete " + "\"" + name + "\"?", deleteLayout(name, p.proxy.dispatchCB)))
+                  else
+                    recallLayout(preset, p.proxy.dispatchCB)
+                }
+                ),
+              <.span(icon, ^.className := SPNavbarElementsCSS.textIconClearance.htmlClass),
+              <.span(name),
+              <.span(Icon.times, ^.className := DashboardPresetsCSS.closeIcon.htmlClass)
+            )
+          SPNavbarElements.dropdownElement(dropDownContent)
+        }
+      }.toSeq
+
+      SPNavbarElements.dropdown("Layout", savingsDropdowns ++ presetsDropdowns)
     }
 
   }
@@ -158,7 +153,7 @@ object PresetNameModal {
                   )
 
   case class State(
-                  textBoxContent: String = ""
+                    textBoxContent: String = ""
                   )
 
   case class Return(name: String) extends ModalResult
