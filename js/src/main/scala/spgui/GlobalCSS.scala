@@ -25,9 +25,7 @@ object GlobalCSS extends SPStyleSheet {
     )
   )
 
-  val layout = style("sp-layout")(
-
-  )
+  val layout = style("sp-layout")()
 
   this.addToDocument()
 }

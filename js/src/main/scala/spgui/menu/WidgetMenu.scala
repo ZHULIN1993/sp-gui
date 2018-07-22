@@ -3,18 +3,23 @@ package spgui.menu
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 import japgolly.scalajs.react.vdom.all.aria
-import scalacss.ScalaCssReact._
 
-import spgui.circuit.{SPGUICircuit, AddWidget}
+import spgui.circuit.{AddWidget, SPGUICircuit}
 import spgui.WidgetList
+import spgui.WidgetList.Widget
 import spgui.components.{ Icon, SPNavbarElements }
 
+/** Navbar component for the widgets.
+  * Can filter the different widgets from the widgetlist
+  */
 object WidgetMenu {
+  /** The text that should be filtered */
   case class State(filterText: String = "")
 
   class Backend($: BackendScope[Unit, State]) {
-    def addW(name: String, w: Int, h: Int): Callback =
-      Callback(SPGUICircuit.dispatch(AddWidget(name, w, h)))
+    /** Add a new widget to the circuit */
+    def addWidget(name: String, width: Int, height: Int): Callback =
+      Callback(SPGUICircuit.dispatch(AddWidget(name, width, height)))
 
     def render(s: State) =
       SPNavbarElements.dropdown(
@@ -24,10 +29,10 @@ object WidgetMenu {
           "Find widget...",
           (t: String) => { $.setState(State(filterText = t)) }
         ) :: WidgetList.list.collect{
-          case e if (e._1.toLowerCase.contains(s.filterText.toLowerCase))=>
+          case w: Widget if w.name.toLowerCase.contains(s.filterText.toLowerCase)=>
             SPNavbarElements.dropdownElement(
-              e._1,
-              addW(e._1, e._3, e._4)
+              w.name,
+              addWidget(w.name, w.height, w.width)
             )
         }
       )

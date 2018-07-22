@@ -3,7 +3,10 @@ package spgui
 import scala.collection.mutable.{Map => MMap}
 import scala.collection.mutable.ListBuffer
 
-// just a dummy thing for testing so far...
+/** Example on how to make a frontend GUI-Bus.
+  * Doc: Right now this is just for testing,
+  * but maybe extend?
+  */
 object SPGUIBus {
   val callbacks = MMap[String, ListBuffer[(Int, String => Unit)]]()
 

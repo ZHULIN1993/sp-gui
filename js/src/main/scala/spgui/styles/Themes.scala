@@ -2,6 +2,8 @@ package spgui.theming
 
 import scalacss.DevDefaults._
 
+
+/** Themes for the gui, can be switched through Options-dropdown in navbar*/
 object Theming {
   trait SPStyleSheet extends StyleSheet.Inline {
     import spgui.circuit.SPGUICircuit

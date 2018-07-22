@@ -3,6 +3,7 @@ import sbt.{Developer, ScmInfo, url}
 import sbt.Keys._
 import SPSettings._
 
+/** Scala project settings for publishing */
 object PublishingSettings {
   lazy val description = "Sequence Planner (SP) is a micro service architecture for modeling and analyzing automation systems"
   lazy val organizationName = "sequenceplanner"
@@ -24,11 +25,5 @@ object PublishingSettings {
     else
       Some("releases"  at nexus + "service/local/staging/deploy/maven2")
   )
-
-
-
-
-
-
 }
 

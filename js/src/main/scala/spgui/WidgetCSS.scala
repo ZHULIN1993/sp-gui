@@ -2,21 +2,27 @@ package spgui.widgets.css
 
 import scalacss.DevDefaults._
 
-object WidgetStyles extends StyleSheet.Inline {
+/** CSS-Style for the Widget-Headers and fonts */
+object WidgetCSS extends StyleSheet.Inline {
   import dsl._
 
-  val alteHaas = fontFace("alte_haas_groteskregular")( // generates @font-face
+  // generates @font-face for alteHaas
+  val alteHaas = fontFace("alte_haas_groteskregular")(
     _.src("url(fonts/alteHaas/altehaasgroteskregular-webfont.woff2), url(fonts/alteHaas/altehaasgroteskregular-webfont.woff), url(fonts/alteHaas/AlteHaasGroteskRegular.ttf)")
   )
 
-  // generates @font-face
+  // generates @font-face for freeSans
   val freeSansFF = fontFace("freeSans")(
     _.src("url(fonts/freeSans/FreeSans.woff), url(fonts/freeSans/freesans.woff2), url(fonts/freeSans/freesans.ttf)")
   )
+
+  // generates @font-face for freeSansBold
   val freeSansBoldFF = fontFace("freeSansBold")(
     _.src("url(fonts/freeSans/FreeSansBold.woff), url(fonts/freeSans/freesansbold.woff2), url(fonts/freeSans/freesansbold.ttf)")
     .fontWeight.bold
   )
+
+  // generates @font-face for freeSansOblique
   val freeSansObliqueFF = fontFace("freeSansOblique")(
     _.src("url(fonts/freeSans/FreeSansOblique.woff), url(fonts/freeSans/freesansoblique.woff2), url(fonts/freeSans/freesansoblique.ttf)")
     .fontStyle.italic

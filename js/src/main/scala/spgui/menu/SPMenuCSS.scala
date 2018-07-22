@@ -4,6 +4,7 @@ import scalacss.DevDefaults._
 import spgui.circuit.SPGUICircuit
 import spgui.theming.Theming.SPStyleSheet
 
+/** CSS-Styling for the SP-Menu */
 object SPMenuCSS extends SPStyleSheet {
   import dsl._
 

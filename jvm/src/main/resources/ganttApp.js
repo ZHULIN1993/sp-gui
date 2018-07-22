@@ -1,3 +1,4 @@
+/** Facade for Using Angular Gantt*/
 function SPGantt(element, options) {
 
   'use strict';

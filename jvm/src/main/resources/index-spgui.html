@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<!--
+SP-GUI HTML File with full javascript bundle and fast-optimization.
+
+Tag: DocHelp. Where is spguiJVM used?
+-->
 <html>
   <head>
     <meta charset="UTF-8">
@@ -6,14 +11,18 @@
   </head>
   <body>
     <section id="spgui-root"></section>
+    <!--Full Javascript bundle-->
     <script type="text/javascript" src="npmdependencies/output/bundle.js"></script>
 
     <!--<script type="text/javascript" src="target/scala-2.12/spgui-jsdeps.min.js"></script>-->
+    <!--Full Javascript dependency-->
     <script type="text/javascript" src="target/scala-2.12/spgui-jsdeps.js"></script>
 
     <!--<script type="text/javascript" src="target/scala-2.12/spgui-opt.js"></script>-->
+    <!--Fast Optimization for project. Tag: DocHelp. -->
     <script type="text/javascript" src="target/scala-2.12/spgui-fastopt.js"></script>
 
+    <!--Calls the Main function in your project.-->
     <script type="text/javascript">
       spgui.Main().main();
     </script>

@@ -8,13 +8,28 @@ import org.scalajs.dom
 import spgui.SPWidgetBase
 import spgui.SPWidget
 
+/** EXAMPLE
+  * -------
+  * This is an example on how to use SPGantt
+  * with some basic JS-Arrays
+  *
+  */
 object GanttExamples {
 
   class Backend($: BackendScope[SPWidgetBase, Unit]) {
-
+    /** Define a local mutable variable */
     var spGantt: SPGantt = _
 
+    /** SetGantt maps the dom-element and sets spGantt to new value
+      * @param options SPGanttOptions
+      * @return Callback
+      */
     def setGantt(options: SPGanttOptions) = $.getDOMNode.map(n => spGantt = SPGantt(n, options))
+
+    /** Set new data from the rows
+      * @param rows JS-array of rows to add in gantt
+      * @return Callback
+      */
     def setData(rows: js.Array[Row]) = Callback {
       spGantt.setData(rows)
       spGantt.onUserScroll(() => println("onUserScroll callback called"))
@@ -25,30 +40,40 @@ object GanttExamples {
         HtmlTagOf[dom.html.Element]("gantt-component"), // becomes <gantt-component></gantt-component>
         GanttDataExamples().toTagMod { case (k,v) =>
           <.button(k, ^.onClick --> (setGantt(v.options) >> setData(v.data)))
+          // When button is clicked we set the options and data
         }
       )
   }
 
-  private val component = ScalaComponent.builder[SPWidgetBase]("GanttExample")
+  private val ganttComponent = ScalaComponent.builder[SPWidgetBase]("GanttExample")
     .renderBackend[Backend]
     .build
 
-  def apply() = SPWidget(spwb => component(spwb))
+  /** apply() Create a SPWidget with SPWidgetBase as Props*/
+  def apply() = SPWidget(ganttComponent(_))
 }
 
+/** Here we create example data to plot in the gantt*/
 object GanttDataExamples {
-
+  /** Example case class */
   case class Example(data: js.Array[Row], options: SPGanttOptions)
 
+  /** Apply method
+    *
+    * @return Patient-string mapped to a Example
+    *         (with data from the patient timeline and default options)
+    */
   def apply(): Map[String, Example] = List(
     ("Patient", patientTimeLine, patientTimeLineOptions)
   ).map(t => t._1 -> Example(t._2, t._3)).toMap
 
-  def somRow() = Row(
+  /** Just an example rox*/
+  def someRow() = Row(
     name = "sampleRow",
     tasks = js.Array(Task("scalajs task", new js.Date(2017, 5, 20, 9, 0, 0), new js.Date(2017, 5, 20, 10, 0, 0)))
   )
 
+  /** Example array when a patient arrives to hospital */
   val patientTimeLine = js.Array(
     Row("Besök", js.Array(
       Task("Patientens Besök På Sjukhuset", new js.Date(2017, 5, 20, 8, 5, 3, 2), new js.Date(2017, 5, 20, 10, 32, 23, 9), "#f3ed84")

@@ -18,17 +18,12 @@ import scala.scalajs.js
 trait ModalResult
 
 object Modal {
-  case class Props(
-                    proxy: ModelProxy[ModalState]
-
-                  )
+  case class Props(proxy: ModelProxy[ModalState])
 
   case class State()
 
   private val noComponent : VdomElement = div("No content")
-
   private def noOnComplete : Callback = Callback(println("No onComplete function provided"))
-
 
   class Backend($: BackendScope[Props, State]) {
 

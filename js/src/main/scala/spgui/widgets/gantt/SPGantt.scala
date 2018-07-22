@@ -4,8 +4,15 @@ import org.scalajs.dom
 import scalajs.js
 import js.annotation.{ JSGlobal, JSExportAll }
 
+/** FACADE
+  * ------
+  * This is a facade for the ganttApp.js to create a
+  * AngularJS Gantt inside scalajs-react.
+  */
+
+// facades "facadedObject" in gui/src/main/resources/ganttApp.js
 @js.native
-trait SPGantt extends js.Object { // facades "facadedObject" in gui/src/main/resources/ganttApp.js
+trait SPGantt extends js.Object {
   def setData(rows: js.Array[Row]): Unit = js.native
   def addSomeRow(): Unit = js.native
   def addRow(row: Row): Unit = js.native

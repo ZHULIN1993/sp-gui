@@ -5,6 +5,7 @@ import spgui.theming.Theming.SPStyleSheet
 
 import scalacss.DevDefaults._
 
+/** CSS-styling for Modal*/
 object ModalCSS extends SPStyleSheet {
   import dsl._
 

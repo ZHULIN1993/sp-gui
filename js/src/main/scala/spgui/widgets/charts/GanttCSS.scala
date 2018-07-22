@@ -2,6 +2,7 @@ package spgui.widgets.charts
 
 import scalacss.DevDefaults._
 
+/** Styling for gantt */
 object GanttCSS extends StyleSheet.Inline {
   import dsl._
 

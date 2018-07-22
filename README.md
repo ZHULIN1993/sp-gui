@@ -15,6 +15,7 @@ Here we have widgets that can be widely used.
 ## Wiki
 Watch our wiki for information about Sequence Planner and how to use.
 
+# Guide #
 
 ## Prerequisites ##
 You will need an sbt installation  (`scala-sbt.org/0.13/docs/`) 
