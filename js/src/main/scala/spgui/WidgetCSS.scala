@@ -1,4 +1,4 @@
-package spgui.widgets.css
+package spgui
 
 import scalacss.DevDefaults._
 
