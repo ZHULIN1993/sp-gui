@@ -41,7 +41,7 @@ object Versions {
 
   /** VersionNumbers for Gui-Dependencies */
   object GuiVersion {
-    lazy val scalajsReact = "1.1.1"
+    lazy val scalajsReact = "1.2.3"
     lazy val scalaCSS = "0.5.3"
     lazy val diode = "1.1.2"
     lazy val scalarx = "0.3.2"
@@ -55,7 +55,10 @@ object Versions {
 
   /** VersionNumbers for Npm-Dependencies added by scalajs-bundler*/
   object NpmVersion {
-
+    lazy val bootstrap = "4.1.1"
+    lazy val reactstrap = "6.3.0"
+    lazy val react = "16.2.0"
+    lazy val reactDom = "16.2.0"
 
     // Dev
     lazy val webpackMerge = "4.1.0"

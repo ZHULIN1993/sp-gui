@@ -1,5 +1,7 @@
 import SPGuiSettings._
 
+
+enablePlugins(ScalaJSPlugin)
 // Enable the plugin from lihaoy
 enablePlugins(WorkbenchPlugin)
 // Enable the scalajs-bundler plugin from scalacenter

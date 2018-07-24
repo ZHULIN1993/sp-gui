@@ -6,8 +6,10 @@ Uses lihaoy's workbench to make a localhost and show the SP-Widgets
 -->
 <html>
   <head>
-    <meta charset="UTF-8">
     <title>Sequence Planner</title>
+    <meta charset="UTF-8">
+    <!--Include Workbench from lihaoy-->
+    <script type="text/javascript" src="/workbench.js"></script>
   </head>
   <body>
     <section id="spgui-root"></section>
@@ -16,18 +18,16 @@ Uses lihaoy's workbench to make a localhost and show the SP-Widgets
 
     <!--<script type="text/javascript" src="js/target/scala-2.12/spgui-jsdeps.min.js"></script>-->
     <!--Full Javascript dependency-->
-    <script type="text/javascript" src="../sp-gui-jsdeps.js"></script>
+    <!--<script type="text/javascript" src="../sp-gui-jsdeps.js"></script>-->
 
     <!--<script type="text/javascript" src="js/target/scala-2.12/spgui-opt.js"></script>-->
     <!--Fast Optimization for project. Tag: DocHelp. -->
     <script type="text/javascript" src="../sp-gui-fastopt.js"></script>
-    <!--Include Workbench from lihaoy-->
-    <script type="text/javascript" src="/workbench.js"></script>
     <!--
         Calls the Main in FrontendOnlyMain.main().
       -->
     <script type="text/javascript">
-
+      spgui.Main().main();
     </script>
   </body>
 </html>

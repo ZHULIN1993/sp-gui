@@ -54,17 +54,20 @@ object SPGuiSettings {
 
   /** Dependencies only used by the JS project (note the use of %%% instead of %%) */
   val guiDependencies = Def.setting(Seq(
-    "com.github.japgolly.scalajs-react" %%% "core" % GuiVersion.scalajsReact,
-    "com.github.japgolly.scalajs-react" %%% "extra" % GuiVersion.scalajsReact,
-    "com.github.japgolly.scalacss" %%% "core" % GuiVersion.scalaCSS,
-    "com.github.japgolly.scalacss" %%% "ext-react" % GuiVersion.scalaCSS,
-    "org.scala-js" %%% "scalajs-dom" % GuiVersion.scalaDom
+    "org.scala-js" %%% "scalajs-dom" % GuiVersion.scalaDom,
+    "com.github.japgolly.scalajs-react" %%% "core" % GuiVersion.scalajsReact
   ))
 
   /** Dependencies only used by the scalajs-bundler,
     * as would be installed by webpack and npm in other cases
     */
-  lazy val npmBundlerDependencies = Seq()
+  lazy val npmBundlerDependencies = Seq(
+    "react" -> NpmVersion.react,
+    "react-dom" -> NpmVersion.reactDom
+    /*,
+    "bootstrap" -> NpmVersion.bootstrap,
+    "reactstrap" -> NpmVersion.reactstrap*/
+  )
 
   lazy val npmBundlerDevDependencies = Seq(
     "webpack-merge" -> NpmVersion.webpackMerge
