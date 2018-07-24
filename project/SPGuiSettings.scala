@@ -92,7 +92,7 @@ object SPGuiSettings {
   /** Dependencies only used by the scalajs-bundler,
     * as would be installed by webpack and npm in other cases
     */
-  lazy val npmDependencies = Seq(
+  lazy val npmBundlerDependencies = Seq(
 
   )
 

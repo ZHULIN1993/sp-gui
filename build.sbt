@@ -2,6 +2,8 @@ import SPGuiSettings._
 
 // Enable the plugin from lihaoy
 enablePlugins(WorkbenchPlugin)
+// Enable the scalajs-bundler plugin from scalacenter
+enablePlugins(ScalaJSBundlerPlugin)
 /* leads to problems with one resource or the other
 workbenchDefaultRootObject := Some((
   "js/target/scala-2.12/classes/index.html",
@@ -29,6 +31,9 @@ lazy val buildSettings = Seq(
     )
   )
 )
+
+npmDependencies in Compile ++= npmBundlerDependencies
+
 
 // Raw Javascript files
 val jsFiles = Seq(

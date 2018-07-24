@@ -12,11 +12,13 @@ import Keys._
   *
   */
 object Versions {
+  /** VersionNumbers for Project-Dependencies */
   object ProjectVersion {
     lazy val scala = "2.12.3"
     lazy val log4js = "1.4.10"
   }
 
+  /** VersionNumbers for Domain-Dependencies */
   object DomainVersion {
     lazy val playJson = "2.6.0"
     lazy val playJsonDerivedCodecs = "4.0.0"

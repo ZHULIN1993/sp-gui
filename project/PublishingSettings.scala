@@ -5,7 +5,7 @@ import SPGuiSettings._
 
 /** Scala project settings for publishing */
 object PublishingSettings {
-  lazy val description = "Sequence Planner (SP) is a micro service architecture for modeling and analyzing automation systems"
+  lazy val description = "Sequence Planner (SP) is a micro service architecture for modeling and analyzing automation systems, this is the Graphical User Interface for SP"
   lazy val organizationName = "sequenceplanner"
   lazy val comString = "com"
   lazy val githubString = "github"
