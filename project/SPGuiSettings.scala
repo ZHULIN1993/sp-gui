@@ -58,18 +58,6 @@ object SPGuiSettings {
   ))
   // "org.joda" % "joda-convert" % "1.8.2" add this to jvm-side
 
-  /** Dependencies use for comm */
-  lazy val commDependencies = Def.setting(Seq(
-    "com.typesafe.akka" %% "akka-actor" % CommVersion.akka,
-    "com.typesafe.akka" %% "akka-cluster" % CommVersion.akka,
-    "com.typesafe.akka" %% "akka-cluster-tools" % CommVersion.akka,
-    "com.typesafe.akka" %% "akka-testkit" % CommVersion.akka,
-    "org.slf4j" % "slf4j-simple" % CommVersion.slf4j,
-    "com.github.romix.akka" %% "akka-kryo-serialization" % CommVersion.akkaKryoSerialization,
-    "org.scalatest" %% "scalatest" % MultiVersion.scalaTest % "test",
-    "com.sksamuel.avro4s" %% "avro4s-core" % CommVersion.avro4s
-  ))
-
   /** Dependencies only used by the JS project (note the use of %%% instead of %%) */
   val guiDependencies = Def.setting(Seq(
     "com.github.japgolly.scalajs-react" %%% "core" % GuiVersion.scalajsReact,
