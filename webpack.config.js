@@ -39,4 +39,4 @@ const spGUI = webpackMerge(scalajsBundler,
 
 });
 
-module.exports = SPGUI;
+module.exports = spGUI;

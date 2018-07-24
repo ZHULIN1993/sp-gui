@@ -38,13 +38,6 @@ npmDevDependencies in Compile ++= npmBundlerDevDependencies
 // Add webpack-configuration file to be used with `sbt fastOptJS`
 webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
 
-// Raw Javascript files
-val jsFiles = Seq(
-  ProvidedJS / "ganttApp.js",
-  ProvidedJS / "bundle.js",
-  ProvidedJS / "bundle.min.js"
-)
-
 lazy val root = project.in(file("."))
   .aggregate(spgui_jvm, spgui_js)
   .settings(defaultBuildSettings)
@@ -62,7 +55,6 @@ lazy val spgui = crossProject.crossType(CrossType.Full).in(file("."))
   .jvmSettings()
   .jsSettings(
     jsSettings,
-    jsDependencies ++= jsFiles,
     libraryDependencies ++= domainDependencies.value,
     libraryDependencies ++= guiDependencies.value,
     libraryDependencies ++= spDep.value
