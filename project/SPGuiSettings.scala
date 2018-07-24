@@ -145,6 +145,18 @@ object SPGuiSettings {
       url   = url("https://github.com/ellenkorsberg")
     ),
     Developer(
+      id = "alfredbjork",
+      name = "Alfred Björk",
+      email = "-",
+      url = url("https://github.com/alfredbjork")
+    ),
+    Developer(
+      id = "giuinktse7",
+      name = "Jonathan Krän",
+      email = "-",
+      url = url("https://github.com/giuinktse7")
+    ),
+    Developer(
       id    = "aleastChs",
       name  = "Alexander Åstrand",
       email = "aleast@student.chalmers.se",
