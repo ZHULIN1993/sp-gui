@@ -1,10 +1,9 @@
-import sbt._
-import Keys._
-import sbt.{Developer, ScmInfo, url}
-import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import Versions._
 import com.typesafe.sbt.SbtPgp.autoImport._
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import sbt.Keys._
+import sbt.{Developer, url, _}
 import xerial.sbt.Sonatype.autoImport._
-import Versions.{CrossVersion, ProjectVersion, GuiVersion, CommVersion, DomainVersion}
 
 /**
   * Scala-sbt project settings.
@@ -51,7 +50,7 @@ object SPGuiSettings {
     * the special %%% function selects the correct version for each project
     */
   lazy val domainDependencies = Def.setting(Seq(
-    "org.scalatest" %%% "scalatest" % CrossVersion.scalaTest % "test",
+    "org.scalatest" %%% "scalatest" % MultiVersion.scalaTest % "test",
     "org.scala-lang.modules" %%% "scala-parser-combinators" % DomainVersion.scalaParser,
     "com.typesafe.play" %%% "play-json" % DomainVersion.playJson,
     "org.julienrf" %%% "play-json-derived-codecs" % DomainVersion.playJsonDerivedCodecs,
@@ -67,7 +66,7 @@ object SPGuiSettings {
     "com.typesafe.akka" %% "akka-testkit" % CommVersion.akka,
     "org.slf4j" % "slf4j-simple" % CommVersion.slf4j,
     "com.github.romix.akka" %% "akka-kryo-serialization" % CommVersion.akkaKryoSerialization,
-    "org.scalatest" %% "scalatest" % CrossVersion.scalaTest % "test",
+    "org.scalatest" %% "scalatest" % MultiVersion.scalaTest % "test",
     "com.sksamuel.avro4s" %% "avro4s-core" % CommVersion.avro4s
   ))
 
@@ -82,7 +81,7 @@ object SPGuiSettings {
     "org.scala-js" %%% "scalajs-dom" % GuiVersion.scalaDom,
     "com.lihaoyi" %%% "scalarx" % GuiVersion.scalarx,
     "org.singlespaced" %%% "scalajs-d3" % GuiVersion.scalajsD3,
-    "org.scalatest" %%% "scalatest" % CrossVersion.scalaTest % "test",
+    "org.scalatest" %%% "scalatest" % MultiVersion.scalaTest % "test",
     "com.lihaoyi" %%% "utest" % GuiVersion.uTest % Test,
     "com.github.julien-truffaut" %%%  "monocle-core"  % GuiVersion.monocleCore,
     "com.github.julien-truffaut" %%%  "monocle-macro" % GuiVersion.monocleMacro,
@@ -94,6 +93,14 @@ object SPGuiSettings {
     */
   lazy val npmBundlerDependencies = Seq(
 
+
+  )
+
+  lazy val npmBundlerDevDependencies = Seq(
+    "css-loader" -> NpmVersion.cssLoader,
+    "file-loader" -> NpmVersion.fileLoader,
+    "json-loader" -> NpmVersion.jsonLoader,
+    "style-loader" -> NpmVersion.styleLoader
   )
 
   lazy val jsSettings = Seq(

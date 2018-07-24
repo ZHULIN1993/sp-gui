@@ -27,7 +27,7 @@ object Versions {
   }
 
   /** VersionNumbers for Dependencies used in different */
-  object CrossVersion {
+  object MultiVersion {
     lazy val scalaTest = "3.0.1"
   }
 
@@ -56,6 +56,12 @@ object Versions {
   /** VersionNumbers for Npm-Dependencies added by scalajs-bundler*/
   object NpmVersion {
 
+
+    // Dev
+    lazy val styleLoader = "0.13.1"
+    lazy val cssLoader = "0.26.1"
+    lazy val jsonLoader = "0.5.4"
+    lazy val fileLoader = "0.9.0"
   }
 
 }

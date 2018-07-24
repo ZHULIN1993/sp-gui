@@ -31,8 +31,10 @@ lazy val buildSettings = Seq(
     )
   )
 )
-
+// Add npm dependenices with scalajs-bundler
 npmDependencies in Compile ++= npmBundlerDependencies
+// Add npm devDependenices with scalajs-bundler
+npmDevDependencies in Compile ++= npmBundlerDevDependencies
 
 
 // Raw Javascript files
