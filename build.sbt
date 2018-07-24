@@ -1,4 +1,4 @@
-import SPSettings._
+import SPGuiSettings._
 
 // Enable the plugin from lihaoy
 enablePlugins(WorkbenchPlugin)

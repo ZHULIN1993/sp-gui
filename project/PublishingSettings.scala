@@ -1,7 +1,7 @@
 import sbt._
 import sbt.{Developer, ScmInfo, url}
 import sbt.Keys._
-import SPSettings._
+import SPGuiSettings._
 
 /** Scala project settings for publishing */
 object PublishingSettings {
