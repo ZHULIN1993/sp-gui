@@ -31,11 +31,12 @@ lazy val buildSettings = Seq(
     )
   )
 )
-// Add npm dependenices with scalajs-bundler
+// Add npm dependenices with scalajs-bundler to be used with `sbt compile`
 npmDependencies in Compile ++= npmBundlerDependencies
-// Add npm devDependenices with scalajs-bundler
+// Add npm devDependenices with scalajs-bundler to be used with `sbt compile`
 npmDevDependencies in Compile ++= npmBundlerDevDependencies
-
+// Add webpack-configuration file to be used with `sbt fastOptJS`
+webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
 
 // Raw Javascript files
 val jsFiles = Seq(

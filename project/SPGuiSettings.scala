@@ -88,7 +88,8 @@ object SPGuiSettings {
     "css-loader" -> NpmVersion.cssLoader,
     "file-loader" -> NpmVersion.fileLoader,
     "json-loader" -> NpmVersion.jsonLoader,
-    "style-loader" -> NpmVersion.styleLoader
+    "style-loader" -> NpmVersion.styleLoader,
+    "webpack-merge" -> NpmVersion.webpackMerge
   )
 
   lazy val jsSettings = Seq(

@@ -58,6 +58,7 @@ object Versions {
 
 
     // Dev
+    lazy val webpackMerge = "4.1.0"
     lazy val styleLoader = "0.13.1"
     lazy val cssLoader = "0.26.1"
     lazy val jsonLoader = "0.5.4"
