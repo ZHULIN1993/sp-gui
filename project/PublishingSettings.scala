@@ -26,4 +26,3 @@ object PublishingSettings {
       Some("releases"  at nexus + "service/local/staging/deploy/maven2")
   )
 }
-

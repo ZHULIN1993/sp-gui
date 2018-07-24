@@ -49,13 +49,7 @@ object SPGuiSettings {
     * These dependencies are shared between JS and JVM projects
     * the special %%% function selects the correct version for each project
     */
-  lazy val domainDependencies = Def.setting(Seq(
-    "org.scalatest" %%% "scalatest" % MultiVersion.scalaTest % "test",
-    "org.scala-lang.modules" %%% "scala-parser-combinators" % DomainVersion.scalaParser,
-    "com.typesafe.play" %%% "play-json" % DomainVersion.playJson,
-    "org.julienrf" %%% "play-json-derived-codecs" % DomainVersion.playJsonDerivedCodecs,
-    "io.github.cquiroz" %%% "scala-java-time" % DomainVersion.scalaJavaTime
-  ))
+  lazy val domainDependencies = Def.setting(Seq())
   // "org.joda" % "joda-convert" % "1.8.2" add this to jvm-side
 
   /** Dependencies only used by the JS project (note the use of %%% instead of %%) */
@@ -64,38 +58,19 @@ object SPGuiSettings {
     "com.github.japgolly.scalajs-react" %%% "extra" % GuiVersion.scalajsReact,
     "com.github.japgolly.scalacss" %%% "core" % GuiVersion.scalaCSS,
     "com.github.japgolly.scalacss" %%% "ext-react" % GuiVersion.scalaCSS,
-    "io.suzaku" %%% "diode" % GuiVersion.diode,
-    "io.suzaku" %%% "diode-react" % GuiVersion.diode,
-    "org.scala-js" %%% "scalajs-dom" % GuiVersion.scalaDom,
-    "com.lihaoyi" %%% "scalarx" % GuiVersion.scalarx,
-    "org.singlespaced" %%% "scalajs-d3" % GuiVersion.scalajsD3,
-    "org.scalatest" %%% "scalatest" % MultiVersion.scalaTest % "test",
-    "com.lihaoyi" %%% "utest" % GuiVersion.uTest % Test,
-    "com.github.julien-truffaut" %%%  "monocle-core"  % GuiVersion.monocleCore,
-    "com.github.julien-truffaut" %%%  "monocle-macro" % GuiVersion.monocleMacro,
-    "co.fs2" %%% "fs2-core" % GuiVersion.fs2Core
+    "org.scala-js" %%% "scalajs-dom" % GuiVersion.scalaDom
   ))
 
   /** Dependencies only used by the scalajs-bundler,
     * as would be installed by webpack and npm in other cases
     */
-  lazy val npmBundlerDependencies = Seq(
-
-
-  )
+  lazy val npmBundlerDependencies = Seq()
 
   lazy val npmBundlerDevDependencies = Seq(
-    "css-loader" -> NpmVersion.cssLoader,
-    "file-loader" -> NpmVersion.fileLoader,
-    "json-loader" -> NpmVersion.jsonLoader,
-    "style-loader" -> NpmVersion.styleLoader,
     "webpack-merge" -> NpmVersion.webpackMerge
   )
 
-  lazy val jsSettings = Seq(
-    testFrameworks += new TestFramework("utest.runner.Framework")
-    // addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
-  )
+  lazy val jsSettings = Seq()
 
   lazy val creditsTo = List(
     Developer(
