@@ -13,21 +13,11 @@ Uses lihaoy's workbench to make a localhost and show the SP-Widgets
   </head>
   <body>
     <section id="spgui-root"></section>
-    <!--Minified Javascript bundle-->
-    <!--<script type="text/javascript" src="./bundle.min.js"></script>-->
 
-    <!--<script type="text/javascript" src="js/target/scala-2.12/spgui-jsdeps.min.js"></script>-->
     <!--Full Javascript dependency-->
-    <!--<script type="text/javascript" src="../sp-gui-jsdeps.js"></script>-->
-
-    <!--<script type="text/javascript" src="js/target/scala-2.12/spgui-opt.js"></script>-->
+    <script type="text/javascript" src="../sp-gui-jsdeps.js"></script>
     <!--Fast Optimization for project. Tag: DocHelp. -->
     <script type="text/javascript" src="../sp-gui-fastopt.js"></script>
-    <!--
-        Calls the Main in FrontendOnlyMain.main().
-      -->
-    <script type="text/javascript">
-      spgui.Main().main();
-    </script>
+    <script type="text/javascript">spgui.Main().main();</script>
   </body>
 </html>
