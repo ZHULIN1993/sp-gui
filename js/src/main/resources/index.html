@@ -2,6 +2,8 @@
 <!--
 Javascript index.html-file with minified javascript bundle and fast-optimization.
 
+Uses scalajs-bundler to import npm-packages
+
 Uses lihaoy's workbench to make a localhost and show the SP-Widgets
 -->
 <html>
@@ -20,10 +22,9 @@ Uses lihaoy's workbench to make a localhost and show the SP-Widgets
 <script type="text/javascript" src="../scalajs-bundler/main/sp-gui-opt-entrypoint.js"></script>
 <script type="text/javascript" src="../scalajs-bundler/main/sp-gui-opt-library.js"></script>
 <script type="text/javascript" src="../scalajs-bundler/main/sp-gui-opt-loader.js"></script>
-<!--Full Javascript dependency-->
+<!--Full Javascript dependency, but right now empty 25-07-2018::10:28 -->
 <script type="text/javascript" src="../sp-gui-jsdeps.js"></script>
-<!--Fast Optimization for project. Tag: DocHelp. -->
-<script type="text/javascript" src="../sp-gui-fastopt.js"></script>
+
 <script type="text/javascript">spgui.Main().main();</script>
 </body>
 </html>

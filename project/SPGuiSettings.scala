@@ -69,9 +69,7 @@ object SPGuiSettings {
     "reactstrap" -> NpmVersion.reactstrap*/
   )
 
-  lazy val npmBundlerDevDependencies = Seq(
-    "webpack-merge" -> NpmVersion.webpackMerge
-  )
+  lazy val npmBundlerDevDependencies = Seq()
 
   lazy val jsSettings = Seq()
 

@@ -61,8 +61,6 @@ lazy val spgui = crossProject.crossType(CrossType.Full).in(file("."))
     // Add npm devDependenices with scalajs-bundler to be used with `sbt compile`
     npmDevDependencies in Compile ++= npmBundlerDevDependencies,
     webpackBundlingMode := BundlingMode.LibraryAndApplication()
-    // Add webpack-configuration file to be used with `sbt fastOptJS`
-    //webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
   )
 
 lazy val spgui_jvm = spgui.jvm
