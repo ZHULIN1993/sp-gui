@@ -5,19 +5,25 @@ Javascript index.html-file with minified javascript bundle and fast-optimization
 Uses lihaoy's workbench to make a localhost and show the SP-Widgets
 -->
 <html>
-  <head>
-    <title>Sequence Planner</title>
-    <meta charset="UTF-8">
-    <!--Include Workbench from lihaoy-->
-    <script type="text/javascript" src="/workbench.js"></script>
-  </head>
-  <body>
-    <section id="spgui-root"></section>
+<head>
+  <title>Sequence Planner</title>
+  <meta charset="UTF-8">
+  <!--Include Workbench from lihaoy-->
+  <script type="text/javascript" src="/workbench.js"></script>
+</head>
+<body>
+<section id="spgui-root"></section>
 
-    <!--Full Javascript dependency-->
-    <script type="text/javascript" src="../sp-gui-jsdeps.js"></script>
-    <!--Fast Optimization for project. Tag: DocHelp. -->
-    <script type="text/javascript" src="../sp-gui-fastopt.js"></script>
-    <script type="text/javascript">spgui.Main().main();</script>
-  </body>
+<!-- IMPORT SCALAJS-BUNDLER SCRIPTS -->
+<script type="text/javascript" src="../scalajs-bundler/main/sp-gui-opt.js"></script>
+<script type="text/javascript" src="../scalajs-bundler/main/sp-gui-opt-bundle.js"></script>
+<script type="text/javascript" src="../scalajs-bundler/main/sp-gui-opt-entrypoint.js"></script>
+<script type="text/javascript" src="../scalajs-bundler/main/sp-gui-opt-library.js"></script>
+<script type="text/javascript" src="../scalajs-bundler/main/sp-gui-opt-loader.js"></script>
+<!--Full Javascript dependency-->
+<script type="text/javascript" src="../sp-gui-jsdeps.js"></script>
+<!--Fast Optimization for project. Tag: DocHelp. -->
+<script type="text/javascript" src="../sp-gui-fastopt.js"></script>
+<script type="text/javascript">spgui.Main().main();</script>
+</body>
 </html>
