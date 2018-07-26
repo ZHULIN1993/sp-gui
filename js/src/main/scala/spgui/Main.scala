@@ -3,6 +3,7 @@ package spgui
 import org.scalajs.dom.document
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
+import spgui.components.Layout
 
 /** Main class, initialized with scalaJSUseMainModuleInitializer := true
   *
@@ -14,5 +15,6 @@ object Main {
       .build
 
     <.div(Hello("Frank")).renderIntoDOM(document.getElementById("root"))
+    Layout().renderIntoDOM(document.getElementById("root"))
   }
 }
