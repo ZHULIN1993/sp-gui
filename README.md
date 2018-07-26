@@ -24,7 +24,8 @@ You will also need an installation of node (`nodejs.org`)
 ## Compiling the SP frontend ##
 To install javascript dependencies, we now use [scalajs-bundler](https://github.com/scalacenter/scalajs-bundler/).
 
-# RUN `sbt fullOptJS::webpack` with scalajs-bundler (?!?) TODO: TEST MORE #
+Run `>sbt compile`, followed by `>sbt ~fastOptJS::webpack`, then [open in browser](localhost:8080/js/target/scala-2.12/classes/index.html)
+@localhost:8080/js/target/scala-2.12/classes/index.html
 
 To compile the scalaJS code, run `sbt compile`. To compile the optimized version run `sbt fullOptJS` (slow process, not recommended in development).
 
