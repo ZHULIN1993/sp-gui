@@ -1,12 +1,5 @@
 import SPGuiSettings._
 
-import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.npmDevDependencies
-
-
-enablePlugins(ScalaJSPlugin)
-// Enable the plugin from lihaoy
-enablePlugins(WorkbenchPlugin)
-// Enable the scalajs-bundler plugin from scalacenter
 /* leads to problems with one resource or the other
 workbenchDefaultRootObject := Some((
   "js/target/scala-2.12/classes/index.html",
@@ -50,7 +43,7 @@ lazy val spgui = crossProject.crossType(CrossType.Full).in(file("."))
   .settings(defaultBuildSettings: _*)
   .settings(buildSettings: _*)
   .jvmSettings()
-  .jsConfigure(_.enablePlugins(ScalaJSBundlerPlugin))
+  .jsConfigure(_.enablePlugins(ScalaJSBundlerPlugin, ScalaJSPlugin, WorkbenchPlugin))
   .jsSettings(
     jsSettings,
     libraryDependencies ++= domainDependencies.value,
@@ -60,7 +53,7 @@ lazy val spgui = crossProject.crossType(CrossType.Full).in(file("."))
     npmDependencies in Compile ++= npmBundlerDependencies,
     // Add npm devDependenices with scalajs-bundler to be used with `sbt compile`
     npmDevDependencies in Compile ++= npmBundlerDevDependencies,
-    webpackBundlingMode := BundlingMode.LibraryAndApplication()
+    scalaJSUseMainModuleInitializer := true
   )
 
 lazy val spgui_jvm = spgui.jvm

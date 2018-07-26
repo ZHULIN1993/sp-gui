@@ -4,20 +4,23 @@ import org.scalajs.dom.document
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 
-import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
+/**
+  * Created by alexa on 26/07/2018.
+  */
 
-object Main extends App {
-  @JSExportTopLevel("spgui.Main")
-  protected def getInstance(): this.type = this
+object Main {
+  def main(args: Array[String]): Unit = {
+    val Hello = ScalaComponent.builder[String]("Hello")
+      .render_P(name => <.div("Hello there ", name))
+      .build
 
-  @JSExport
-  def main(): Unit = {
-    val Hello =
+    <.div(Hello("Frank")).renderIntoDOM(document.getElementById("root"))
+    /*val Hello =
       ScalaComponent.builder[String]("Hello")
         .render_P(name => <.div("Hello there ", name))
         .build
 
-    <.div(Hello("Mathew")).renderIntoDOM(document.getElementById("spgui-root"))
+    // Usage:
+    <.div(Hello("Mathew")).renderIntoDOM(document.body)*/
   }
 }
-
