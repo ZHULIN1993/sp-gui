@@ -63,10 +63,9 @@ object SPGuiSettings {
     */
   lazy val npmBundlerDependencies = Seq(
     "react" -> NpmVersion.react,
-    "react-dom" -> NpmVersion.reactDom
-    /*,
+    "react-dom" -> NpmVersion.reactDom,
     "bootstrap" -> NpmVersion.bootstrap,
-    "reactstrap" -> NpmVersion.reactstrap*/
+    "reactstrap" -> NpmVersion.reactstrap
   )
 
   lazy val npmBundlerDevDependencies = Seq()
