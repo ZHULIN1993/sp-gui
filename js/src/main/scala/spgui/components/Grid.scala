@@ -1,16 +1,23 @@
 package spgui.components
 
-import spgui.components.Content.SPContent
+import java.util.UUID
+
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 
 object Grid {
-  case class GridProps(widgets: Seq[SPContent])
+  case class Widget(id: UUID, children: VdomElement)
+  case class GridProps(widgets: Seq[Widget])
 
   class Backend($: BackendScope[GridProps, Unit]) {
 
     def render(p: GridProps) = {
-      p.widgets.foreach{c => <.div(c)}
+      <.div(
+        p.widgets.map{ widget =>
+          <.div(^.key := widget.id.toString, widget.children)
+        }.toTagMod
+      ).when(p.widgets.nonEmpty)
+
     }
   }
 
@@ -18,5 +25,7 @@ object Grid {
     .renderBackend[Backend]
     .build
 
-  def apply() = component
+  def apply() = component(GridProps(Seq()))
+
+  def apply(p: GridProps) = component(p)
 }

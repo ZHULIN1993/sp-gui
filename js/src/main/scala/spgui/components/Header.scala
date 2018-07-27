@@ -4,17 +4,12 @@ import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 
 object Header {
-
-  class Backend($: BackendScope[Unit, Unit]) {
-    def render() = {
-      <.div()
-    }
-  }
-
-  private val component = ScalaComponent.builder[Unit]("Header")
-    .renderBackend[Backend]
+  private val component = ScalaComponent.builder[String]("Header")
+    .render_P(r => <.div(r))
     .build
 
-  def apply() = component
+  def apply() = component("Empty Header")
+
+  def apply(text: String) = component(text)
 }
 
