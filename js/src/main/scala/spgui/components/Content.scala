@@ -23,6 +23,8 @@ object Content {
 
   def apply() = component
 
+  def apply(children: Children) = component(children)
+
   type SPContent = Scala.Component[_, _, _, CtorType.Summoner.Aux[Box[Unit], Children.Varargs, CtorType.Children]#CT]
 }
 

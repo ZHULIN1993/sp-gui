@@ -17,7 +17,11 @@ object Dashboard {
 
   class Backend($: BackendScope[DashboardProps, Unit]) {
     def render(p: DashboardProps) = {
-      <.div(p.header).when(p.header.nonEmpty)
+      <.div(
+        p.header(
+          <.p("hi")
+        )
+      ).when(p.header.nonEmpty)
       <.div("Hi Mathew!!!")
     }
   }
