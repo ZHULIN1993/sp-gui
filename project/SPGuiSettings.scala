@@ -74,6 +74,7 @@ object SPGuiSettings {
   val guiDependencies = Def.setting(Seq(
     "org.scala-js" %%% "scalajs-dom" % GuiVersion.scalaDom,
     "com.github.japgolly.scalajs-react" %%% "core" % GuiVersion.scalajsReact,
+    "com.github.japgolly.scalajs-react" %%% "extra" % GuiVersion.scalajsReact,
     "com.github.japgolly.scalacss" %%% "core" % GuiVersion.scalaCSS,
     "com.github.japgolly.scalacss" %%% "ext-react" % GuiVersion.scalaCSS,
     "io.suzaku" %%% "diode" % GuiVersion.diode,
