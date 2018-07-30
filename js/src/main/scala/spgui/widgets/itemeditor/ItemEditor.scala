@@ -25,10 +25,10 @@ object ItemEditor {
     def handleCommand: API_ItemServiceDummy => Unit = {
       case API_ItemServiceDummy.Hello() =>
         println("ItemEditorWidget: Somebody said hi")
-      case API_ItemServiceDummy.Item(item) =>
-        jsonEditor = JSONEditor($.getDOMNode.runNow(), ItemEditorOptions())
-        $.forceUpdate.runNow() // explicit rerendering cause jsonEditor is not in State
-        jsonEditor.set(JSON.parse(SPValue(item).toJson))
+//      case API_ItemServiceDummy.Item(item) =>
+//        jsonEditor = JSONEditor($.getDOMNode.runNow(), ItemEditorOptions())
+//        $.forceUpdate.runNow() // explicit rerendering cause jsonEditor is not in State
+//        jsonEditor.set(JSON.parse(SPValue(item).toJson))
       case op: API_ItemServiceDummy.SampleItem =>
         jsonEditor.set(JSON.parse(SPValue(op.operation).toJson))
       case API_ItemServiceDummy.SampleItemList(items) =>

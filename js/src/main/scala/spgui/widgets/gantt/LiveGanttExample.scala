@@ -1,3 +1,4 @@
+/*
 package spgui.widgets.gantt
 
 import japgolly.scalajs.react._
@@ -117,3 +118,4 @@ object LiveGanttExample {
 
   def apply() = SPWidget(spwb => component(spwb))
 }
+*/

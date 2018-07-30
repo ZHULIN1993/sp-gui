@@ -1,3 +1,4 @@
+/*
 package spgui.widgets.gantt
 
 import japgolly.scalajs.react._
@@ -74,3 +75,4 @@ object GanttDataExamples {
   )
   val patientTimeLineOptions = SPGanttOptions()
 }
+*/
