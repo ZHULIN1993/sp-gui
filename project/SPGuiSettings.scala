@@ -97,10 +97,26 @@ object SPGuiSettings {
     "react" -> NpmVersion.react,
     "react-dom" -> NpmVersion.reactDom,
     "bootstrap" -> NpmVersion.bootstrap,
-    "reactstrap" -> NpmVersion.reactstrap
+    "jquery" -> NpmVersion.jQuery,
+    "chart.js" -> "~2.5.0",
+    "paths-js" -> "~0.4.5",
+    "font-awesome" -> "~4.7.0",
+    "jsoneditor" -> "~5.6.0",
+
+    "react-grid-layout" -> "~0.13.9",
+    "angular" -> "~1.6.4",
+    "angular-gantt" -> "~1.3.3",
+    "moment" -> "~2.18.1",
+    "angular-moment" -> "~1.0.1"
   )
 
-  lazy val npmBundlerDevDependencies = Seq()
+  lazy val npmBundlerDevDependencies = Seq(
+    "css-loader" -> "~0.26.1",
+    "file-loader" -> "~0.9.0",
+    "json-loader" -> "~0.5.4",
+    "style-loader" -> "~0.13.1",
+    "url-loader" -> "~0.5.7"
+  )
 
   lazy val jsSettings = Seq(
     testFrameworks += new TestFramework("utest.runner.Framework"),

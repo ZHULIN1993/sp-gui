@@ -59,6 +59,7 @@ object Versions {
     lazy val reactstrap = "6.3.0"
     lazy val react = "16.2.0"
     lazy val reactDom = "16.2.0"
+    lazy val jQuery = "3.1.1"
 
     // Dev
     lazy val webpackMerge = "4.1.0"

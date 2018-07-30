@@ -3,18 +3,16 @@
   <head>
     <meta charset="UTF-8">
     <title>Sequence Planner</title>
+    <script type="text/javascript" src="/workbench.js"></script>
   </head>
   <body>
     <section id="spgui-root"></section>
-    <script type="text/javascript" src="./bundle.min.js"></script>
 
-    <!--<script type="text/javascript" src="js/target/scala-2.12/spgui-jsdeps.min.js"></script>-->
+    <!-- Adds generated saclajs-bundler file -->
+    <script type="text/javascript" src="../scalajs-bundler/main/sp-gui-fastopt-bundle.js"></script>
+    <!--<script type="text/javascript" src="../scalajs-bundler/main/sp-gui-opt-bundle.js"></script>-->
+
     <script type="text/javascript" src="../sp-gui-jsdeps.js"></script>
-
-    <!--<script type="text/javascript" src="js/target/scala-2.12/spgui-opt.js"></script>-->
-    <script type="text/javascript" src="../sp-gui-fastopt.js"></script>
-
-    <script type="text/javascript" src="/workbench.js"></script>
 
     <script type="text/javascript">
       spgui.FrontendOnlyMain().main();
