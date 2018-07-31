@@ -3,19 +3,25 @@
   <head>
     <meta charset="UTF-8">
     <title>Sequence Planner</title>
+    <!-- lihaoyi's workbench for developement -->
     <script type="text/javascript" src="/workbench.js"></script>
   </head>
   <body>
+    <!-- spgui.FrontendOnlyMain.main() adds Layout to <section> with getElementById("spgui-root")  -->
     <section id="spgui-root"></section>
 
-    <!-- Adds generated saclajs-bundler file -->
+    <!--
+      Add one of following generated scalajs-bundler file
+      1. when using sbt fastOptJS::webpack
+      2. when using sbt fullOptJS::webpack
+    -->
+    <!-- 1. fastOptJS -->
     <script type="text/javascript" src="../scalajs-bundler/main/sp-gui-fastopt-bundle.js"></script>
+    <!-- 2. fullOptJS -->
     <!--<script type="text/javascript" src="../scalajs-bundler/main/sp-gui-opt-bundle.js"></script>-->
 
+    <!-- Adds JS-dependecies from sbt scalajs(?)-->
     <script type="text/javascript" src="../sp-gui-jsdeps.js"></script>
 
-    <script type="text/javascript">
-      spgui.FrontendOnlyMain().main();
-    </script>
   </body>
 </html>
