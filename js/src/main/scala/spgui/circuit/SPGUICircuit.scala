@@ -8,7 +8,7 @@ import spgui.dashboard.{AbstractDashboardPresetsHandler, Dashboard}
 
 object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] {
   def initialModel = BrowserStorage.load.getOrElse(InitialState())
-  val actionHandler = composeHandlers(
+  override val actionHandler = composeHandlers(
     new PresetsHandler(
       zoomRW(m => PresetsHandlerScope(m.presets, m.openWidgets, m.widgetData))
       ((m, phs) => m.copy(presets = phs.presets, openWidgets = phs.openWidgets, widgetData = phs.widgetData))
