@@ -151,7 +151,33 @@ object SPSettings {
     "co.fs2" %%% "fs2-core" % "0.10.0-M7"
   ))
 
+  /** Dependencies only used by the scalajs-bundler,
+    * as would be installed by webpack and npm in other cases
+    */
+  lazy val npmBundlerDependencies = Seq(
+    "bootstrap" -> "~3.3.7",
+    "chart.js" -> "~2.5.0",
+    "paths-js" -> "~0.4.5",
+    "font-awesome" -> "~4.7.0",
+    "jquery" -> "~3.1.1",
+    "jsoneditor" -> "~5.6.0",
+    "react" -> "~15.3.2",
+    "react-dom" -> "~15.3.2",
+    "react-grid-layout" -> "~0.13.9",
+    "angular" -> "~1.6.4",
+    "angular-gantt" -> "~1.3.3",
+    "moment" -> "~2.18.1",
+    "angular-moment" -> "~1.0.1"
+  )
 
+  lazy val npmDevBundlerDependencies = Seq(
+    "css-loader" -> "~0.26.1",
+    "file-loader" -> "~0.9.0",
+    "json-loader" -> "~0.5.4",
+    "style-loader" -> "~0.13.1",
+    "url-loader" -> "~0.5.7",
+    "webpack" -> "~3.5.5"
+  )
 
   lazy val jsSettings = Seq(
     testFrameworks += new TestFramework("utest.runner.Framework"),
