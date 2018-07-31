@@ -16,8 +16,7 @@ object Grid {
         p.widgets.map{ widget =>
           <.div(^.key := widget.id.toString, widget.children)
         }.toTagMod
-      ).when(p.widgets.nonEmpty)
-
+      )
     }
   }
 

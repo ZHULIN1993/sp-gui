@@ -7,23 +7,25 @@ import japgolly.scalajs.react.vdom.html_<^._
 
 object Dashboard {
   case class DashboardProps(
-                             header: Option[VdomElement] = None,
-                             footer: Option[VdomElement] = None,
-                             grid: Option[VdomElement] = None,
-                             sidebar: Option[VdomElement] = None,
-                             sidebarIsAlignedLeft:Option[Boolean] = None
+                             header: Option[VdomNode] = None,
+                             footer: Option[VdomNode] = None,
+                             grid: Option[VdomNode] = None,
+                             sidebar: Option[VdomNode] = None,
+                             sidebarIsAlignedLeft: Option[Boolean] = None
                            )
 
   class Backend($: BackendScope[DashboardProps, Unit]) {
-    def render(p: DashboardProps) = {
-      <.div(p.header).when(p.header.nonEmpty)
-      <.div(p.grid).when(p.grid.nonEmpty)
-      <.div(p.footer).when(p.footer.nonEmpty)
+    def render(props: DashboardProps) = {
+      <.div(
+        <.div(props.header.whenDefined(header => header)),
+        <.div(props.grid.whenDefined(grid => grid)),
+        <.div(props.footer.whenDefined(footer => footer))
+      )
     }
   }
 
   private val component = ScalaComponent.builder[DashboardProps]("Dashboard")
-    .renderBackend[Backend]
+      .renderBackend[Backend]
     .build
 
   def apply(props: DashboardProps) = component(props)

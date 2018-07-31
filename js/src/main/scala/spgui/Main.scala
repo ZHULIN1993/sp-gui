@@ -12,25 +12,19 @@ import spgui.components.{Dashboard, Grid, Header, Layout}
   */
 object Main {
   def main(args: Array[String]): Unit = {
-    val Hello = ScalaComponent.builder[String]("Hello")
-      .render_P(name => <.div("Hello there ", name))
-      .build
-
-    <.div(Hello("Frank")).renderIntoDOM(document.getElementById("root"))
     val defaultLayout =
-      Layout(
-        Some(
-          <.div(
-            Dashboard(props =
-              Dashboard.DashboardProps(
-                header = Some(Header("Head")),
-                footer = Some(Header("Footer")),
-                grid = Some(Grid())
-              )
+      Some(
+        <.div(
+          Dashboard(props =
+            Dashboard.DashboardProps(
+              header = Some(Header("Head")),
+              footer = Some(Header("Footer")),
+              grid = Some(Grid())
             )
-          ).render
-        )
+          )
+        ).render
       )
-    defaultLayout.renderIntoDOM(document.getElementById("root"))
+
+    Layout(defaultLayout).renderIntoDOM(document.getElementById("spgui-root"))
   }
 }

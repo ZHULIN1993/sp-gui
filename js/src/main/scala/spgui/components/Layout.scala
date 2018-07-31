@@ -4,7 +4,6 @@ import java.util.UUID
 
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
-import org.scalajs.dom.html.Div
 
 object Layout {
 
@@ -12,7 +11,9 @@ object Layout {
 
   class Backend($: BackendScope[LayoutProps, Unit]) {
     def render(p: LayoutProps) = {
-      <.div(p.content).when(p.content.isDefined)
+      <.div(
+        p.content.whenDefined(content => <.div(content))
+      )
     }
   }
 
