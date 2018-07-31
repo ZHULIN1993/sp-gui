@@ -1,4 +1,4 @@
-import SPGuiSettings._
+import SPSettings._
 
 /* leads to problems with one resource or the other
 workbenchDefaultRootObject := Some((
@@ -27,6 +27,12 @@ lazy val buildSettings = Seq(
   )
 )
 
+val jsFiles = Seq(
+  ProvidedJS / "ganttApp.js",
+  ProvidedJS / "bundle.js",
+  ProvidedJS / "bundle.min.js"
+)
+
 lazy val root = project.in(file("."))
   .aggregate(spgui_jvm, spgui_js)
   .settings(defaultBuildSettings)
@@ -42,16 +48,21 @@ lazy val spgui = crossProject.crossType(CrossType.Full).in(file("."))
   .settings(defaultBuildSettings: _*)
   .settings(buildSettings: _*)
   .jvmSettings()
-  .jsConfigure(_.enablePlugins(ScalaJSBundlerPlugin, ScalaJSPlugin, WorkbenchPlugin))
+  .jsConfigure(_.enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin, WorkbenchPlugin))
   .jsSettings(
     jsSettings,
+    jsDependencies ++= jsFiles,
     libraryDependencies ++= domainDependencies.value,
     libraryDependencies ++= guiDependencies.value,
     libraryDependencies ++= spDep.value,
+    // If we want a custom webpack config-file
+    // on the JS-side with
+    // scalajs-bundler scalajs.webpack.config.js
+    // webpackConfigFile := Some(baseDirectory.value / "src/main/resources" / "custom.webpack.config.js"),
     // Add npm dependenices with scalajs-bundler to be used with `sbt compile`
     npmDependencies in Compile ++= npmBundlerDependencies,
     // Add npm devDependenices with scalajs-bundler to be used with `sbt compile`
-    npmDevDependencies in Compile ++= npmBundlerDevDependencies,
+    npmDevDependencies in Compile ++= npmDevBundlerDependencies,
     scalaJSUseMainModuleInitializer := true
   )
 
