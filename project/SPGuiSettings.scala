@@ -99,6 +99,7 @@ object SPGuiSettings {
     "bootstrap" -> NpmVersion.bootstrap,
     "jquery" -> NpmVersion.jQuery,
     "chart.js" -> "~2.5.0",
+    "popper.js" -> "1.14.3",
     "paths-js" -> "~0.4.5",
     "font-awesome" -> "~4.7.0",
     "jsoneditor" -> "~5.6.0",
