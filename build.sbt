@@ -9,6 +9,7 @@ workbenchDefaultRootObject := Some((
 
 lazy val projectName = "sp-gui"
 lazy val projectVersion = "0.9.11"
+lazy val nextVersion = "0.9.12"
 
 // Dependencies on other SP-projects
 lazy val spDep = Def.setting(Seq(

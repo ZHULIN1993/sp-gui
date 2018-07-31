@@ -65,7 +65,9 @@ object SPGuiSettings {
     "react" -> NpmVersion.react,
     "react-dom" -> NpmVersion.reactDom,
     "bootstrap" -> NpmVersion.bootstrap,
-    "reactstrap" -> NpmVersion.reactstrap
+    "reactstrap" -> NpmVersion.reactstrap,
+    "jquery" -> "3.1.1",
+    "popper.js" -> "1.14.3"
   )
 
   lazy val npmBundlerDevDependencies = Seq()
