@@ -27,12 +27,6 @@ lazy val buildSettings = Seq(
   )
 )
 
-val jsFiles = Seq(
-  ProvidedJS / "ganttApp.js",
-  ProvidedJS / "bundle.js",
-  ProvidedJS / "bundle.min.js"
-)
-
 lazy val root = project.in(file("."))
   .aggregate(spgui_jvm, spgui_js)
   .settings(defaultBuildSettings)
@@ -51,7 +45,6 @@ lazy val spgui = crossProject.crossType(CrossType.Full).in(file("."))
   .jsConfigure(_.enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin, WorkbenchPlugin))
   .jsSettings(
     jsSettings,
-    jsDependencies ++= jsFiles,
     libraryDependencies ++= domainDependencies.value,
     libraryDependencies ++= guiDependencies.value,
     libraryDependencies ++= spDep.value,
