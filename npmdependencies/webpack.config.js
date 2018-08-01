@@ -17,8 +17,9 @@ module.exports = {
     module: {
         rules: [
                 /* url-loader uses inline encoding with base64
+                 * I rather test file-loader which load images as separate files through webpack
                  */
-            {
+            /*{
 
                 test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 use: [{
@@ -46,6 +47,24 @@ module.exports = {
                     }
                 }]
             },*/
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {}
+                    }
+                ]
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {}
+                    }
+                ]
+            },
             {
                 test: /\.css(\?v=\d+\.\d+\.\d+)?$/,
                 use: [
