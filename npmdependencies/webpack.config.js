@@ -1,34 +1,60 @@
 var webpack = require('webpack');
 
+var path = require('path');
+
 var PROD = (process.env.NODE_ENV === 'production');
 
 module.exports = {
+    mode: 'development',
     entry: [
         './vendor.js'
     ],
     output: {
         publicPath: './',
-        path: 'output/',
+        path: path.resolve(__dirname, 'output'),
         filename: PROD ? 'bundle.min.js' : 'bundle.js'
     },
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader: 'url-loader?limit=100000'
-            }, {
+                use: [{
+                    loader: 'url-loader',
+                    options: {
+                        limit: 100000
+                    }
+                }]
+            },
+            {
                 test: /\.(ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url-loader?limit=100000'
-            }, {
+                use: [{
+                    loader: 'url-loader',
+                    options: {
+                        limit: 100000
+                    }
+                }]
+            },
+            {
                 test: /\.css(\?v=\d+\.\d+\.\d+)?$/,
-                loader: "style-loader!css-loader"
-            }, {
-                test: /\.png(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url-loader?limit=100000'
-            }, {
-		test: /\.json$/,
-		loader: 'json-loader'
-	    }
+                use: [
+                    'style-loader',
+                    'css-loader'
+                ]
+            },
+            {
+                test: /\.(png|jpg|gif)$/i,
+                use: [{
+                    loader: 'url-loader',
+                    options: {
+                        limit: 100000
+                    }
+                }]
+            },
+            {
+                exclude: [
+                    path.resolve(__dirname, "node_modules")
+                ]
+            }
         ]
     },
     plugins: PROD ? [
