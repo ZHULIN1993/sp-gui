@@ -2,5 +2,5 @@
 
 ### Layout ###
 1. Theme
-2. All Contents
+2. All SPWidgets, tracked by ID
 
