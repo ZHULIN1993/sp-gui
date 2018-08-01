@@ -17,7 +17,6 @@ module.exports = {
     module: {
         rules: [
                 /* url-loader uses inline encoding with base64
-                I rather test file-loader which load images as separate files through webpack
                  */
             {
 
