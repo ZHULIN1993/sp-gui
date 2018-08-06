@@ -55,7 +55,9 @@ object SPGuiSettings {
   /** Dependencies only used by the JS project (note the use of %%% instead of %%) */
   val guiDependencies = Def.setting(Seq(
     "org.scala-js" %%% "scalajs-dom" % GuiVersion.scalaDom,
-    "com.github.japgolly.scalajs-react" %%% "core" % GuiVersion.scalajsReact
+    "com.github.japgolly.scalajs-react" %%% "core" % GuiVersion.scalajsReact,
+    "com.github.japgolly.scalajs-react" %%% "extra" % GuiVersion.scalajsReact,
+    "com.github.japgolly.scalacss" %%% "ext-react" % "0.5.5"
   ))
 
   /** Dependencies only used by the scalajs-bundler,
@@ -66,8 +68,8 @@ object SPGuiSettings {
     "react-dom" -> NpmVersion.reactDom,
     "bootstrap" -> NpmVersion.bootstrap,
     "reactstrap" -> NpmVersion.reactstrap,
-    "jquery" -> "3.1.1",
-    "popper.js" -> "1.14.3"
+    "jquery" -> NpmVersion.jQuery,
+    "popper.js" -> NpmVersion.popperJS
   )
 
   lazy val npmBundlerDevDependencies = Seq()

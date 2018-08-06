@@ -55,10 +55,12 @@ object Versions {
 
   /** VersionNumbers for Npm-Dependencies added by scalajs-bundler*/
   object NpmVersion {
-    lazy val bootstrap = "4.1.1"
+    lazy val bootstrap = "4.1.3"
     lazy val reactstrap = "6.3.0"
     lazy val react = "16.2.0"
     lazy val reactDom = "16.2.0"
+    lazy val popperJS = "1.14.3"
+    lazy val jQuery = "3.1.1"
 
     // Dev
     lazy val webpackMerge = "4.1.0"

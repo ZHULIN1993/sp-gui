@@ -6,7 +6,7 @@ import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 
 object Grid {
-  case class Widget(id: UUID, children: VdomElement)
+  case class Widget(id: UUID, children: VdomElement = <.div())
   case class GridProps(widgets: Seq[Widget])
 
   class Backend($: BackendScope[GridProps, Unit]) {
