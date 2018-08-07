@@ -67,7 +67,6 @@ object SPGuiSettings {
     "react" -> NpmVersion.react,
     "react-dom" -> NpmVersion.reactDom,
     "bootstrap" -> NpmVersion.bootstrap,
-    "reactstrap" -> NpmVersion.reactstrap,
     "jquery" -> NpmVersion.jQuery,
     "popper.js" -> NpmVersion.popperJS
   )

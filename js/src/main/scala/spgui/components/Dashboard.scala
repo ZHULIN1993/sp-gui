@@ -5,6 +5,8 @@ import japgolly.scalajs.react.component.Scala
 import japgolly.scalajs.react.internal.Box
 import japgolly.scalajs.react.vdom.html_<^._
 
+import facades.bootstrap._
+
 object Dashboard {
   case class DashboardProps(
                              header: Option[VdomNode] = None,
