@@ -45,11 +45,20 @@ object SPGuiSettings {
     Resolver.sonatypeRepo("snapshots")
   )
 
+  lazy val commDependencies = Def.setting(Seq(
+    "com.typesafe.akka" %% "akka-actor" % CommVersion.akka,
+    "com.typesafe.akka" %% "akka-cluster" % CommVersion.akka,
+    "com.typesafe.akka" %% "akka-cluster-tools" % CommVersion.akka,
+    "com.typesafe.akka" %% "akka-testkit" % CommVersion.akka
+  ))
+
   /**
     * These dependencies are shared between JS and JVM projects
     * the special %%% function selects the correct version for each project
     */
   lazy val domainDependencies = Def.setting(Seq())
+
+
   // "org.joda" % "joda-convert" % "1.8.2" add this to jvm-side
 
   /** Dependencies only used by the JS project (note the use of %%% instead of %%) */
@@ -57,7 +66,10 @@ object SPGuiSettings {
     "org.scala-js" %%% "scalajs-dom" % GuiVersion.scalaDom,
     "com.github.japgolly.scalajs-react" %%% "core" % GuiVersion.scalajsReact,
     "com.github.japgolly.scalajs-react" %%% "extra" % GuiVersion.scalajsReact,
-    "com.github.japgolly.scalacss" %%% "ext-react" % "0.5.5"
+    "com.github.japgolly.scalacss" %%% "ext-react" % GuiVersion.scalaCSS,
+    "com.github.japgolly.scalacss" %%% "core" % GuiVersion.scalaCSS,
+    "io.suzaku" %%% "diode" % GuiVersion.diode,
+    "io.suzaku" %%% "diode-react" % GuiVersion.diode
   ))
 
   /** Dependencies only used by the scalajs-bundler,
