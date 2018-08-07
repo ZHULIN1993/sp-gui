@@ -15,7 +15,6 @@ object Navbar {
     def render(p: Props, s: State) = {
       <.nav(  ^.className := "navbar navbar-expand-lg navbar-light bg-light",
         <.a(^.className := "navbar-brand", ^.onClick --> brandClicked(p, s), p.brand.getOrElse(TagMod())),
-
         <.div(^.className := "collapse navbar-collapse",
           <.ul(^.className := "navbar-nav mr-auto",
             p.navItems.map{ item =>
