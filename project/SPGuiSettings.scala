@@ -56,7 +56,12 @@ object SPGuiSettings {
     * These dependencies are shared between JS and JVM projects
     * the special %%% function selects the correct version for each project
     */
-  lazy val domainDependencies = Def.setting(Seq())
+  lazy val domainDependencies = Def.setting(Seq(
+    "com.typesafe.play" %% "play-json" % "2.6.7",
+    "org.julienrf" %%% "play-json-derived-codecs" % "4.0.1",
+    "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.1",
+    "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M13"
+  ))
 
 
   // "org.joda" % "joda-convert" % "1.8.2" add this to jvm-side
