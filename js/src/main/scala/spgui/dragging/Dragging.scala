@@ -8,7 +8,6 @@ import japgolly.scalajs.react.vdom.all.svg
 
 import spgui.communication._
 import sp.domain._
-import scalacss.ScalaCssReact._
 import scala.scalajs.js
 
 import org.scalajs.dom.window
