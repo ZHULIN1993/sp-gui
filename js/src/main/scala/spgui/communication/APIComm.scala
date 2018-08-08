@@ -22,14 +22,20 @@ object APIComm {
       throw new RuntimeException("Didn't get an answer!"))): Future[(SPHeader,RST)]
 
     def takeNSuccessfulBySender(n: Int): Future[Map[String,List[(SPHeader,RST)]]] = {
-      s.bySender.collect {
-        case (from, v) if v.forall(_._2.isRight) =>
-          (from, v.collect{ case(h,Right(rst))=>(h,rst) })}.take(n).runLog.unsafeToFuture().
-        map(v=>if(v.size < n) throw new RuntimeException(s"Got fewer than ${n} answers!") else v).
-        map { _.toList.map ({case (g,v) => (g,v.toList) }).toMap }
+      /** Tag: DocHelp*/
+      type SPStream =  Stream[IO, (String, scala.Vector[(SPHeader, RST)])]
+      val unknown: SPStream = s.bySender.collect {
+        case (from, segment) if segment.force.toVector.forall(_._2.isRight) =>
+          (from, segment.force.toVector.collect{ case(h, Right(rst))=>(h,rst) })}
+      val unknown2: SPStream = unknown.take(n)
+      unknown2.compile.toVector.unsafeToFuture()
+        .map(v => if(v.size < n) throw new RuntimeException(s"Got fewer than ${n} answers!") else v)
+        .map { _.toList.map ({case (g, v) => (g, v.toList) }).toMap }
     }
 
-    def bySender = s.groupBy(_._1.from)
+    def bySender = s.groupAdjacentBy{stream =>
+      stream._1.from
+    }
     def doit = s.run.unsafeToFuture()
   }
 }
