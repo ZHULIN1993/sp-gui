@@ -49,7 +49,11 @@ object SPGuiSettings {
     "com.typesafe.akka" %% "akka-actor" % CommVersion.akka,
     "com.typesafe.akka" %% "akka-cluster" % CommVersion.akka,
     "com.typesafe.akka" %% "akka-cluster-tools" % CommVersion.akka,
-    "com.typesafe.akka" %% "akka-testkit" % CommVersion.akka
+    "com.typesafe.akka" %% "akka-testkit" % CommVersion.akka,
+    "org.slf4j" % "slf4j-simple" % "1.7.7",
+    "com.github.romix.akka" %% "akka-kryo-serialization" % "0.5.1",
+    "org.scalatest" %% "scalatest" % MultiVersion.scalaTest % "test",
+    "com.sksamuel.avro4s" %% "avro4s-core" % "1.8.0"
   ))
 
   /**
@@ -57,10 +61,11 @@ object SPGuiSettings {
     * the special %%% function selects the correct version for each project
     */
   lazy val domainDependencies = Def.setting(Seq(
-    "com.typesafe.play" %% "play-json" % "2.6.7",
-    "org.julienrf" %%% "play-json-derived-codecs" % "4.0.1",
-    "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.1.1",
-    "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M13"
+    "org.scalatest" %%% "scalatest" % MultiVersion.scalaTest % "test",
+    "com.typesafe.play" %% "play-json" % "2.6.0",
+    "org.julienrf" %%% "play-json-derived-codecs" % "4.0.0",
+    "org.scala-lang.modules" %%% "scala-parser-combinators" % "1.0.5",
+    "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M12"
   ))
 
 
