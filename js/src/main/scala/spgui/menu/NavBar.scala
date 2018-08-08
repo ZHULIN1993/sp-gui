@@ -23,7 +23,7 @@ object NavBar {
           ^.id := "navbar-collapse-id",
           ^.className := "collapse navbar-collapse",
           ^.className := "nav navbar-nav",
-          p.navItems.get.toTagMod
+          p.navItems.map{_.map{_}.toTagMod}.getOrElse(TagMod())
         )
       )
     ).build
