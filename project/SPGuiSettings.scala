@@ -69,7 +69,8 @@ object SPGuiSettings {
     "com.github.japgolly.scalacss" %%% "ext-react" % GuiVersion.scalaCSS,
     "com.github.japgolly.scalacss" %%% "core" % GuiVersion.scalaCSS,
     "io.suzaku" %%% "diode" % GuiVersion.diode,
-    "io.suzaku" %%% "diode-react" % GuiVersion.diode
+    "io.suzaku" %%% "diode-react" % GuiVersion.diode,
+    "com.lihaoyi" %%% "scalarx" % GuiVersion.scalarx
   ))
 
   /** Dependencies only used by the scalajs-bundler,
@@ -78,6 +79,7 @@ object SPGuiSettings {
   lazy val npmBundlerDependencies = Seq(
     "react" -> NpmVersion.react,
     "react-dom" -> NpmVersion.reactDom,
+    "react-grid-layout" -> NpmVersion.reactGridLayout,
     "bootstrap" -> NpmVersion.bootstrap,
     "jquery" -> NpmVersion.jQuery,
     "popper.js" -> NpmVersion.popperJS

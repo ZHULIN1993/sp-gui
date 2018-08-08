@@ -61,6 +61,7 @@ object Versions {
     lazy val reactDom = "^16.2.0"
     lazy val popperJS = "1.14.3"
     lazy val jQuery = "3.1.1"
+    lazy val reactGridLayout = "0.16.6"
 
     // Dev
     lazy val webpackMerge = "4.1.0"
