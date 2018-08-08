@@ -33,10 +33,8 @@ object APIComm {
         .map { _.toList.map ({case (g, v) => (g, v.toList) }).toMap }
     }
 
-    def bySender = s.groupAdjacentBy{stream =>
-      stream._1.from
-    }
-    def doit = s.run.unsafeToFuture()
+    def bySender = s.groupAdjacentBy{_._1.from}
+    def doit = s.compile.toVector.unsafeToFuture()
   }
 }
 
@@ -136,7 +134,7 @@ class APIComm[RQT,RST](requestTopic: String, responseTopic: String, from: String
       _ <- Stream.suspend {
         h.registerPostFunction { e => async.unsafeRunAsync(q.enqueue1(e))(_ => IO.unit) }; Stream.emit(())
       }
-      row <- q.dequeue.unNoneTerminate
+      row <- q.dequeue.unNoneTerminate.asInstanceOf[Stream[Pure, (sp.domain.SPHeader, Either[sp.domain.APISP.SPError,RST]) ]]
     } yield row
   }
 
@@ -156,7 +154,7 @@ class APIComm[RQT,RST](requestTopic: String, responseTopic: String, from: String
       _ <- Stream.suspend {
         h.registerPostFunction { e => async.unsafeRunAsync(q.enqueue1(e))(_ => IO.unit) }; Stream.emit(())
       }
-      row <- q.dequeue.rethrow.unNoneTerminate
+      row <- q.dequeue.rethrow.unNoneTerminate.asInstanceOf[Stream[Pure, Stream[IO, (SPHeader, Either[APISP.SPError, RST])]]]
     } yield row
   }
 }
