@@ -16,6 +16,9 @@ import org.scalajs.dom.window
 
 import scala.util.Try
 
+/** AssertionError - "assertion failed: Invalid JsComponent: undefined"
+  * java.Lang.AssertionError
+  * */
 object Dashboard {
   case class Props(proxy: ModelProxy[(Map[UUID, OpenWidget], GlobalState)])
   case class State(width: Int)

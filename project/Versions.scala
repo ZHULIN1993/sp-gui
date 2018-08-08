@@ -41,9 +41,9 @@ object Versions {
 
   /** VersionNumbers for Gui-Dependencies */
   object GuiVersion {
-    lazy val scalajsReact = "1.2.3"
+    lazy val scalajsReact = "1.1.0"
     lazy val scalaCSS = "0.5.5"
-    lazy val diode = "1.1.2"
+    lazy val diode = "1.1.3"
     lazy val scalarx = "0.4.0"
     lazy val scalajsD3 = "0.3.4"
     lazy val uTest = "0.4.7"
