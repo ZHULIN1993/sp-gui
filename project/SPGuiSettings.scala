@@ -70,7 +70,8 @@ object SPGuiSettings {
     "com.github.japgolly.scalacss" %%% "core" % GuiVersion.scalaCSS,
     "io.suzaku" %%% "diode" % GuiVersion.diode,
     "io.suzaku" %%% "diode-react" % GuiVersion.diode,
-    "com.lihaoyi" %%% "scalarx" % GuiVersion.scalarx
+    "com.lihaoyi" %%% "scalarx" % GuiVersion.scalarx,
+    "co.fs2" %%% "fs2-core" % GuiVersion.fs2Core
   ))
 
   /** Dependencies only used by the scalajs-bundler,

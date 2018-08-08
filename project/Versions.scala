@@ -50,7 +50,7 @@ object Versions {
     lazy val scalaDom = "0.9.3"
     lazy val monocleCore = "1.4.0"
     lazy val monocleMacro = "1.4.0"
-    lazy val fs2Core = "0.10.0-M7"
+    lazy val fs2Core = "0.10.5"
   }
 
   /** VersionNumbers for Npm-Dependencies added by scalajs-bundler*/
