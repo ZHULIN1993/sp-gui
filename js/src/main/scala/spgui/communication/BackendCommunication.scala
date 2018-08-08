@@ -199,8 +199,8 @@ case class WebSocketHandler(uri: String) {
       wsOpen() = false
       retry() = true
     }
-    newWs.onerror = { (e: dom.ErrorEvent) =>
-      errors() = e.message
+    newWs.onerror = { (e: dom.Event) =>
+      errors() = e.toString
     }
     newWs
   }
