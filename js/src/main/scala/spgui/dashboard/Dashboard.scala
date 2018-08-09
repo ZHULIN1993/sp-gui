@@ -21,15 +21,15 @@ import scala.util.Try
   * */
 object Dashboard {
   case class Props(proxy: ModelProxy[(Map[UUID, OpenWidget], GlobalState)])
-  case class State(width: Int)
+  /*case class State(width: Int)*/
 
   val cols = 12
 
-  val currentlyDragging = SPGUICircuit.zoom(_.draggingState.dragging)
+  /*val currentlyDragging = SPGUICircuit.zoom(_.draggingState.dragging)*/
 
-  class Backend($: BackendScope[Props, State]) {
-    def render(p: Props, s: State) = {
-      window.onresize = { e: org.scalajs.dom.Event =>
+  class Backend($: BackendScope[Props, Unit]) {
+    def render() = {
+      /*window.onresize = { e: org.scalajs.dom.Event =>
         $.setState(State(window.innerWidth.toInt)).runNow()
       }
 
@@ -101,15 +101,17 @@ object Dashboard {
       <.div(
         {if(!currentlyDragging.value) ^.className := "dropzonesDisabled" else EmptyVdom},
         rg
-      )
+      )*/
+      <.div(<.h1("HI"))
     }
   }
 
   private val component = ScalaComponent.builder[Props]("Dashboard")
-    .initialState(State( window.innerWidth.toInt))
     .renderBackend[Backend]
     .build
 
   def apply(proxy: ModelProxy[(Map[UUID, OpenWidget], GlobalState)]) =
     component(Props(proxy))
+  /*def apply() =
+    component(Props)*/
 }
