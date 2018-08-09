@@ -9,18 +9,18 @@ import spgui.components.{Icon}
 
 object DashboardItem {
   case class Props(
-    element: VdomElement,
-    widgetType: String,
-    id: java.util.UUID,
-    panelHeight: Int
-  )
+                    element: VdomElement,
+                    widgetType: String,
+                    id: java.util.UUID,
+                    panelHeight: Int
+                  )
 
   val showHeaders = SPGUICircuit.zoom(_.settings.showHeaders)
 
   class DashboardItemBackend($: BackendScope[Props, Unit]){
     def render (p: Props) = {
       <.div(
-        DashboardCSS.widgetPanel,        
+        DashboardCSS.widgetPanel,
         <.div(
           ^.className := "modal-header",
           DashboardCSS.widgetPanelHeader,

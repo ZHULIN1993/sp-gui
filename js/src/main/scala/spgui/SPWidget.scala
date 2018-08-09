@@ -10,7 +10,7 @@ import java.util.UUID
 
 
 case class SPWidgetBase(id: UUID, frontEndState: GlobalState) {
-  
+
   def updateWidgetData(data: SPValue): Unit = {
     SPGUICircuit.dispatch(UpdateWidgetData(id, data))
   }
@@ -43,33 +43,4 @@ object SPWidget {
 
   def apply(renderWidget: SPWidgetBase => VdomElement): SPWidgetBase => VdomElement =
     spwb => component(Props(spwb, renderWidget))
-}
-
-
-object SPWidgetBaseTest {
-  import sp.domain.Logic._
-  def apply() = SPWidget{spwb =>
-    def saveOnChange(e: ReactEventFromInput): Callback =
-      Callback(spwb.updateWidgetData(SPValue(e.target.value)))
-
-    def copyMe(): Callback = {
-      val d = spwb.getWidgetData
-      Callback(spwb.openNewWidget(
-        "SPWBTest", d)
-      )
-    }
-
-
-    <.div(
-      <.h3("This is a sample with id " + spwb.id),
-      <.label("My Data"),
-      <.input(
-        ^.tpe := "text",
-        ^.defaultValue := spwb.getWidgetData.toJson,
-        ^.onChange ==> saveOnChange
-      ),
-      <.button("Copy me", ^.onClick --> copyMe()),
-      <.button("Kill me", ^.onClick --> Callback(spwb.closeSelf()))
-    )
-  }
 }

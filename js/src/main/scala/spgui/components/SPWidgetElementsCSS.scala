@@ -46,7 +46,7 @@ object SPWidgetElementsCSS extends SPStyleSheet {
     userSelect := "none",
     //backgroundColor.transparent,
     listStyle := "none",
-    
+
     &.hover (
       borderColor(_rgb(theme.value.spOrange)),
       backgroundColor(_rgb(theme.value.widgetButtonBackgroundHoverColor))

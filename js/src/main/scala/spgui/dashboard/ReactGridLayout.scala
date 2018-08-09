@@ -30,19 +30,19 @@ object ReactGridLayout {
   // atm there is no perfect way to facade "options" kind of jsObjects, but this is one way
   object LayoutElement {
     def apply(
-      i: String,
-      x: Int,
-      y: Int,
-      w: Int,
-      h: Int,
-      minW: Int = 2,
-      maxW: Int = Integer.MAX_VALUE,
-      minH: Int = 1,
-      maxH: Int = Integer.MAX_VALUE,
-      static: Boolean = false,
-      isDraggable: Boolean = true,
-      isResizable: Boolean = true
-    ) = js.Dynamic.literal(
+               i: String,
+               x: Int,
+               y: Int,
+               w: Int,
+               h: Int,
+               minW: Int = 2,
+               maxW: Int = Integer.MAX_VALUE,
+               minH: Int = 1,
+               maxH: Int = Integer.MAX_VALUE,
+               static: Boolean = false,
+               isDraggable: Boolean = true,
+               isResizable: Boolean = true
+             ) = js.Dynamic.literal(
       i = i,
       x = x,
       y = y,
@@ -80,24 +80,24 @@ object ReactGridLayout {
   }
 
   def apply(
-    width: Int,
-    autoSize: Boolean = true,
-    cols: Int = 12,
-    draggableCancel: String = "",
-    draggableHandle: String = "",
-    verticalCompact: Boolean = true,
-    layout: js.Array[LayoutElement] = js.Array(),
-    margin: js.Array[Int] = js.Array(3,3),
-    containerPadding: js.Array[Int] = js.Array(3,3),
-    rowHeight: Int = 50,
-    isDraggable: Boolean = true,
-    isResizable: Boolean = true,
-    useCSSTransforms: Boolean = true,
-    onLayoutChange: Layout => Unit = x => Unit,
-    onResize: Layout => Unit = x => Unit,
-    onResizeStart: Layout => Unit = x => Unit,
-    children: VdomArray
-  ) = {
+             width: Int,
+             autoSize: Boolean = true,
+             cols: Int = 12,
+             draggableCancel: String = "",
+             draggableHandle: String = "",
+             verticalCompact: Boolean = true,
+             layout: js.Array[LayoutElement] = js.Array(),
+             margin: js.Array[Int] = js.Array(3,3),
+             containerPadding: js.Array[Int] = js.Array(3,3),
+             rowHeight: Int = 50,
+             isDraggable: Boolean = true,
+             isResizable: Boolean = true,
+             useCSSTransforms: Boolean = true,
+             onLayoutChange: Layout => Unit = x => Unit,
+             onResize: Layout => Unit = x => Unit,
+             onResizeStart: Layout => Unit = x => Unit,
+             children: VdomArray
+           ) = {
     val p = (new js.Object).asInstanceOf[Props]
     p.width = width
     p.autoSize = autoSize

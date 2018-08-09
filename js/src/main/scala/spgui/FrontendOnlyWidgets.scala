@@ -6,7 +6,7 @@ import spgui._
 /**
   *  All these widgets runnable without a backend
   */
-object FrontendOnlyLoadingWidgets {
+object FrontendOnlyWidgets {
 
   type Widget = (String, SPWidgetBase => VdomElement, Int, Int)
 
@@ -23,11 +23,11 @@ object FrontendOnlyLoadingWidgets {
       //      ("D3ExampleServiceWidget",      widgets.examples.D3ExampleServiceWidget(),     3, 4),
       //      ("ExampleServiceWidget",        widgets.examples.ExampleServiceWidget(),                        3, 4),
       //      ("ExampleServiceWidgetState",   widgets.examples.ExampleServiceWidgetState(),                   3, 3),
-      ("Item explorer",               widgets.itemexplorer.ItemExplorer(),           3, 4),
-      ("Item explorer tree",          widgets.itemtree.ItemExplorer(), 2, 4),
-//      ("Gantt Examples",              widgets.gantt.GanttExamples(), 10, 5),
-//      ("Live Gantt Example",          widgets.gantt.LiveGanttExample(), 10, 5),
-      ("ServiceList",                 widgets.services.ServiceListWidget(),          3, 4)
+      //      ("Item explorer",               widgets.itemexplorer.ItemExplorer(),           3, 4),
+      //      ("Item explorer tree",          widgets.itemtree.ItemExplorer(), 2, 4),
+      //      ("Gantt Examples",              widgets.gantt.GanttExamples(), 10, 5),
+      //      ("Live Gantt Example",          widgets.gantt.LiveGanttExample(), 10, 5),
+      ("ServiceList",                 widgets.ServiceListWidget(),          3, 4)
       //("SopMaker",                    widgets.sopmaker.SopMakerWidget(),             3, 4)
     )
 

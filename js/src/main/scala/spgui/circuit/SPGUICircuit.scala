@@ -4,15 +4,11 @@ import diode._
 import diode.react.ReactConnector
 import org.scalajs.dom.ext.LocalStorage
 import spgui.theming.Theming.Theme
-import spgui.dashboard.{AbstractDashboardPresetsHandler, Dashboard}
+import spgui.dashboard.Dashboard
 
 object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] {
   def initialModel = BrowserStorage.load.getOrElse(InitialState())
   override val actionHandler = composeHandlers(
-    new PresetsHandler(
-      zoomRW(m => PresetsHandlerScope(m.presets, m.openWidgets, m.widgetData))
-      ((m, phs) => m.copy(presets = phs.presets, openWidgets = phs.openWidgets, widgetData = phs.widgetData))
-    ),
     new OpenWidgetsHandler(
       zoomRW(_.openWidgets)((m, v) => m.copy(openWidgets = v))
     ),
@@ -27,52 +23,12 @@ object SPGUICircuit extends Circuit[SPGUIModel] with ReactConnector[SPGUIModel] 
     ),
     new DraggingHandler(
       zoomRW(_.draggingState)((m,v) => m.copy(draggingState = v))
-    ),
-    new ModalHandler(
-      zoomRW(_.modalState)((m,v) => m.copy(modalState = v))
     )
   )
   // store state upon any model change
   subscribe(zoomRW(myM => myM)((m,v) => v))(m => BrowserStorage.store(m.value))
-
-  var dashboardPresetHandler: Option[AbstractDashboardPresetsHandler] = None
 }
 
-case class PresetsHandlerScope(presets: DashboardPresets, openWidgets: OpenWidgets, widgetData: WidgetData)
-
-class PresetsHandler[M](modelRW: ModelRW[M, PresetsHandlerScope]) extends ActionHandler(modelRW) {
-
-  override def handle = {
-    case AddDashboardPreset(name) => { // Takes current state of dashboard and saves in list of presets
-      val newPreset = DashboardPreset(
-        value.openWidgets,
-        WidgetData(value.widgetData.xs.filterKeys(value.openWidgets.xs.keySet.contains(_)))
-      )
-
-      // Tell persistent storage to add preset
-      SPGUICircuit.dashboardPresetHandler.flatMap(h => {h.storePresetToPersistentStorage(name, newPreset);None})
-
-      updated(value.copy(presets = DashboardPresets(value.presets.xs + (name -> newPreset))))
-    }
-
-    case RemoveDashboardPreset(name) => { // Removes the preset corresponding to the given name
-
-      // Tell persistent storage to remove preset
-      SPGUICircuit.dashboardPresetHandler.flatMap(h => {h.removePresetFromPersistentStorage(name);None})
-
-      updated(value.copy(presets = DashboardPresets(value.presets.xs - name)))
-    }
-
-    case SetDashboardPresets(presets: Map[String, DashboardPreset]) => {
-      updated(value.copy(presets = DashboardPresets(presets)))
-    }
-
-    case RecallDashboardPreset(preset) => {
-      updated(value.copy(openWidgets = OpenWidgets())) //First remove all widgets to let them unmount
-      updated(value.copy(openWidgets = preset.widgets, widgetData = preset.widgetData))
-    }
-  }
-}
 
 class OpenWidgetsHandler[M](modelRW: ModelRW[M, OpenWidgets]) extends ActionHandler(modelRW) {
   override def handle = {
@@ -198,23 +154,6 @@ class DraggingHandler[M](modelRW: ModelRW[M, DraggingState]) extends ActionHandl
   }
 }
 
-class ModalHandler[M](modelRW: ModelRW[M, ModalState]) extends ActionHandler(modelRW) {
-  override def handle = {
-    case OpenModal(title, component, onComplete) => {
-      updated(value.copy(
-        modalVisible = true,
-        title = title,
-        component = Some(component),
-        onComplete = Some(onComplete)
-      ))
-    }
-
-    case CloseModal => {
-      updated(value.copy(modalVisible = false, component = None, onComplete = None))
-    }
-  }
-}
-
 object BrowserStorage {
   import sp.domain._
   import sp.domain.Logic._
@@ -238,19 +177,6 @@ object JsonifyUIState {
   implicit val fOpenWidget: JSFormat[OpenWidget] = Json.format[OpenWidget]
   implicit val fDropEvent: JSFormat[DropEventData] = Json.format[DropEventData]
   implicit val fDraggingState: JSFormat[DraggingState] = Json.format[DraggingState]
-
-  implicit lazy val modalStateWrites: JSWrites[ModalState] =
-    new OWrites[ModalState] {
-      override def writes(o: ModalState): SPAttributes =
-        JsObject(Map("nothing" -> SPValue.empty)) // we don't care
-    }
-
-  implicit lazy val modalStateReads: JSReads[ModalState] =
-    new JSReads[ModalState] {
-      override def reads(json: SPValue): JsResult[ModalState] = {
-        JsSuccess(ModalState()) // we actually don't care about parsing modalState so we just instantiate a new one
-      }
-    }
 
   implicit lazy val dashboardPresetsMapReads: JSReads[Map[String, DashboardPreset]] =
     new JSReads[Map[String, DashboardPreset]] {

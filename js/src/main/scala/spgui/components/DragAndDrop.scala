@@ -1,3 +1,4 @@
+/*
 package spgui.components
 
 import japgolly.scalajs.react._
@@ -27,3 +28,4 @@ object DragAndDrop {
       OnDropMod(ev => handleData(ev.dataTransfer.getData("text/plain")))
   }
 }
+*/

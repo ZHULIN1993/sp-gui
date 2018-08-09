@@ -16,17 +16,20 @@ import org.scalajs.dom.window
 
 import scala.util.Try
 
+/** AssertionError - "assertion failed: Invalid JsComponent: undefined"
+  * java.Lang.AssertionError
+  * */
 object Dashboard {
   case class Props(proxy: ModelProxy[(Map[UUID, OpenWidget], GlobalState)])
-  case class State(width: Int)
+  /*case class State(width: Int)*/
 
   val cols = 12
 
-  val currentlyDragging = SPGUICircuit.zoom(_.draggingState.dragging)
+  /*val currentlyDragging = SPGUICircuit.zoom(_.draggingState.dragging)*/
 
-  class Backend($: BackendScope[Props, State]) {
-    def render(p: Props, s: State) = {
-      window.onresize = { e: org.scalajs.dom.Event =>
+  class Backend($: BackendScope[Props, Unit]) {
+    def render() = {
+      /*window.onresize = { e: org.scalajs.dom.Event =>
         $.setState(State(window.innerWidth.toInt)).runNow()
       }
 
@@ -50,7 +53,7 @@ object Dashboard {
           )
         }.toOption
       }).flatten
- 
+
       val bigLayout = (
         for {
           openWidget <- p.proxy()._1.values
@@ -65,7 +68,7 @@ object Dashboard {
             isResizable = true
           )
         }
-      ).toJSArray.asInstanceOf[RGL.Layout]
+        ).toJSArray.asInstanceOf[RGL.Layout]
 
       val rg = RGL(
         layout = bigLayout,
@@ -75,7 +78,7 @@ object Dashboard {
         onLayoutChange = layout => {
           val changes: Map[String, RGL.LayoutElement] =
             layout.collect( {case e:RGL.LayoutElement => e.i -> e}).toMap
-          
+
           val newLayout = p.proxy()._1.values.map(w =>  {
             val change = changes(w.id.toString)
             w.copy(
@@ -98,15 +101,17 @@ object Dashboard {
       <.div(
         {if(!currentlyDragging.value) ^.className := "dropzonesDisabled" else EmptyVdom},
         rg
-      )
+      )*/
+      <.div(<.h1("HI"))
     }
   }
 
   private val component = ScalaComponent.builder[Props]("Dashboard")
-    .initialState(State( window.innerWidth.toInt))
     .renderBackend[Backend]
     .build
 
   def apply(proxy: ModelProxy[(Map[UUID, OpenWidget], GlobalState)]) =
     component(Props(proxy))
+  /*def apply() =
+    component(Props)*/
 }

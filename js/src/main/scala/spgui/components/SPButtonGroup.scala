@@ -10,15 +10,15 @@ object SPButtonGroup {
 
   class Backend($: BackendScope[Props, State]) {
     def render(p:Props,s: State) =
-    <.span(
-      ^.className := "input-group",
-      <.input(
-        ^.className := "form-control",
-        ^.placeholder := p.defaultText,
-        ^.aria.describedBy := "basic-addon1",
-        ^.onChange ==> onFilterTextChange(p)
-      )    
-    )
+      <.span(
+        ^.className := "input-group",
+        <.input(
+          ^.className := "form-control",
+          ^.placeholder := p.defaultText,
+          ^.aria.describedBy := "basic-addon1",
+          ^.onChange ==> onFilterTextChange(p)
+        )
+      )
     def onFilterTextChange(p:Props)(e: ReactEventFromInput): Callback =
       e.extract(_.target.value)(v => (p.onChange(v))) // TODO check if this works
   }
@@ -28,7 +28,6 @@ object SPButtonGroup {
     .renderBackend[Backend]
     .build
 
-  def apply(defaultText: String, onChange: String => Callback) = 
+  def apply(defaultText: String, onChange: String => Callback) =
     component(Props(defaultText, onChange))
 }
-

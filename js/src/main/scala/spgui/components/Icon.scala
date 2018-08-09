@@ -4,8 +4,8 @@ import japgolly.scalajs.react.vdom.VdomNode
 import japgolly.scalajs.react.vdom.html_<^._
 
 /**
- * Provides type-safe access to Font Awesome icons
- */
+  * Provides type-safe access to Font Awesome icons
+  */
 object Icon {
   type Icon = VdomNode
   def apply(name: String): Icon = <.i(^.className := s"fa fa-$name")
@@ -608,4 +608,3 @@ object Icon {
   def windowClose = apply("window-close")
   def windowCloseO = apply("window-close-o")
 }
-

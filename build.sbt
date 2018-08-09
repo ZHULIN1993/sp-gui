@@ -1,4 +1,4 @@
-import SPSettings._
+import SPGuiSettings._
 
 /* leads to problems with one resource or the other
 workbenchDefaultRootObject := Some((
@@ -11,11 +11,13 @@ lazy val projectName = "sp-gui"
 lazy val projectVersion = "0.9.11"
 lazy val nextVersion = "0.10.0"
 
+// Dependencies on other SP-projects
 lazy val spDep = Def.setting(Seq(
   PublishingSettings.orgNameFull %%% "sp-domain" % "0.9.10",
   PublishingSettings.orgNameFull %%% "sp-comm" % "0.9.11"
 ))
 
+// Build Settings
 lazy val buildSettings = Seq(
   name         := projectName,
   description  := "The core UI for sequence planner",
@@ -48,14 +50,10 @@ lazy val spgui = crossProject.crossType(CrossType.Full).in(file("."))
     libraryDependencies ++= domainDependencies.value,
     libraryDependencies ++= guiDependencies.value,
     libraryDependencies ++= spDep.value,
-    // If we want a custom webpack config-file
-    // on the JS-side with
-    // scalajs-bundler scalajs.webpack.config.js
-    // webpackConfigFile := Some(baseDirectory.value / "src/main/resources" / "custom.webpack.config.js"),
     // Add npm dependenices with scalajs-bundler to be used with `sbt compile`
     npmDependencies in Compile ++= npmBundlerDependencies,
     // Add npm devDependenices with scalajs-bundler to be used with `sbt compile`
-    npmDevDependencies in Compile ++= npmDevBundlerDependencies,
+    npmDevDependencies in Compile ++= npmBundlerDevDependencies,
     scalaJSUseMainModuleInitializer := true
   )
 

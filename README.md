@@ -15,15 +15,19 @@ Here we have widgets that can be widely used.
 ## Wiki
 Watch our wiki for information about Sequence Planner and how to use.
 
+# Guide #
 
 ## Prerequisites ##
 You will need an sbt installation  (`scala-sbt.org/0.13/docs/`) 
 You will also need an installation of node (`nodejs.org`) 
 
 ## Compiling the SP frontend ##
-To install javascript dependencies, cd to `npmdependencies/` and run `npm install`.
+To install javascript dependencies, we now use [scalajs-bundler](https://github.com/scalacenter/scalajs-bundler/).
 
-To compile the scalaJS code, run `sbt fastOptJS`. To compile the optimized version run `sbt fullOptJS` (slow process, not recommended in development).
+Run `>sbt compile`, followed by `>sbt ~fastOptJS::webpack`, then [open in browser](localhost:8080/js/target/scala-2.12/classes/index.html)
+@localhost:8080/js/target/scala-2.12/classes/index.html
+
+To compile the scalaJS code, run `sbt compile`. To compile the optimized version run `sbt fullOptJS` (slow process, not recommended in development).
 
 ## Running SP frontend only ##
 For development purposes, the frontend can be run without backend and with live reloading using lihaoyi's workbench. To do this, run `sbt ~fastOptJS` and open `http://localhost:12345/js/target/scala-2.12/classes/index.html` in a browser.
@@ -74,4 +78,4 @@ The html-like scala-objects prefixed by `<` and `^` are provided by the scalajs-
 
 
 ## JavaScript dependencies ##
-JS dependencies are handled by npm and made available through a bundle file generated with webpack. To add a JS dependency, go to `npmdependencies/`, add it to `package.json` and `vendor.js`, then run `npm install`.
+JS dependencies are handled by scalajs-bundler and made available through a bundle file generated with webpack. To add a JS dependency, go to `project/SPGuiSettings.scala`, add your version to the Version object as a String, then write your

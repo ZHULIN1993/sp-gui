@@ -173,7 +173,7 @@ object SPWidgetElements {
 
     case class Props(id: UUID, cb: (DragDropData) => Unit, dropData: DropData, x: Float, y: Float, w: Float, h: Float)
     case class State(hovering: Boolean, id: UUID)
-    
+
     class Backend($: BackendScope[Props, State]) {
 
       def setHovering(hovering: Boolean) =
@@ -228,7 +228,7 @@ object SPWidgetElements {
   object DragoverZoneWithChild {
     case class Props(id: UUID, cb: (DragDropData) => Unit, dropData: DropData, subComponent: VdomNode)
     case class State(hovering: Boolean, id: UUID)
-    
+
     class Backend($: BackendScope[Props, State]) {
       def setHovering(hovering: Boolean) =
         $.modState(s => s.copy(hovering = hovering)).runNow()
@@ -269,7 +269,7 @@ object SPWidgetElements {
         Dragging.unsubscribeToDropEvents(c.props.id)
       }))
       .build
-    
+
     def apply(cb: (DragDropData) => Unit, dropData: DropData, subComponent: VdomNode) =
       component(Props(UUID.randomUUID(), cb, dropData, subComponent))
   }

@@ -49,7 +49,7 @@ object SPMenuCSS extends SPStyleSheet {
 
   val navbarToggleButtonOuter = style(
 
-   )
+  )
 
   val buttonPadding = 4;
   val navItem = style("sp-nav-item")(

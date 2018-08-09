@@ -1,8 +1,8 @@
-package spgui.widgets.css
+package spgui
 
 import scalacss.DevDefaults._
 
-object WidgetStyles extends StyleSheet.Inline {
+object WidgetCSS extends StyleSheet.Inline {
   import dsl._
 
   val alteHaas = fontFace("alte_haas_groteskregular")( // generates @font-face
@@ -15,12 +15,12 @@ object WidgetStyles extends StyleSheet.Inline {
   )
   val freeSansBoldFF = fontFace("freeSansBold")(
     _.src("url(fonts/freeSans/FreeSansBold.woff), url(fonts/freeSans/freesansbold.woff2), url(fonts/freeSans/freesansbold.ttf)")
-    .fontWeight.bold
+      .fontWeight.bold
   )
   val freeSansObliqueFF = fontFace("freeSansOblique")(
     _.src("url(fonts/freeSans/FreeSansOblique.woff), url(fonts/freeSans/freesansoblique.woff2), url(fonts/freeSans/freesansoblique.ttf)")
-    .fontStyle.italic
-    .fontStyle.oblique
+      .fontStyle.italic
+      .fontStyle.oblique
   )
 
   val hideScrollBar = style(

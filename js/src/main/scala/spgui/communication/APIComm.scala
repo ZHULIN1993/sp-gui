@@ -12,7 +12,6 @@ import scala.util.{Try, Success, Failure }
 
 import fs2._
 import fs2.async
-import fs2.async.mutable.Queue
 import scala.concurrent.ExecutionContext.Implicits.global
 import cats.effect.{ Effect, IO }
 import cats.implicits._
@@ -23,21 +22,25 @@ object APIComm {
       throw new RuntimeException("Didn't get an answer!"))): Future[(SPHeader,RST)]
 
     def takeNSuccessfulBySender(n: Int): Future[Map[String,List[(SPHeader,RST)]]] = {
-      s.bySender.collect {
-        case (from, v) if v.forall(_._2.isRight) =>
-          (from, v.collect{ case(h,Right(rst))=>(h,rst) })}.take(n).runLog.unsafeToFuture().
-        map(v=>if(v.size < n) throw new RuntimeException(s"Got fewer than ${n} answers!") else v).
-        map { _.toList.map ({case (g,v) => (g,v.toList) }).toMap }
+      /** Tag: DocHelp*/
+      type SPStream =  Stream[IO, (String, scala.Vector[(SPHeader, RST)])]
+      val unknown: SPStream = s.bySender.collect {
+        case (from, segment) if segment.force.toVector.forall(_._2.isRight) =>
+          (from, segment.force.toVector.collect{ case(h, Right(rst))=>(h,rst) })}
+      val unknown2: SPStream = unknown.take(n)
+      unknown2.compile.toVector.unsafeToFuture()
+        .map(v => if(v.size < n) throw new RuntimeException(s"Got fewer than ${n} answers!") else v)
+        .map { _.toList.map ({case (g, v) => (g, v.toList) }).toMap }
     }
 
-    def bySender = s.groupBy(_._1.from)
-    def doit = s.run.unsafeToFuture()
+    def bySender = s.groupAdjacentBy{_._1.from}
+    def doit = s.compile.toVector.unsafeToFuture()
   }
 }
 
 class APIComm[RQT,RST](requestTopic: String, responseTopic: String, from: String, to: String,
-  onChannelUp: Option[() => Unit], onMessage: Option[(SPHeader,RST) => Unit])
-  (implicit val writeRequest: JSFormat[RQT], implicit val readResponse: JSFormat[RST]) {
+                       onChannelUp: Option[() => Unit], onMessage: Option[(SPHeader,RST) => Unit])
+                      (implicit val writeRequest: JSFormat[RQT], implicit val readResponse: JSFormat[RST]) {
   import spgui.communication.{BackendCommunication => bc }
   type ResponseStream = Stream[IO, (SPHeader, Either[APISP.SPError, RST])]
 
@@ -93,7 +96,7 @@ class APIComm[RQT,RST](requestTopic: String, responseTopic: String, from: String
   def request(body: RQT): ResponseStream = request(SPHeader(from = from, to = to), body)
 
   def request(header: SPHeader, body: RQT, ackTimeout: FiniteDuration = 500 millis,
-    innerTimeout: FiniteDuration = 12500 millis): ResponseStream = {
+              innerTimeout: FiniteDuration = 12500 millis): ResponseStream = {
     val msg = SPMessage.make[SPHeader, RQT](header, body)(implicitly, writeRequest)
     bc.publish(msg, requestTopic)
     val source = new ManualOuterSource
@@ -131,7 +134,7 @@ class APIComm[RQT,RST](requestTopic: String, responseTopic: String, from: String
       _ <- Stream.suspend {
         h.registerPostFunction { e => async.unsafeRunAsync(q.enqueue1(e))(_ => IO.unit) }; Stream.emit(())
       }
-      row <- q.dequeue.unNoneTerminate
+      row <- q.dequeue.unNoneTerminate.asInstanceOf[Stream[Pure, (sp.domain.SPHeader, Either[sp.domain.APISP.SPError,RST]) ]]
     } yield row
   }
 
@@ -151,7 +154,7 @@ class APIComm[RQT,RST](requestTopic: String, responseTopic: String, from: String
       _ <- Stream.suspend {
         h.registerPostFunction { e => async.unsafeRunAsync(q.enqueue1(e))(_ => IO.unit) }; Stream.emit(())
       }
-      row <- q.dequeue.rethrow.unNoneTerminate
+      row <- q.dequeue.rethrow.unNoneTerminate.asInstanceOf[Stream[Pure, Stream[IO, (SPHeader, Either[APISP.SPError, RST])]]]
     } yield row
   }
 }

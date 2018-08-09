@@ -6,9 +6,6 @@ import org.scalajs.dom._
 import spgui.components.{Icon, SPNavbarElements}
 import spgui.circuit._
 import diode.react.ModelProxy
-import spgui.dashboard.{AbstractDashboardPresetsHandler, DashboardPresetsMenu}
-import spgui.modal.DummyModal
-import spgui.modal.DummyModal.Return
 import spgui.theming.Theming
 
 object SPMenu {
@@ -81,7 +78,7 @@ object SPMenu {
           )
         )
       )
-    } 
+    }
   }
 
   private val component = ScalaComponent.builder[Props]("SPMenu")

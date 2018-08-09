@@ -44,7 +44,7 @@ object DashboardCSS extends SPStyleSheet {
     height(0.px),
     paddingTop(0.px),
     paddingBottom(0.px),
-  
+
     unsafeChild("i")(
       color(_rgba(theme.value.defaultTextColor, 0)).important,
       transitionDuration:=!"300ms",

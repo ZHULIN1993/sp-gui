@@ -8,7 +8,6 @@ import japgolly.scalajs.react.vdom.all.svg
 
 import spgui.communication._
 import sp.domain._
-import scalacss.ScalaCssReact._
 import scala.scalajs.js
 
 import org.scalajs.dom.window
@@ -18,31 +17,31 @@ import org.scalajs.dom.document
 import diode.react.ModelProxy
 import spgui.circuit._
 import spgui.circuit.{SetDraggableData, SetDraggableRenderStyle}
-import scala.util.Try 
+import scala.util.Try
 
 trait DragData
 trait DropData
 case class DragDropData(dragData: DragData, dropData: DropData)
 
 
-object Dragging { 
+object Dragging {
 
   case class Props(proxy: ModelProxy[DraggingState])
 
   case class State(
-    x: Float = 0f,
-    y: Float = 0f,
-    hoverTarget: UUID = null,
-    isDragging: Boolean = false,
-    renderStyle: String = "",
-    data: Data = null
-  )
+                    x: Float = 0f,
+                    y: Float = 0f,
+                    hoverTarget: UUID = null,
+                    isDragging: Boolean = false,
+                    renderStyle: String = "",
+                    data: Data = null
+                  )
 
   case class Data(
-    label: String,
-    id: UUID,
-    typ: String
-  )
+                   label: String,
+                   id: UUID,
+                   typ: String
+                 )
 
   var setHoveringMap = Map[UUID, (Boolean) => Unit]()
 
@@ -160,7 +159,7 @@ object Dragging {
       )
     }
   }
-  
+
   private val component = ScalaComponent.builder[Props]("Dragging")
     .initialState(State())
     .renderBackend[Backend]
@@ -190,7 +189,7 @@ object Dragging {
     if(draggingTarget!= null) emitDropEvent(draggingData)
 
     SPGUICircuit.dispatch(SetCurrentlyDragging(false))
-   
+
     setDraggingData(null)
     setDraggingTarget(null)
   }

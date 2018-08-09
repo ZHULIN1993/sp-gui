@@ -199,7 +199,9 @@ case class WebSocketHandler(uri: String) {
       wsOpen() = false
       retry() = true
     }
-//    newWs.onerror = {(e: dom.raw.ErrorEvent) => println(e.message)}
+    newWs.onerror = { (e: dom.Event) =>
+      errors() = e.toString
+    }
     newWs
   }
 
@@ -209,7 +211,7 @@ case class WebSocketHandler(uri: String) {
     val str = mess()
     //println("websocket got a message: "+ str)
     fJ(str)
-    }
+  }
 
 
 
@@ -242,9 +244,9 @@ case class WebSocketHandler(uri: String) {
   wsOpen.triggerLater {
     // println(s"Websocket is: ${wsOpen.now}")
   }
-//   //some printlns for testing
-//  mess.trigger(println("GOT A MESSAGE ON WEBSOCKET: " + mess.now))
-//  socketAPI.trigger(println("Converted Message: " + socketAPI.toTry))
+  //   //some printlns for testing
+  //  mess.trigger(println("GOT A MESSAGE ON WEBSOCKET: " + mess.now))
+  //  socketAPI.trigger(println("Converted Message: " + socketAPI.toTry))
   notification.triggerLater {
     // println(s"A NOTIFICATION: ${notification.now}")
   }

@@ -7,8 +7,8 @@ import org.scalajs.dom._
 
 object NavItem {
   case class Props (
-    content: Option[VdomNode] = None
-  )
+                     content: Option[VdomNode] = None
+                   )
 
   private val component = ScalaComponent.builder[Props]("WidgetItem")
     .render_P(p =>
