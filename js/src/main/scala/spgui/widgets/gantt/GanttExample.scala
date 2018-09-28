@@ -7,6 +7,7 @@ import org.scalajs.dom
 
 import spgui.SPWidgetBase
 import spgui.SPWidget
+import spgui.widgets.bootstrap.Components._
 
 object GanttExamples {
 
@@ -24,7 +25,7 @@ object GanttExamples {
       <.div(
         HtmlTagOf[dom.html.Element]("gantt-component"), // becomes <gantt-component></gantt-component>
         GanttDataExamples().toTagMod { case (k,v) =>
-          <.button(k, ^.onClick --> (setGantt(v.options) >> setData(v.data)))
+          infoButton(k, setGantt(v.options) >> setData(v.data))
         }
       )
   }

@@ -28,7 +28,9 @@ object FrontendOnlyLoadingWidgets {
       ("Gantt Examples",              widgets.gantt.GanttExamples(), 10, 5),
       ("Live Gantt Example",          widgets.gantt.LiveGanttExample(), 10, 5),
       ("ServiceList",                 widgets.services.ServiceListWidget(),          3, 4),
+      ("Bootstrap Test",              widgets.bootstrap.TestBootstrap(),                     3,4)
       //("SopMaker",                    widgets.sopmaker.SopMakerWidget(),             3, 4)
+
     )
 
 
