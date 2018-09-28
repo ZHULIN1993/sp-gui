@@ -27,9 +27,9 @@ window.Pathlib = pathlib;
 var bootstrap = require('bootstrap');
 window.bootstrap = bootstrap;
 require('bootstrap/dist/css/bootstrap.css');
-require('bootstrap/fonts/glyphicons-halflings-regular.ttf');
-require('bootstrap/fonts/glyphicons-halflings-regular.eot');
-require('bootstrap/fonts/glyphicons-halflings-regular.svg');
+//require('bootstrap/fonts/glyphicons-halflings-regular.ttf');
+//require('bootstrap/fonts/glyphicons-halflings-regular.eot');
+//require('bootstrap/fonts/glyphicons-halflings-regular.svg');
 
 require('font-awesome/css/font-awesome.css');
 
