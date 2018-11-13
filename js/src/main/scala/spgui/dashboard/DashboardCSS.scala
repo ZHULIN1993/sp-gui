@@ -11,7 +11,7 @@ object DashboardCSS extends SPStyleSheet {
   val widgetHeadingIconColor = "#ffffff"
 
   val widgetPanel = style("sp-widget-panel")(
-    color(_rgb(theme.value.defaultTextColor)).important,
+    color(_rgb(theme.value.widgetHeadingColor)).important,
     addClassName("panel panel-default"),
     backgroundColor(_rgb(theme.value.widgetBackgroundColor)),
     height(100.%%),
@@ -70,6 +70,7 @@ object DashboardCSS extends SPStyleSheet {
 
   val widgetPanelBody = style("sp-panel-body")(
     backgroundColor(_rgb(theme.value.widgetBackgroundColor)),
+    color(_rgb(theme.value.widgetTextColor)),
     overflow.auto,
     height(100.%%)
   )

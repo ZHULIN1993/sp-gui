@@ -53,9 +53,9 @@ object TreeView {
 
 
     def render(p: TreeViewProps, s: TreeViewState) =
-      <.div(^.className := "nav", Style.outerDiv,
+      <.div(^.className := "nav", TreeCSS.outerDiv,
         <.div(
-          Style.optionBar,
+          TreeCSS.optionBar,
           <.li(SPWidgetElements.dropdown(
             "Add Item",
             p.itemCreators.map(ic => <.div(ic._1, ^.onClick --> addItem(ic._2())))
@@ -64,7 +64,7 @@ object TreeView {
           SPWidgetElements.TextBox("Filter...", filter(s.rt))
         ),
         <.div(
-          Style.treeDiv,
+          TreeCSS.treeDiv,
           TVColumn(s.rt.items, s.rt.rootLevelItemIds, p.getItemIcon, p.renderContent, onDrop, s.visIds)
         )
       )
@@ -109,17 +109,17 @@ object TVColumn {
 
     def render(p: TVColumnProps, s: TVColumnState) =
       <.div(
-        Style.tvColumn,
+        TreeCSS.tvColumn,
         <.ul(
-          Style.ul,
+          TreeCSS.ul,
           {
             val visItems = p.visIds.intersect(p.itemIds)
             visItems.map{id =>
               val item = p.items.find(_.id == id).get
               <.li(
-                Style.li(item.id == s.selectedItemId),
+                TreeCSS.li(item.id == s.selectedItemId),
                 <.div(
-                  <.div(Style.icon, p.getItemIcon(item)), item.name, <.div(Style.chevron, Icon.chevronRight)
+                  <.div(TreeCSS.icon, p.getItemIcon(item)), item.name, <.div(TreeCSS.chevron, Icon.chevronRight)
                 ),
                 DataOnDrag(item.id.toString, deselectDragged(item.id)),
                 OnDataDrop(eventData => p.onDrop(eventData, item.id.toString) >> setSelectedId(item.id)),

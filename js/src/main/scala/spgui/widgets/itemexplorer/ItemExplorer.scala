@@ -46,7 +46,7 @@ object GetItemIcon {
 object RenderItemContent {
   // pre-tag keeps the indentation and gives a nice frame
   def contentToElement(content: js.Object) = <.pre(
-    Style.itemContent,
+    TreeCSS.itemContent,
     JSON.stringify(content, space = 2),
     ^.onClick --> Callback.log(
       "Clicked button with content " + JSON.stringify(content) +
@@ -72,7 +72,7 @@ object ItemExplorer {
   def emptyDir() = Directory("New Directory", UUID.randomUUID().toString, List())
 
   def apply() = SPWidget(spwb => TreeView(
-                           SPItemsToRootDirectory(SampleSPItems()),
+                           SPItemsToRootDirectory(SampleSPItems().toSeq),
                            ("Directory", () => emptyDir()) ::
                              Nil,
                            item => GetItemIcon(item),

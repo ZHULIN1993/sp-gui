@@ -2,14 +2,16 @@ package spgui.widgets.itemexplorer
 
 import scalacss.DevDefaults._
 import scalacss.ScalaCssReact._
+import spgui.circuit.SPGUICircuit
+import spgui.theming.Theming.SPStyleSheet
 
-object Style extends StyleSheet.Inline {
+object TreeCSS extends SPStyleSheet {
   import dsl._
 
   val itemContent = style(
-//    &.hover(
-//      cursor.pointer
-//    )
+    //    &.hover(
+    //      cursor.pointer
+    //    )
   )
 
   val outerDiv = style(
@@ -42,19 +44,33 @@ object Style extends StyleSheet.Inline {
   )
 
   val li = styleF.bool(selected => styleS(
-                         position.relative,
-                         display.block,
-                         width(160 px),
-                         padding(v = 10.px, h = 15.px),
-                         border :=! "1px solid #999999",
-                         cursor.pointer,
-                         fontWeight._500,
-                         mixinIfElse(selected)(color :=! "#555555", backgroundColor :=! "#A5C2EE")(
-                           backgroundColor.white
-//                           ,
-//                           &.hover(color :=! "#555555", backgroundColor :=! "#A5C2EE"))
-                         )
-                       ))
+    position.relative,
+    display.block,
+    width(160 px),
+    padding(v = 10.px, h = 15.px),
+    border :=! "1.2px solid #fff",
+    cursor.pointer,
+    fontWeight._500,
+
+    mixinIfElse(selected)(
+      color :=! "#000",
+      backgroundColor(_rgb(theme.value.lightestSPOrange)),
+      border :=! "1.2px solid #000",
+      &.hover(
+        backgroundColor(_rgb(theme.value.lightSPOrange)),
+        color :=! "#454545"
+      )
+    )(
+      backgroundColor(_rgb(theme.value.spOrange)),
+      color.white,
+      &.hover(
+        backgroundColor(_rgb(theme.value.lightSPOrange)),
+        color :=! "#fefefe"
+      )
+    ),
+    //                           ,
+    //                           &.hover(color :=! "#555555", backgroundColor :=! "#A5C2EE"))
+  ))
 
   val icon = style(
     float.left,

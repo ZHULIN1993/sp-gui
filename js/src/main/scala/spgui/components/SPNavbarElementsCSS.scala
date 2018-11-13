@@ -33,7 +33,7 @@ object SPNavbarElementsCSS extends Theming.SPStyleSheet {
     ),
     unsafeRoot(".navbar-default .navbar-nav > .open > a")(
       // another bootstrap override
-      backgroundColor(_rgb(theme.value.navbarBackgroundColor))
+      backgroundColor(_rgb(theme.value.navbarBackgroundColor)).important
     )
   )
 

@@ -18,7 +18,7 @@ object SPMenu {
     def render(p: Props): VdomElement = {
       <.nav(
         ^.className:= SPMenuCSS.topNav.htmlClass,
-        ^.className := "navbar navbar-default",
+        ^.className := "navbar",
 
         // navbar header: logo+toggle button
         <.div(
