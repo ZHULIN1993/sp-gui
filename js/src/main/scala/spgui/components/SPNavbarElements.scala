@@ -43,8 +43,7 @@ object SPNavbarElements{
         Icon.caretDown,
         VdomAttr("data-toggle") := "dropdown",
         ^.id:="something",
-        ^.className := SPNavbarElementsCSS.clickable.htmlClass,
-        ^.className := "nav-link dropdown-toggle"
+        ^.className := SPNavbarElementsCSS.clickable.htmlClass
       ),
       <.ul(
         contents.toTagMod,

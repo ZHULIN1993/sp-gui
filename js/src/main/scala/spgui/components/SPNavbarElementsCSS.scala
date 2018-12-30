@@ -29,11 +29,19 @@ object SPNavbarElementsCSS extends Theming.SPStyleSheet {
     ),
     unsafeRoot(".navbar-dropdown.open > a")(
       // bootstrap override
+      color(_rgb(theme.value.defaultTextColor))
+    ),
+    unsafeRoot(".nav .open > a, .nav .open > a:hover, .nav .open > a:focus")(
+      backgroundColor(_rgb(theme.value.navbarButtonBackgroundActive)),
+      color(_rgb(theme.value.navbarButtonTextColorActive))
+    ),
+    unsafeRoot(".nav > li > a:hover")(
+      backgroundColor(_rgb(theme.value.navbarButtonBackgroundHoverColor)),
       color(_rgb(theme.value.defaultTextColor)).important
     ),
     unsafeRoot(".navbar-default .navbar-nav > .open > a")(
       // another bootstrap override
-      backgroundColor(_rgb(theme.value.navbarBackgroundColor)).important
+      backgroundColor(_rgb(theme.value.navbarBackgroundColor))
     )
   )
 
@@ -46,19 +54,19 @@ object SPNavbarElementsCSS extends Theming.SPStyleSheet {
   )
 
   val clickable = style(
-    color(_rgb(theme.value.defaultTextColor)).important,
+    color(_rgb(theme.value.defaultTextColor)),
     cursor.pointer,
     userSelect := "none",
     listStyle := "none",
     &.hover(
-      backgroundColor(_rgb(theme.value.navbarButtonBackgroundHoverColor)).important
+      backgroundColor(_rgb(theme.value.navbarButtonBackgroundHoverColor))
     )
   )
 
   val dropdownElement = style(
     padding(4.px),
     &.hover(
-      backgroundColor(_rgb(theme.value.navbarButtonBackgroundHoverColor)).important
+      backgroundColor(_rgb(theme.value.navbarButtonBackgroundHoverColor))
     )
   )
 
