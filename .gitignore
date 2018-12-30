@@ -21,6 +21,9 @@ project/project
 *~
 \#*\#
 
+# NPM Packages
+npmdependencies
+
 # Intellij
 .idea/
 *.iml
