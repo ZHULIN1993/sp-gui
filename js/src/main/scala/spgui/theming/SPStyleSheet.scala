@@ -43,8 +43,9 @@ object Theming {
 
                      navbarBackgroundColor:            Int = 0x1F2739,
                      navbarLogoBackgroundColor:        Int = 0xdf691a,
-                     navbarButtonBackgroundHoverColor: Int = 0x2c3a59,
-                     navbarButtonTextColor:            Int = 0x000000,
+                     navbarButtonBackgroundHoverColor: Int = 0x2F3D5C,
+                     navbarButtonBackgroundActive:     Int = 0x337192,
+                     navbarButtonTextColorActive:      Int = 0x000000,
 
                      widgetBackgroundColor:            Int = 0x2F384A,
                      widgetHeadingColor:               Int = 0xa8f1ff,
@@ -71,8 +72,9 @@ object Theming {
 
       navbarBackgroundColor  =                0xcccccc,
       navbarLogoBackgroundColor  =            0xdf691a,
-      navbarButtonBackgroundHoverColor  =   0xbbbbbb,
-      navbarButtonTextColor  =              0x000000,
+      navbarButtonBackgroundHoverColor  =     0xbbbbbb,
+      navbarButtonBackgroundActive  =         0xcccccc,
+      navbarButtonTextColorActive  =          0x000000,
 
       widgetBackgroundColor  =              0xededed,
       widgetHeadingColor  =                 0x999999,
@@ -92,7 +94,8 @@ object Theming {
       navbarBackgroundColor =               0x222222,
       navbarLogoBackgroundColor =           0xdf691a,
       navbarButtonBackgroundHoverColor =    0x555555,
-      navbarButtonTextColor  =              0xffffff,
+      navbarButtonBackgroundActive =        0x222222,
+      navbarButtonTextColorActive  =        0xffffff,
 
       widgetBackgroundColor =               0x333333,
       widgetHeadingColor =                  0x222222,
@@ -112,7 +115,8 @@ object Theming {
       navbarBackgroundColor =               0xeeeeee,
       navbarLogoBackgroundColor =           0xdf691a,
       navbarButtonBackgroundHoverColor =    0xdddddd,
-      navbarButtonTextColor  =              0x000000,
+      navbarButtonBackgroundActive =        0xeeeeee,
+      navbarButtonTextColorActive  =        0x000000,
 
       widgetBackgroundColor =               0xf5f5f5,
       widgetHeadingColor =                  0xeeeeee,

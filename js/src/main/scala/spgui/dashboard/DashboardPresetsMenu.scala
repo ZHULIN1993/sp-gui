@@ -26,7 +26,7 @@ object DashboardPresetsCSS extends SPStyleSheet {
     float.right,
     color(_rgb(theme.value.navbarBackgroundColor)),
     &.hover(
-      color(_rgb(theme.value.navbarButtonTextColor))
+      color(_rgb(theme.value.navbarButtonTextColorActive))
     )
   )
 
