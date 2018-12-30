@@ -22,7 +22,7 @@ project/project
 \#*\#
 
 # NPM Packages
-npmdependencies
+# npmdependencies/
 
 # Intellij
 .idea/
