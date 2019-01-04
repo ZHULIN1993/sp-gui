@@ -23,7 +23,7 @@ object FrontendOnlyLoadingWidgets {
       //      ("D3ExampleServiceWidget",      widgets.examples.D3ExampleServiceWidget(),     3, 4),
       //      ("ExampleServiceWidget",        widgets.examples.ExampleServiceWidget(),                        3, 4),
       //      ("ExampleServiceWidgetState",   widgets.examples.ExampleServiceWidgetState(),                   3, 3),
-      ("Test Button",                 widgets.TestComponents(),                               2, 2),
+      ("Test Button",                 widgets.TestComponents(),                               6, 5),
       ("Item explorer",               widgets.itemexplorer.ItemExplorer(),           3, 4),
       ("Item explorer tree",          widgets.itemtree.ItemExplorer(), 2, 4),
       ("Gantt Examples",              widgets.gantt.GanttExamples(), 10, 5),

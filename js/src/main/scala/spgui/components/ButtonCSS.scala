@@ -17,6 +17,8 @@ object ButtonCSS extends StyleSheet.Inline {
     cursor.pointer,
     padding :=! "5px 10px",
     borderRadius :=! "4px",
+    marginTop :=! "0px",
+    marginRight :=! "4px",
     marginBottom :=! "0px",
     whiteSpace :=! "nowrap",
 
