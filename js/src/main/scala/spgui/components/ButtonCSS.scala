@@ -2,10 +2,12 @@ package spgui.components
 
 import scalacss.DevDefaults._
 import scalacss.ScalaCssReact._
-import scalacss.internal.ValueT
+
+// TODO: Make CSS typesafe with Attr
 object ButtonCSS extends StyleSheet.Inline {
   import dsl._
-  val spButtonStyle = style(
+
+  val spButtonStyle = style("spButton")(
     backgroundColor.white,
     color :=! "#df691a",
     border :=! "2px solid #df691a",
@@ -34,7 +36,7 @@ object ButtonCSS extends StyleSheet.Inline {
     )
   )
 
-  val spDropdownButton = style(
+  val spDropdownButtonStyle = style("spDropdownButton")(
     backgroundColor.white,
     color :=! "#df691a",
     textAlign.center,
@@ -44,11 +46,36 @@ object ButtonCSS extends StyleSheet.Inline {
     transitionDuration :=! inherit,
     cursor.pointer,
     padding :=! "5px 10px",
-    marginBottom :=! "0px",
+    margin(5.px, 10.px, 5.px, 0.px),
     whiteSpace :=! "nowrap",
+    borderRadius(4.px),
+    border :=! "none",
+
+    unsafeChild("ul")(
+      visibility.hidden,
+      display :=! "none",
+      transition := "all 0.5s ease",
+      left :=! "0",
+      opacity :=! "0",
+      minWidth(5.rem),
+      marginTop(1.rem),
+      position.absolute,
+
+      unsafeChild("spButtonStyle")(
+        clear.both,
+        width(100.%%)
+      )
+
+    ),
+
     &.hover( // on hover
       backgroundColor :=! "#df691a",
-      color :=! "#FFF"
+      color :=! "#FFF",
+      unsafeChild("ul")(
+        visibility.visible,
+        opacity :=! "1",
+        display :=! "block"
+      )
     ),
     &.focus( // while focused, removes blue border
       outline :=! "0"
@@ -63,13 +90,21 @@ object ButtonCSS extends StyleSheet.Inline {
   )
 
   val icon = style(
-    transitionDuration :=! inherit,
-    color :=! inherit,
-    backgroundColor :=! inherit
+    transitionDuration.inherit,
+    color.inherit,
+    backgroundColor.inherit
   )
 
-  val spDropdownStyle = style(
+  val customSPButtonCSSInSPDropdown = style(
+    unsafeRoot(".spDropdownButton ul li .spButton")(
+      backgroundColor.gray
+    )
+  )
 
+  val unsortedList = style("custom_ul")(
+    margin(0.px),
+    border(0.px),
+    listStyle := "none"
   )
 
   this.addToDocument()

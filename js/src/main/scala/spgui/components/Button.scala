@@ -14,14 +14,15 @@ object Button {
         <.span(<.span(^.className := ButtonCSS.textBeforeIcon.htmlClass, text), icon)
     )
 
-  def SPDropdown(text: String, onClick: Callback, icon: VdomNode, subItems: Seq[VdomNode]) =
+  def SPDropdown(text: String, onClick: Callback, icon: Icon = null, subItems: Seq[VdomNode] = Seq(), css: String = "") =
     <.button(
       ^.onClick --> onClick,
-      ^.className := ButtonCSS.spDropdownStyle.htmlClass,
+      ^.className := ButtonCSS.spDropdownButtonStyle.htmlClass,
+      ^.className := css,
       <.span(^.className := ButtonCSS.textBeforeIcon.htmlClass, text),
       icon,
       <.ul(
-        ^.className := "", // add css for a list
+        ^.className := ButtonCSS.unsortedList.htmlClass, // add css for a list
         subItems.map(node =>
           <.li(
             ^.className := "", // add css foreach list item
@@ -34,7 +35,7 @@ object Button {
   def SPDropdownItem(text: String, onClick: Callback) =
     <.button(
       ^.onClick --> onClick,
-      ^.className := ButtonCSS.spDropdownButton.htmlClass,
+      ^.className := ButtonCSS.spButtonStyle.htmlClass,
       text
     )
 
