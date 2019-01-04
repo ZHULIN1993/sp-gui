@@ -61,7 +61,7 @@ object TreeView {
             p.itemCreators.map(ic => <.div(ic._1, ^.onClick --> addItem(ic._2())))
           )),
           <.li(SPWidgetElements.button(Icon.floppyO, p.onSaveButtonClick(s.rt))),
-          SPWidgetElements.TextBox("Filter...", filter(s.rt))
+          spgui.components.SPTextBox("Filter...", filter(s.rt))
         ),
         <.div(
           TreeCSS.treeDiv,
