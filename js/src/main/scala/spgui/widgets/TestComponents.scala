@@ -31,12 +31,12 @@ object TestComponents {
               SPDropdownItem("Sub Item 2", Callback.log("Sub Item 2 - Pressed"))
             )
           )
-        ),
+        )/*,
         <.div(
           // Create a Button while overriding some default CSS with unsafeRoot("...")() in ScalaCSS
           SPDropdown("Example", Callback.empty,
             null, Seq(), ButtonCSS.customSPButtonCSSInSPDropdown.htmlClass)
-        )
+        )*/
       )
     }
   }

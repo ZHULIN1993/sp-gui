@@ -55,19 +55,22 @@ object ButtonCSS extends StyleSheet.Inline {
       visibility.hidden,
       display :=! "none",
       transition := "all 0.5s ease",
-      left :=! "0",
+      marginRight(0.px),
       opacity :=! "0",
       minWidth(5.rem),
-      marginTop(1.rem),
+      marginTop(6.px),
       position.absolute,
 
       unsafeChild("spButtonStyle")(
         clear.both,
         width(100.%%)
+      ),
+      &.hover(
+        visibility.visible,
+        opacity :=! "1",
+        display :=! "block"
       )
-
     ),
-
     &.hover( // on hover
       backgroundColor :=! "#df691a",
       color :=! "#FFF",
@@ -95,11 +98,11 @@ object ButtonCSS extends StyleSheet.Inline {
     backgroundColor.inherit
   )
 
-  val customSPButtonCSSInSPDropdown = style(
+  /*val customSPButtonCSSInSPDropdown = style(
     unsafeRoot(".spDropdownButton ul li .spButton")(
       backgroundColor.gray
     )
-  )
+  )*/
 
   val unsortedList = style("custom_ul")(
     margin(0.px),
