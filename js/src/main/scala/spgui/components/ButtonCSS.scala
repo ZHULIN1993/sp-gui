@@ -45,6 +45,8 @@ object ButtonCSS extends StyleSheet.Inline {
     //transitionDuration :=! "400ms",
     transitionDuration :=! inherit,
     cursor.pointer,
+    position.relative,
+    display.inlineBlock,
     padding :=! "5px 10px",
     margin(5.px, 10.px, 5.px, 0.px),
     whiteSpace :=! "nowrap",
@@ -54,17 +56,16 @@ object ButtonCSS extends StyleSheet.Inline {
     unsafeChild("ul")(
       visibility.hidden,
       display :=! "none",
-      transition := "all 0.5s ease",
-      marginRight(0.px),
+      right :=! "0",
       opacity :=! "0",
-      minWidth(5.rem),
+      minWidth(1.rem),
       marginTop(6.px),
       position.absolute,
-
+/*
       unsafeChild("spButtonStyle")(
         clear.both,
         width(100.%%)
-      ),
+      ),*/
       &.hover(
         visibility.visible,
         opacity :=! "1",
@@ -82,9 +83,6 @@ object ButtonCSS extends StyleSheet.Inline {
     ),
     &.focus( // while focused, removes blue border
       outline :=! "0"
-    ),
-    &.active( // while mouse held down
-      backgroundColor :=! "#d15b0c"
     )
   )
 
@@ -105,9 +103,11 @@ object ButtonCSS extends StyleSheet.Inline {
   )*/
 
   val unsortedList = style("custom_ul")(
-    margin(0.px),
-    border(0.px),
     listStyle := "none"
+  )
+
+  val listItem = style("custom_li")(
+    marginBottom(1.px)
   )
 
   this.addToDocument()

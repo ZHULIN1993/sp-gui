@@ -25,7 +25,7 @@ object Button {
         ^.className := ButtonCSS.unsortedList.htmlClass, // add css for a list
         subItems.map(node =>
           <.li(
-            ^.className := "", // add css foreach list item
+            ^.className := ButtonCSS.listItem.htmlClass, // add css foreach list item
             node
           )
         ).toTagMod
