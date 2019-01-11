@@ -31,14 +31,24 @@ object TestComponents {
               SPDropdownItem("Sub Item 2", Callback.log("Sub Item 2 - Pressed"))
             )
           )
-        )/*,
+        ),
         <.div(
-          // Create a Button while overriding some default CSS with unsafeRoot("...")() in ScalaCSS
-          SPDropdown("Example", Callback.empty,
-            null, Seq(), ButtonCSS.customSPButtonCSSInSPDropdown.htmlClass)
-        )*/
+          <.h1("Table"),
+          Table(tableHeaders, seq, Callback.empty, true)
+        )
       )
     }
+
+    val test1: (String, String, String) = ("Hi", "Hi", "Hi")
+    val test2: (String, String, String) = ("Hi", "Hi", "Hi")
+    val test3: (String, String, String) = ("Hi", "Hi", "hipoisfsäfljjjölskjfjjflkjsafjfjfjHi")
+    val seq = Seq(test1,test2,test3)
+
+    val tableHeaders = Vector(
+      Table.ColumnData("Name"),
+      Table.ColumnData("Id"),
+      Table.ColumnData("Value")
+    )
   }
 
   private val component = ScalaComponent.builder[Unit]("VDTracker")

@@ -1,7 +1,9 @@
 package spgui.components
 
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.vdom._
 import japgolly.scalajs.react.vdom.html_<^._
+import org.scalajs.dom.html
 import spgui.components.Icon.Icon
 
 object Button {
@@ -14,7 +16,7 @@ object Button {
         <.span(<.span(^.className := ButtonCSS.textBeforeIcon.htmlClass, text), icon)
     )
 
-  def SPDropdown(text: String, onClick: Callback, icon: Icon = null, subItems: Seq[VdomNode] = Seq(), css: String = "") =
+  def SPDropdown(text: String, onClick: Callback, icon: Icon = null, subItems: Seq[TagOf[html.Button]] = Seq(), css: String = "") =
     <.button(
       ^.onClick --> onClick,
       ^.className := ButtonCSS.spDropdownButtonStyle.htmlClass,
@@ -35,7 +37,7 @@ object Button {
   def SPDropdownItem(text: String, onClick: Callback) =
     <.button(
       ^.onClick --> onClick,
-      ^.className := ButtonCSS.spButtonStyle.htmlClass,
+      ^.className := ButtonCSS.spDropdownItem.htmlClass,
       text
     )
 
