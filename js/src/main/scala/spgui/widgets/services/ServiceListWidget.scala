@@ -1,16 +1,14 @@
 package spgui.widgets.services
 
-import java.util.UUID
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 import spgui.communication._
 import sp.domain._
-import sp.domain.Logic._
-
 import sp.service.{APIServiceHandler => api}
+import spgui.components.{SPNavbarElements, SPTextBox, Table}
 
 object ServiceListWidget {
-  case class State(services: List[APISP.StatusResponse])
+  case class State(services: List[APISP.StatusResponse], filterText: String = null)
 
   private class Backend($: BackendScope[Unit, State]) {
 
@@ -34,39 +32,38 @@ object ServiceListWidget {
 
     val answerHandler = BackendCommunication.getMessageObserver(handelMess, api.topicResponse)
 
-    def render(s: State) = {
+    def render(state: State) = {
+      val services = state.services.map{resp => (resp.service, resp.instanceName, "" + resp.instanceID.getOrElse(""), resp.tags.mkString(" "), resp.version + "")}
+      val toDisplay = if(state.filterText != null || state.filterText == "")
+        services.filter(s => s._1 == state.filterText) else services
       <.div(
-        renderServices(s),
-        <.div("todo: Add search and sorting. Add possibility to send messaged based on api")
-      )
-    }
-
-    def renderServices(s: State) = {
-      <.table(
-        ^.className := "table table-striped",
-        <.caption("Services"),
-        <.thead(
-            <.th("service"),
-            <.th("name"),
-            <.th("id"),
-            <.th("tags"),
-            <.th("version")
+        <.div(
+          ^.marginLeft.:=(5.px),
+          ^.marginBottom.:=(5.px),
+          SPNavbarElements.TextBox(
+            state.filterText,
+            "Filter Services...",
+            (t: String) => { $.setState(State(state.services, filterText = t)) }
+          )
         ),
-        <.tbody(
-          s.services.map(s=> {
-            <.tr(
-              <.td(s.service),
-              <.td(s.instanceName),
-              <.td(s.instanceID.toString),
-              <.td(s.tags.toString),
-              <.td(s.version)
-            )
-          }).toTagMod
+        <.div(
+          renderServices(toDisplay)
+          // TODO: Add search and sorting. Add possibility to send messaged based on api
         )
       )
     }
 
+    val tableHeaders = Vector(
+      Table.ColumnData("Service"),
+      Table.ColumnData("Name"),
+      Table.ColumnData("Id"),
+      Table.ColumnData("Tags"),
+      Table.ColumnData("Version")
+    )
 
+    def renderServices(services: Seq[(String, String, String, String, String)]) = {
+      Table(tableHeaders, services, Callback.empty, true)
+    }
 
     def onUnmount() = {
       answerHandler.kill()
@@ -84,7 +81,6 @@ object ServiceListWidget {
       BackendCommunication.publish(json, api.topicRequest)
       Callback.empty
     }
-
   }
 
   private val component = ScalaComponent.builder[Unit]("AbilityHandlerWidget")
